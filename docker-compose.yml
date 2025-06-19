@@ -1,0 +1,45 @@
+services:
+  # Base de données PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: task-manager-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: taskmanager
+      POSTGRES_USER: taskuser
+      POSTGRES_PASSWORD: taskpass123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - task-manager-network
+
+  # Application Next.js
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: task-manager-app
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://taskuser:taskpass123@db:5432/taskmanager
+      NODE_ENV: production
+      PORT: 4500
+    ports:
+      - "4500:4500"
+    depends_on:
+      - db
+    networks:
+      - task-manager-network
+    volumes:
+      - ./uploads:/app/uploads
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  task-manager-network:
+    driver: bridge 
