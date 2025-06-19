@@ -67,6 +67,10 @@ export default function Home() {
   };
 
   const handleCreateTask = async (taskData: { name: string; score: number }) => {
+    if (!selectedCategory) {
+      alert("Erreur : aucune catégorie sélectionnée !");
+      return;
+    }
     try {
       const response = await fetch('/api/tasks', {
         method: 'POST',

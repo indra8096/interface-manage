@@ -24,7 +24,7 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({ percentage, color, cate
           cx="64"
           cy="64"
           r={radius}
-          stroke="#faf5fd"
+          stroke="#f3f4f6"
           strokeWidth="8"
           fill="none"
         />

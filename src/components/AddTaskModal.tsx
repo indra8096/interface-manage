@@ -30,6 +30,10 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!category) {
+      alert("Erreur : aucune catégorie sélectionnée !");
+      return;
+    }
     onSubmit(formData);
     onClose();
   };
@@ -87,7 +91,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-primary mb-2">
+                <label className="block text-sm font-medium text-black mb-2">
                   Nom de la tâche
                 </label>
                 <input
@@ -101,7 +105,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
 
               <div>
                 <label className="block text-sm font-medium text-primary mb-2">
-                  Score d'importance (1-10)
+                  Score d&apos;importance (1-10)
                 </label>
                 <div className="flex items-center gap-4">
                   <input
@@ -127,7 +131,8 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
-                className="w-full py-3 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-all"
+                disabled={!category}
+                className="w-full py-3 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-all disabled:opacity-50"
               >
                 Ajouter la tâche
               </motion.button>
