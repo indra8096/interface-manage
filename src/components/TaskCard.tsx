@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import ModalInfoTache from './ModalInfoTache';
-import EditTaskModal from './EditTaskModal';
+import TaskModal from './TaskModal';
 
 interface TaskCardProps {
   id: number;
@@ -266,7 +266,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
       )}
 
       {showEditModal && (
-        <EditTaskModal
+        <TaskModal
           isOpen={showEditModal}
           onClose={() => setShowEditModal(false)}
           onSave={handleSaveEdit}
@@ -282,6 +282,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
             createdAt,
             updatedAt,
           }}
+          mode="edit"
         />
       )}
     </>

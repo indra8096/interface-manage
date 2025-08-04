@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import TaskColumn from '@/components/TaskColumn';
-import AddTaskModal from '@/components/AddTaskModal';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Footer from '@/components/Footer';
@@ -24,8 +23,6 @@ interface Task {
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
@@ -57,9 +54,8 @@ export default function Home() {
     fetchTasks();
   }, []);
 
-  const handleAddTask = (category: string) => {
-    setSelectedCategory(category);
-    setIsModalOpen(true);
+  const handleAddTask = (taskData: { name: string; score: number; category: string; description: string; importance: string; dueDate: string; assignedTo: string }) => {
+    handleCreateTask(taskData);
   };
 
   const handleStatusChange = async (id: number, newStatus: 'completed' | 'warning' | 'error') => {
@@ -84,11 +80,7 @@ export default function Home() {
     }
   };
 
-  const handleCreateTask = async (taskData: { name: string; score: number }) => {
-    if (!selectedCategory) {
-      alert("Erreur : aucune catégorie sélectionnée !");
-      return;
-    }
+  const handleCreateTask = async (taskData: { name: string; score: number; category: string; description: string; importance: string; dueDate: string; assignedTo: string }) => {
     try {
       const response = await fetch('/api/tasks', {
         method: 'POST',
@@ -97,14 +89,12 @@ export default function Home() {
         },
         body: JSON.stringify({
           ...taskData,
-          category: selectedCategory,
         }),
       });
 
       if (response.ok) {
         const newTask = await response.json();
         setTasks(prevTasks => [newTask, ...prevTasks]);
-        setIsModalOpen(false);
       }
     } catch (error) {
       console.error('Erreur lors de la création de la tâche:', error);
@@ -293,15 +283,8 @@ export default function Home() {
           </motion.div>
         </div>
       </main>
-
-             <AddTaskModal
-         isOpen={isModalOpen}
-         onClose={() => setIsModalOpen(false)}
-         onSubmit={handleCreateTask}
-         category={selectedCategory}
-       />
-       
-       <Footer />
-     </div>
-   );
- }
+      
+      <Footer />
+    </div>
+  );
+}

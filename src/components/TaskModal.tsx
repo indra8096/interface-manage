@@ -16,19 +16,31 @@ interface Task {
   updatedAt?: string;
 }
 
-interface EditTaskModalProps {
+interface TaskModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (taskId: number, taskData: { name: string; description: string; score: number; importance: string; dueDate: string; assignedTo: string }) => void;
+  onSubmit?: (task: { name: string; score: number; category: string; description: string; importance: string; dueDate: string; assignedTo: string }) => void;
   task: Task | null;
+  mode: 'add' | 'edit';
+  category?: string;
 }
 
-export default function EditTaskModal({
+const categoryNames = {
+  defensive: 'DÉFENSIF',
+  general: 'GÉNÉRAL',
+  offensive: 'OFFENSIF',
+};
+
+export default function TaskModal({
   isOpen,
   onClose,
   onSave,
+  onSubmit,
   task,
-}: EditTaskModalProps) {
+  mode,
+  category,
+}: TaskModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -38,25 +50,49 @@ export default function EditTaskModal({
     assignedTo: '',
   });
 
-  // Pré-remplir le formulaire avec les données de la tâche
+  // Pré-remplir le formulaire avec les données de la tâche (mode edit uniquement)
   useEffect(() => {
-    if (isOpen && task) {
-      setFormData({
-        name: task.name || '',
-        description: task.description || '',
-        score: task.score || 5,
-        importance: task.importance || 'Moyenne',
-        dueDate: task.dueDate ? task.dueDate.split('T')[0] : '',
-        assignedTo: task.assignedTo || '',
-      });
+    if (isOpen) {
+      if (mode === 'edit' && task) {
+        setFormData({
+          name: task.name || '',
+          description: task.description || '',
+          score: task.score || 5,
+          importance: task.importance || 'Moyenne',
+          dueDate: task.dueDate ? task.dueDate.split('T')[0] : '',
+          assignedTo: task.assignedTo || '',
+        });
+      } else if (mode === 'add') {
+        // Réinitialiser le formulaire pour l'ajout
+        setFormData({
+          name: '',
+          description: '',
+          score: 5,
+          importance: 'Moyenne',
+          dueDate: '',
+          assignedTo: '',
+        });
+      }
     }
-  }, [isOpen, task]);
+  }, [isOpen, task, mode]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!task) return;
     
-    onSave(task.id, formData);
+    if (mode === 'edit' && task && onSave) {
+      onSave(task.id, formData);
+    } else if (mode === 'add' && onSubmit && category) {
+      onSubmit({
+        name: formData.name,
+        score: formData.score,
+        category,
+        description: formData.description,
+        importance: formData.importance,
+        dueDate: formData.dueDate,
+        assignedTo: formData.assignedTo,
+      });
+    }
+    
     onClose();
   };
 
@@ -72,8 +108,6 @@ export default function EditTaskModal({
     9: '#3b82f6',
     10: '#8b5cf6',
   };
-
-  if (!task) return null;
 
   return (
     <AnimatePresence>
@@ -95,7 +129,7 @@ export default function EditTaskModal({
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-karla-bold text-white">
                 <span className="bg-gradient-to-r from-[#CCFF00] to-[#9933FF] bg-clip-text text-transparent">
-                  MODIFICATION
+                  {mode === 'add' ? 'NOUVEAU SERVICE' : 'MODIFICATION'}
                 </span>
               </h2>
               <button
@@ -105,6 +139,13 @@ export default function EditTaskModal({
                 <div className="w-6 h-6 rounded-full bg-current"></div>
               </button>
             </div>
+
+            {mode === 'add' && category && (
+              <div className="mb-6 p-4 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl border border-gray-700">
+                <span className="text-sm text-gray-400 font-karla-regular">CATÉGORIE: </span>
+                <span className="font-karla-semibold text-[#CCFF00]">{categoryNames[category as keyof typeof categoryNames]}</span>
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
@@ -116,6 +157,7 @@ export default function EditTaskModal({
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
+                  placeholder={mode === 'add' ? "Entrez le nom du service..." : ""}
                   required
                 />
               </div>
@@ -156,6 +198,7 @@ export default function EditTaskModal({
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
                   rows={3}
+                  placeholder="Description du service..."
                 />
               </div>
               
@@ -195,6 +238,7 @@ export default function EditTaskModal({
                   value={formData.assignedTo}
                   onChange={e => setFormData({ ...formData, assignedTo: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
+                  placeholder="Nom de la personne assignée..."
                 />
               </div>
 
@@ -204,7 +248,7 @@ export default function EditTaskModal({
                 type="submit"
                 className="w-full py-4 bg-gradient-to-r from-[#CCFF00] to-[#9933FF] text-black rounded-xl font-karla-bold hover:from-[#9933FF] hover:to-[#CCFF00] transition-all duration-300 shadow-lg"
               >
-                SAUVEGARDER
+                {mode === 'add' ? 'CRÉER LE SERVICE' : 'SAUVEGARDER'}
               </motion.button>
             </form>
           </motion.div>
