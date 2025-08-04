@@ -200,42 +200,48 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
             {/* Actions avec design futuriste */}
             <div className="flex flex-col gap-2">
-              <button
-                onClick={() => setShowEditModal(true)}
-                className="p-2 rounded-lg transition-all duration-200 group-hover:scale-105"
-                style={{
-                  background: 'var(--bg-secondary)',
-                  color: '#CCFF00',
-                  border: '1px solid var(--border-primary)'
-                }}
-                title="Modifier"
-              >
-                <div className="w-4 h-4 rounded-full bg-current"></div>
-              </button>
-              <button
-                onClick={handleComplete}
-                className="p-2 rounded-lg transition-all duration-200 group-hover:scale-105"
-                style={{
-                  background: 'var(--bg-secondary)',
-                  color: '#10b981',
-                  border: '1px solid var(--border-primary)'
-                }}
-                title="Valider"
-              >
-                <div className="w-4 h-4 rounded-full bg-current"></div>
-              </button>
-              <button
-                onClick={handleDelete}
-                className="p-2 rounded-lg transition-all duration-200 group-hover:scale-105"
-                style={{
-                  background: 'var(--bg-secondary)',
-                  color: '#ef4444',
-                  border: '1px solid var(--border-primary)'
-                }}
-                title="Supprimer"
-              >
-                <div className="w-4 h-4 rounded-full bg-current"></div>
-              </button>
+                             <button
+                 onClick={() => setShowEditModal(true)}
+                 className="p-2 rounded-lg transition-all duration-200 group-hover:scale-105"
+                 style={{
+                   background: 'var(--bg-secondary)',
+                   color: '#CCFF00',
+                   border: '1px solid var(--border-primary)'
+                 }}
+                 title="Modifier"
+               >
+                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                   <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                 </svg>
+               </button>
+                             <button
+                 onClick={handleComplete}
+                 className="p-2 rounded-lg transition-all duration-200 group-hover:scale-105"
+                 style={{
+                   background: 'var(--bg-secondary)',
+                   color: '#10b981',
+                   border: '1px solid var(--border-primary)'
+                 }}
+                 title="Valider"
+               >
+                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                 </svg>
+               </button>
+                             <button
+                 onClick={handleDelete}
+                 className="p-2 rounded-lg transition-all duration-200 group-hover:scale-105"
+                 style={{
+                   background: 'var(--bg-secondary)',
+                   color: '#ef4444',
+                   border: '1px solid var(--border-primary)'
+                 }}
+                 title="Supprimer"
+               >
+                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                   <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                 </svg>
+               </button>
             </div>
           </div>
         </div>
