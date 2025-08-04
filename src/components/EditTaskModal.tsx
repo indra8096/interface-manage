@@ -1,7 +1,7 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 interface Task {
   id: number;
@@ -23,12 +23,12 @@ interface EditTaskModalProps {
   task: Task | null;
 }
 
-const EditTaskModal: React.FC<EditTaskModalProps> = ({
+export default function EditTaskModal({
   isOpen,
   onClose,
   onSave,
   task,
-}) => {
+}: EditTaskModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -82,43 +82,47 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={onClose}
         >
           <motion.div
             initial={{ scale: 0.9, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.9, y: 20 }}
-            className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl"
+            className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 w-full max-w-md border border-gray-800 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-karla-bold text-primary">Modification de la tâche</h2>
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-karla-bold text-white">
+                <span className="bg-gradient-to-r from-[#CCFF00] to-[#9933FF] bg-clip-text text-transparent">
+                  MODIFICATION
+                </span>
+              </h2>
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-primary transition-colors"
+                className="text-gray-400 hover:text-[#CCFF00] transition-colors p-2 rounded-lg hover:bg-gray-800"
               >
-                <FontAwesomeIcon icon={faTimes} />
+                <div className="w-6 h-6 rounded-full bg-current"></div>
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-black mb-2">
-                  Nom du service
+                <label className="block text-sm font-karla-semibold text-white mb-3">
+                  NOM DU SERVICE
                 </label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-black"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-primary mb-2">
-                  Score d&apos;importance (1-10)
+                <label className="block text-sm font-karla-semibold text-white mb-3">
+                  NIVEAU DE PRIORITÉ (1-10)
                 </label>
                 <div className="flex items-center gap-4">
                   <input
@@ -127,10 +131,13 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
                     max="10"
                     value={formData.score}
                     onChange={(e) => setFormData({ ...formData, score: parseInt(e.target.value) })}
-                    className="flex-1"
+                    className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+                    style={{
+                      background: `linear-gradient(to right, ${scoreColors[formData.score as keyof typeof scoreColors]} 0%, ${scoreColors[formData.score as keyof typeof scoreColors]} ${(formData.score - 1) * 11.11}%, #374151 ${(formData.score - 1) * 11.11}%, #374151 100%)`
+                    }}
                   />
                   <span
-                    className="px-3 py-1 rounded-full font-medium text-sm text-white"
+                    className="px-4 py-2 rounded-full font-karla-bold text-sm text-black min-w-[3rem] text-center"
                     style={{
                       backgroundColor: scoreColors[formData.score as keyof typeof scoreColors],
                     }}
@@ -141,25 +148,25 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-black mb-2">
-                  Description
+                <label className="block text-sm font-karla-semibold text-white mb-3">
+                  DESCRIPTION
                 </label>
                 <textarea
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-black"
-                  rows={2}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
+                  rows={3}
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-black mb-2">
-                  Importance
+                <label className="block text-sm font-karla-semibold text-white mb-3">
+                  PRIORITÉ
                 </label>
                 <select
                   value={formData.importance}
                   onChange={e => setFormData({ ...formData, importance: e.target.value })}
-                  className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-black"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
                 >
                   <option value="Faible">Faible</option>
                   <option value="Moyenne">Moyenne</option>
@@ -168,26 +175,26 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-black mb-2">
-                  Échéance
+                <label className="block text-sm font-karla-semibold text-white mb-3">
+                  ÉCHÉANCE
                 </label>
                 <input
                   type="date"
                   value={formData.dueDate}
                   onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
-                  className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-black"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-black mb-2">
-                  Personne assignée
+                <label className="block text-sm font-karla-semibold text-white mb-3">
+                  PERSONNE ASSIGNÉE
                 </label>
                 <input
                   type="text"
                   value={formData.assignedTo}
                   onChange={e => setFormData({ ...formData, assignedTo: e.target.value })}
-                  className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-black"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
                 />
               </div>
 
@@ -195,9 +202,9 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
-                className="w-full py-3 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-all"
+                className="w-full py-4 bg-gradient-to-r from-[#CCFF00] to-[#9933FF] text-black rounded-xl font-karla-bold hover:from-[#9933FF] hover:to-[#CCFF00] transition-all duration-300 shadow-lg"
               >
-                Sauvegarder les modifications
+                SAUVEGARDER
               </motion.button>
             </form>
           </motion.div>
@@ -205,6 +212,4 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
       )}
     </AnimatePresence>
   );
-};
-
-export default EditTaskModal; 
+} 

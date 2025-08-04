@@ -110,35 +110,138 @@ export default function Home() {
     }
   };
 
-
-
   const getTasksByCategory = (category: string) => {
     return tasks.filter(task => task.category === category);
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-primary flex items-center justify-center">
-        <div className="text-primary text-xl font-karla-regular">Chargement...</div>
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center animate-pulse">
+            <div className="w-16 h-16 rounded-full bg-black"></div>
+          </div>
+          <div className="text-[#CCFF00] text-xl font-karla-semibold mb-2">Initialisation du système</div>
+          <div className="text-gray-400 text-sm font-karla-regular">Chargement des modules de sécurité</div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-primary">
+    <div className="min-h-screen bg-black">
       <Header />
       
       <main className="p-8">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-karla-bold text-primary mb-8">
-            Tableau de bord client
-          </h1>
+          {/* Header futuriste */}
+          <div className="mb-16">
+            <div className="flex items-center justify-between mb-12">
+              <div>
+                <h1 className="text-5xl font-karla-bold text-white mb-4">
+                  <span style={{ color: '#CCFF00' }}>
+                    Tableau de bord
+                  </span>
+                </h1>
+                <p className="text-gray-400 font-karla-regular text-lg">
+                  Interface de contrôle des systèmes de cybersécurité
+                </p>
+              </div>
+            </div>
 
+            {/* Statistiques principales - Style futuriste */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+              <motion.div 
+                className="bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-gray-800 hover:border-[#CCFF00] transition-all duration-500"
+                whileHover={{ scale: 1.02 }}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-gray-400 font-karla-medium text-sm mb-2">SERVICES ACTIFS</div>
+                    <div className="text-6xl font-karla-bold text-[#CCFF00]">{tasks.length}</div>
+                  </div>
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full bg-black"></div>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div 
+                className="bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-gray-800 hover:border-[#9933FF] transition-all duration-500"
+                whileHover={{ scale: 1.02 }}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-gray-400 font-karla-medium text-sm mb-2">TÂCHES TERMINÉES</div>
+                    <div className="text-6xl font-karla-bold text-[#9933FF]">
+                      {Math.round((tasks.filter(t => t.status === 'completed').length / Math.max(tasks.length, 1)) * 100)}%
+                    </div>
+                  </div>
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#9933FF] to-[#CCFF00] flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full bg-black"></div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Statistiques détaillées - Style futuriste */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+              <motion.div 
+                className="bg-gradient-to-br from-gray-900 to-black p-6 rounded-xl border border-gray-800 hover:border-[#CCFF00] transition-all duration-300"
+                whileHover={{ y: -5 }}
+              >
+                <div className="text-center">
+                  <div className="text-3xl font-karla-bold text-[#CCFF00] mb-2">
+                    {tasks.filter(t => t.category === 'defensive').length}
+                  </div>
+                  <div className="text-gray-400 font-karla-medium text-sm">DÉFENSIF</div>
+                </div>
+              </motion.div>
+              
+              <motion.div 
+                className="bg-gradient-to-br from-gray-900 to-black p-6 rounded-xl border border-gray-800 hover:border-[#CCFF00] transition-all duration-300"
+                whileHover={{ y: -5 }}
+              >
+                <div className="text-center">
+                  <div className="text-3xl font-karla-bold text-[#CCFF00] mb-2">
+                    {tasks.filter(t => t.category === 'general').length}
+                  </div>
+                  <div className="text-gray-400 font-karla-medium text-sm">GÉNÉRAL</div>
+                </div>
+              </motion.div>
+              
+              <motion.div 
+                className="bg-gradient-to-br from-gray-900 to-black p-6 rounded-xl border border-gray-800 hover:border-[#9933FF] transition-all duration-300"
+                whileHover={{ y: -5 }}
+              >
+                <div className="text-center">
+                  <div className="text-3xl font-karla-bold text-[#9933FF] mb-2">
+                    {tasks.filter(t => t.category === 'offensive').length}
+                  </div>
+                  <div className="text-gray-400 font-karla-medium text-sm">OFFENSIF</div>
+                </div>
+              </motion.div>
+              
+              <motion.div 
+                className="bg-gradient-to-br from-gray-900 to-black p-6 rounded-xl border border-gray-800 hover:border-[#9933FF] transition-all duration-300"
+                whileHover={{ y: -5 }}
+              >
+                <div className="text-center">
+                  <div className="text-3xl font-karla-bold text-[#9933FF] mb-2">
+                    {tasks.filter(t => t.status === 'completed').length}
+                  </div>
+                  <div className="text-gray-400 font-karla-medium text-sm">TERMINÉS</div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+
+          {/* Colonnes de tâches */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            transition={{ duration: 0.8 }}
+            className="grid grid-cols-1 lg:grid-cols-3 gap-8"
           >
             <TaskColumn
               category="defensive"

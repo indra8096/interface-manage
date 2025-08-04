@@ -1,76 +1,73 @@
-import { motion } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShieldAlt, faCogs, faRocket, faUser, faUserShield } from '@fortawesome/free-solid-svg-icons';
-import { useEffect, useState } from 'react';
+'use client';
 
-const Header: React.FC = () => {
-  const [role, setRole] = useState<string | null>(null);
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setRole(localStorage.getItem('role'));
-    }
-  }, []);
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+
+export default function Header() {
+  const router = useRouter();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    window.location.href = '/login';
+    router.push('/login');
   };
+
   return (
-    <motion.header
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="shadow-sm border-b border-gray-200"
-      style={{ backgroundColor: '#9933FF' }}
+    <header 
+      className="bg-black border-b border-gray-800 px-8 py-6"
+      style={{ 
+        background: 'linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.98) 100%)',
+        backdropFilter: 'blur(20px)'
+      }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <motion.div 
+          className="flex items-center gap-4"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-black"></div>
+          </div>
+          <h1 className="text-2xl font-karla-bold text-white">
+            <span style={{ color: '#CCFF00' }}>
+              drelto
+            </span>
+          </h1>
+        </motion.div>
+        
+        <motion.div 
+          className="flex items-center space-x-6"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <FontAwesomeIcon icon={faShieldAlt} className="text-blue-600 text-xl" />
-              <FontAwesomeIcon icon={faCogs} className="text-green-600 text-xl" />
-              <FontAwesomeIcon icon={faRocket} className="text-red-600 text-xl" />
+            <div className="text-sm text-gray-400 font-karla-regular">
+              <span className="font-karla-semibold text-[#CCFF00]">STATUT:</span>
+                             <span className="ml-2 px-3 py-1 bg-[#CCFF00] text-black rounded-full text-xs font-karla-bold">
+                 SYSTÈME ACTIF
+               </span>
             </div>
-            <h1 className="text-xl font-karla-bold text-white">Interface de Gestion</h1>
+            
+            <button
+              onClick={() => window.location.href = '/admin/users'}
+              className="px-4 py-2 bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-lg hover:from-[#CCFF00] hover:to-[#9933FF] hover:text-black transition-all duration-300 font-karla-medium border border-gray-700 hover:border-transparent"
+              title="Gérer les utilisateurs"
+            >
+              ADMIN
+            </button>
           </div>
           
-          <div className="flex items-center space-x-4">
-            <div className="text-sm text-white font-karla-regular">
-              <span className="font-karla-semibold">Statut :</span>
-              <span className="ml-2 px-2 py-1 bg-white text-purple-800 rounded-full text-xs font-karla-medium">
-                En ligne
-              </span>
-            </div>
-            {role === 'admin' && (
-              <>
-                <FontAwesomeIcon icon={faUserShield} className="text-white text-xl ml-4" title="Administrateur" />
-                <button
-                  onClick={() => window.location.href = '/admin/users'}
-                  className="ml-2 px-3 py-1 bg-white text-purple-800 rounded hover:bg-gray-100 transition font-karla-medium"
-                  title="Gérer les utilisateurs"
-                >
-                  Gérer les utilisateurs
-                </button>
-              </>
-            )}
-            {role === 'user' && (
-              <FontAwesomeIcon icon={faUser} className="text-white text-xl ml-4" title="Utilisateur" />
-            )}
-            {role && (
-              <button
-                onClick={handleLogout}
-                className="ml-4 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition font-karla-medium"
-                title="Déconnexion"
-              >
-                Déconnexion
-              </button>
-            )}
-          </div>
-        </div>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-500 hover:to-red-600 transition-all duration-300 font-karla-medium border border-red-600 hover:border-red-500"
+            title="Déconnexion"
+          >
+            DÉCONNEXION
+          </button>
+        </motion.div>
       </div>
-    </motion.header>
+    </header>
   );
-};
-
-export default Header; 
+} 
