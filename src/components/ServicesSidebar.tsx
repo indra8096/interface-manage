@@ -194,6 +194,9 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
     
     console.log('Drag started for service:', service.name);
     
+    // Fermer automatiquement la sidebar quand on commence à glisser
+    onClose();
+    
     // Ajouter un effet visuel
     const target = e.currentTarget as HTMLElement;
     target.style.opacity = '0.5';

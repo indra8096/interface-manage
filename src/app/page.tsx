@@ -96,6 +96,25 @@ export default function Home() {
 
   const handleCreateTask = async (taskData: { name: string; score: number; category: string; description: string; importance: string; dueDate: string; assignedTo: string }) => {
     try {
+      // Créer une tâche temporaire avec un ID temporaire pour l'affichage immédiat
+      const tempTask: Task = {
+        id: Date.now(), // ID temporaire
+        name: taskData.name,
+        status: 'warning', // Statut par défaut
+        score: taskData.score,
+        category: taskData.category,
+        description: taskData.description,
+        importance: taskData.importance,
+        dueDate: taskData.dueDate,
+        assignedTo: taskData.assignedTo,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      // Ajouter immédiatement la tâche à l'interface
+      setTasks(prevTasks => [tempTask, ...prevTasks]);
+
+      // Ensuite, envoyer à l'API en arrière-plan
       const response = await fetch('/api/tasks', {
         method: 'POST',
         headers: {
@@ -108,7 +127,12 @@ export default function Home() {
 
       if (response.ok) {
         const newTask = await response.json();
-        setTasks(prevTasks => [newTask, ...prevTasks]);
+        // Remplacer la tâche temporaire par la vraie tâche de l'API
+        setTasks(prevTasks => 
+          prevTasks.map(task => 
+            task.id === tempTask.id ? newTask : task
+          )
+        );
       }
     } catch (error) {
       console.error('Erreur lors de la création de la tâche:', error);
@@ -137,9 +161,6 @@ export default function Home() {
     // Appeler handleCreateTask pour créer la nouvelle tâche
     handleCreateTask(newTaskData);
     
-    // Fermer le menu des services après le drop
-    setIsServicesSidebarOpen(false);
-    console.log('✅ Menu des services fermé');
     console.log('✅ handleDropService terminé avec succès');
   };
 

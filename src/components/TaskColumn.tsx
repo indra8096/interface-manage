@@ -150,17 +150,15 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
         onDropService(service, category);
         console.log('✅ onDropService appelé avec succès');
         
-        // Feedback visuel immédiat
-        alert(`Service "${service.name}" ajouté à la colonne ${category}!`);
+        // Feedback visuel subtil - la tâche apparaîtra immédiatement
+        console.log(`Service "${service.name}" ajouté à la colonne ${category}!`);
       } else {
         console.log('❌ Pas de service data ou onDropService non défini');
         console.log('serviceData:', !!serviceData);
         console.log('onDropService:', !!onDropService);
-        alert('Erreur: Impossible de récupérer les données du service');
       }
     } catch (error) {
       console.error('❌ Erreur lors du drop du service:', error);
-      alert('Erreur lors du drop: ' + error);
     }
   };
 
