@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import ModalInfoTache from './ModalInfoTache';
 import EditTaskModal from './EditTaskModal';
 
@@ -140,11 +142,11 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   <h3 className="font-karla-semibold text-sm transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>{name}</h3>
                   <button 
                     onClick={() => setShowInfo(true)} 
-                    className="transition-colors" 
+                    className="transition-colors hover:scale-110" 
                     style={{ color: 'var(--text-muted)' }}
                     title="Informations"
                   >
-                    <div className="w-4 h-4 rounded-full transition-colors" style={{ background: 'var(--text-muted)' }}></div>
+                    <FontAwesomeIcon icon={faInfoCircle} className="w-4 h-4" />
                   </button>
                 </div>
                 <div className="flex items-center gap-2">
