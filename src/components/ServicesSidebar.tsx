@@ -302,28 +302,25 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
                       className="group cursor-grab active:cursor-grabbing select-none"
                     >
                       <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover:shadow-lg hover:shadow-[#CCFF00]/10">
-                        <div className="flex items-start gap-4">
-                          <div className="text-2xl">{service.icon}</div>
-                          <div className="flex-1">
-                            <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors">
-                              {service.name}
-                            </h3>
-                            <p className="text-sm text-gray-400 mb-3 font-karla-regular">
-                              {service.description}
-                            </p>
-                            <div className="flex items-center justify-between">
-                              <span className={`px-2 py-1 rounded-full text-xs font-karla-medium ${
-                                service.category === 'defensive' ? 'bg-blue-900 text-blue-300' :
-                                service.category === 'general' ? 'bg-gray-700 text-gray-300' :
-                                'bg-red-900 text-red-300'
-                              }`}>
-                                {service.category.toUpperCase()}
-                              </span>
-                              <div className="flex items-center gap-2 text-xs text-gray-500">
-                                <span>Score: {service.defaultScore}</span>
-                                <span>•</span>
-                                <span>{service.defaultImportance}</span>
-                              </div>
+                        <div>
+                          <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors">
+                            {service.name}
+                          </h3>
+                          <p className="text-sm text-gray-400 mb-3 font-karla-regular">
+                            {service.description}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className={`px-2 py-1 rounded-full text-xs font-karla-medium ${
+                              service.category === 'defensive' ? 'bg-blue-900 text-blue-300' :
+                              service.category === 'general' ? 'bg-gray-700 text-gray-300' :
+                              'bg-red-900 text-red-300'
+                            }`}>
+                              {service.category.toUpperCase()}
+                            </span>
+                            <div className="flex items-center gap-2 text-xs text-gray-500">
+                              <span>Score: {service.defaultScore}</span>
+                              <span>•</span>
+                              <span>{service.defaultImportance}</span>
                             </div>
                           </div>
                         </div>
