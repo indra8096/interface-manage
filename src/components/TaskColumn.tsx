@@ -32,9 +32,9 @@ const categoryTitles = {
 };
 
 const categoryColors = {
-  defensive: '#CCFF00',
-  general: '#CCFF00',
-  offensive: '#9933FF',
+  defensive: 'var(--theme-primary)',
+  general: 'var(--theme-primary)',
+  offensive: 'var(--theme-secondary)',
 };
 
 const categoryDescriptions = {
@@ -51,8 +51,9 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 border border-[#9933FF] hover:border-[#CCFF00] transition-all duration-500 backdrop-blur-sm"
-      style={{ 
+      className="rounded-2xl p-8 border border-[#9933FF] hover:border-[#CCFF00] transition-all duration-500 backdrop-blur-sm"
+      style={{
+        background: 'var(--bg-card)',
         boxShadow: `0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px ${categoryColors[category]}20`
       }}
     >
@@ -60,26 +61,31 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange 
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-2xl font-karla-bold text-white mb-2">
-              {categoryTitles[category]}
-            </h2>
-            <p className="text-gray-400 font-karla-regular text-sm">
-              {categoryDescriptions[category]}
-            </p>
+                         <h2 className="text-2xl font-karla-bold mb-2 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>
+               {categoryTitles[category]}
+             </h2>
+             <p className="font-karla-regular text-sm transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
+               {categoryDescriptions[category]}
+             </p>
           </div>
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center">
-            <div className="w-8 h-8 rounded-full bg-black"></div>
-          </div>
+                     <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{
+             background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-secondary))'
+           }}>
+             <div className="w-8 h-8 rounded-full" style={{ background: 'var(--bg-primary)' }}></div>
+           </div>
         </div>
         
         <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent"></div>
       </div>
 
       {/* Section statistiques futuriste */}
-      <div className="mb-8 p-6 rounded-xl bg-gradient-to-br from-black to-gray-900 border border-gray-800">
+             <div className="mb-8 p-6 rounded-xl border transition-all duration-300" style={{
+         background: 'var(--bg-secondary)',
+         border: '1px solid var(--border-primary)'
+       }}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-karla-semibold text-gray-300">PROGRESSION</h3>
-          <span className="text-xs text-gray-500 font-karla-medium">OBJECTIF: 100%</span>
+                     <h3 className="text-sm font-karla-semibold transition-colors duration-300" style={{ color: 'var(--text-secondary)' }}>PROGRESSION</h3>
+           <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>OBJECTIF: 100%</span>
         </div>
         <div className="flex items-center justify-center">
           <ProgressCircle
@@ -89,9 +95,9 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange 
           />
         </div>
         <div className="text-center mt-4">
-          <div className="text-xs text-gray-400 font-karla-medium mb-1">
-            SERVICES COMPLÉTÉS
-          </div>
+                     <div className="text-xs font-karla-medium mb-1 transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
+             SERVICES COMPLÉTÉS
+           </div>
           <div className="text-lg font-karla-bold" style={{ color: categoryColors[category] }}>
             {tasks.length}/10
           </div>
@@ -100,27 +106,31 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange 
 
       {/* Liste des tâches avec design futuriste */}
       <div className="space-y-4 mb-6">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-karla-semibold text-gray-300">SERVICES ACTIFS</h3>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-[#CCFF00] animate-pulse"></div>
-            <span className="text-xs text-gray-500 font-karla-medium">ONLINE</span>
-          </div>
-        </div>
+                 <div className="flex items-center justify-between">
+           <h3 className="text-sm font-karla-semibold transition-colors duration-300" style={{ color: 'var(--text-secondary)' }}>SERVICES ACTIFS</h3>
+           <div className="flex items-center gap-2">
+             <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--theme-primary)' }}></div>
+             <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>ONLINE</span>
+           </div>
+         </div>
         
         <AnimatePresence mode="popLayout">
           {tasks.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center py-12 text-gray-500"
-            >
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center border border-gray-700">
-                <div className="w-8 h-8 rounded-full bg-gray-600"></div>
-              </div>
-              <p className="text-sm font-karla-medium text-gray-400">AUCUN SERVICE ACTIF</p>
-              <p className="text-xs text-gray-600 mt-1">Initialisez votre premier service</p>
-            </motion.div>
+                         <motion.div
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               className="text-center py-12 transition-colors duration-300"
+               style={{ color: 'var(--text-muted)' }}
+             >
+               <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center border transition-all duration-300" style={{
+                 background: 'var(--bg-secondary)',
+                 border: '1px solid var(--border-primary)'
+               }}>
+                 <div className="w-8 h-8 rounded-full transition-colors duration-300" style={{ background: 'var(--text-muted)' }}></div>
+               </div>
+               <p className="text-sm font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>AUCUN SERVICE ACTIF</p>
+               <p className="text-xs mt-1 transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>Initialisez votre premier service</p>
+             </motion.div>
           ) : (
             tasks.map((task) => (
               <motion.div
@@ -147,14 +157,14 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange 
         whileTap={{ scale: 0.98 }}
         onClick={() => onAddTask(category)}
         className="w-full p-4 rounded-xl font-karla-semibold flex items-center justify-center gap-3 transition-all duration-300"
-        style={{ 
-          background: `linear-gradient(135deg, ${categoryColors[category]}, ${categoryColors[category]}80)`,
-          color: 'black'
-        }}
+                 style={{ 
+           background: 'var(--theme-primary)',
+           color: 'var(--bg-primary)'
+         }}
       >
-        <div className="w-6 h-6 rounded-full bg-black bg-opacity-20 flex items-center justify-center">
-          <div className="w-3 h-3 rounded-full bg-black"></div>
-        </div>
+                 <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: 'var(--bg-primary)', opacity: 0.2 }}>
+           <div className="w-3 h-3 rounded-full" style={{ background: 'var(--bg-primary)' }}></div>
+         </div>
         <span className="text-sm font-karla-bold">AJOUTER UN SERVICE</span>
       </motion.button>
     </motion.div>

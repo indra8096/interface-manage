@@ -115,9 +115,9 @@ export default function Home() {
     return tasks.filter(task => task.category === category);
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+     if (isLoading) {
+     return (
+       <div className="min-h-screen flex items-center justify-center transition-all duration-300" style={{ background: 'var(--bg-primary)' }}>
         <div className="text-center">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center animate-pulse">
             <div className="w-16 h-16 rounded-full bg-black"></div>
@@ -129,8 +129,8 @@ export default function Home() {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-black">
+     return (
+     <div className="min-h-screen transition-all duration-300" style={{ background: 'var(--bg-primary)' }}>
       <Header />
       
       <main className="p-8">
@@ -139,48 +139,60 @@ export default function Home() {
           <div className="mb-16">
             <div className="flex items-center justify-between mb-12">
               <div>
-                                 <h1 className="text-5xl font-karla-bold text-white mb-4">
-                   <span style={{ color: '#FFFFFF' }}>
+                                                  <h1 className="text-5xl font-karla-bold mb-4 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>
+                   <span style={{ color: 'var(--text-primary)' }}>
                      Tableau de bord
                    </span>
                  </h1>
-                <p className="text-gray-400 font-karla-regular text-lg">
-                  Interface de contrôle des systèmes de cybersécurité
-                </p>
+                 <p className="font-karla-regular text-lg transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
+                   Interface de contrôle des systèmes de cybersécurité
+                 </p>
               </div>
             </div>
 
             {/* Statistiques principales - Style futuriste */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-              <motion.div 
-                className="bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-gray-800 hover:border-[#CCFF00] transition-all duration-500"
-                whileHover={{ scale: 1.02 }}
-              >
+                             <motion.div 
+                 className="p-8 rounded-2xl hover:border-[#CCFF00] transition-all duration-500"
+                 style={{
+                   background: 'var(--bg-card)',
+                   border: '1px solid var(--border-primary)'
+                 }}
+                 whileHover={{ scale: 1.02 }}
+               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-gray-400 font-karla-medium text-sm mb-2">SERVICES ACTIFS</div>
-                    <div className="text-6xl font-karla-bold text-[#CCFF00]">{tasks.length}</div>
+                                         <div className="font-karla-medium text-sm mb-2 transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>SERVICES ACTIFS</div>
+                                         <div className="text-6xl font-karla-bold" style={{ color: 'var(--theme-primary)' }}>{tasks.length}</div>
                   </div>
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center">
-                    <div className="w-16 h-16 rounded-full bg-black"></div>
-                  </div>
+                                     <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
+                     background: 'linear-gradient(135deg, #9933FF, #7c3aed)'
+                   }}>
+                     <div className="w-16 h-16 rounded-full" style={{ background: 'var(--bg-primary)' }}></div>
+                   </div>
                 </div>
               </motion.div>
 
-              <motion.div 
-                className="bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-gray-800 hover:border-[#9933FF] transition-all duration-500"
-                whileHover={{ scale: 1.02 }}
-              >
+                             <motion.div 
+                 className="p-8 rounded-2xl hover:border-[#9933FF] transition-all duration-500"
+                 style={{
+                   background: 'var(--bg-card)',
+                   border: '1px solid var(--border-primary)'
+                 }}
+                 whileHover={{ scale: 1.02 }}
+               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-gray-400 font-karla-medium text-sm mb-2">TÂCHES TERMINÉES</div>
-                    <div className="text-6xl font-karla-bold text-[#9933FF]">
-                      {Math.round((tasks.filter(t => t.status === 'completed').length / Math.max(tasks.length, 1)) * 100)}%
-                    </div>
+                                         <div className="font-karla-medium text-sm mb-2 transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>TÂCHES TERMINÉES</div>
+                                         <div className="text-6xl font-karla-bold" style={{ color: 'var(--theme-secondary)' }}>
+                       {Math.round((tasks.filter(t => t.status === 'completed').length / Math.max(tasks.length, 1)) * 100)}%
+                     </div>
                   </div>
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#9933FF] to-[#CCFF00] flex items-center justify-center">
-                    <div className="w-16 h-16 rounded-full bg-black"></div>
-                  </div>
+                                     <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
+                     background: 'linear-gradient(135deg, #9933FF, #7c3aed)'
+                   }}>
+                     <div className="w-16 h-16 rounded-full" style={{ background: 'var(--bg-primary)' }}></div>
+                   </div>
                 </div>
               </motion.div>
             </div>
@@ -188,50 +200,66 @@ export default function Home() {
             {/* Statistiques détaillées - Style futuriste */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
               <motion.div 
-                className="bg-gradient-to-br from-gray-900 to-black p-6 rounded-xl border border-gray-800 hover:border-[#CCFF00] transition-all duration-300"
+                className="p-6 rounded-xl hover:border-[#CCFF00] transition-all duration-300"
+                style={{
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-primary)'
+                }}
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-karla-bold text-[#CCFF00] mb-2">
-                    {tasks.filter(t => t.category === 'defensive').length}
-                  </div>
-                  <div className="text-gray-400 font-karla-medium text-sm">DÉFENSIF</div>
+                                     <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
+                     {tasks.filter(t => t.category === 'defensive').length}
+                   </div>
+                  <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>DÉFENSIF</div>
                 </div>
               </motion.div>
               
               <motion.div 
-                className="bg-gradient-to-br from-gray-900 to-black p-6 rounded-xl border border-gray-800 hover:border-[#CCFF00] transition-all duration-300"
+                className="p-6 rounded-xl hover:border-[#CCFF00] transition-all duration-300"
+                style={{
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-primary)'
+                }}
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-karla-bold text-[#CCFF00] mb-2">
-                    {tasks.filter(t => t.category === 'general').length}
-                  </div>
-                  <div className="text-gray-400 font-karla-medium text-sm">GÉNÉRAL</div>
+                                     <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
+                     {tasks.filter(t => t.category === 'general').length}
+                   </div>
+                  <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>GÉNÉRAL</div>
                 </div>
               </motion.div>
               
               <motion.div 
-                className="bg-gradient-to-br from-gray-900 to-black p-6 rounded-xl border border-gray-800 hover:border-[#9933FF] transition-all duration-300"
+                className="p-6 rounded-xl hover:border-[#9933FF] transition-all duration-300"
+                style={{
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-primary)'
+                }}
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-karla-bold text-[#9933FF] mb-2">
-                    {tasks.filter(t => t.category === 'offensive').length}
-                  </div>
-                  <div className="text-gray-400 font-karla-medium text-sm">OFFENSIF</div>
+                                     <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
+                     {tasks.filter(t => t.category === 'offensive').length}
+                   </div>
+                  <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>OFFENSIF</div>
                 </div>
               </motion.div>
               
               <motion.div 
-                className="bg-gradient-to-br from-gray-900 to-black p-6 rounded-xl border border-gray-800 hover:border-[#9933FF] transition-all duration-300"
+                className="p-6 rounded-xl hover:border-[#9933FF] transition-all duration-300"
+                style={{
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-primary)'
+                }}
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-karla-bold text-[#9933FF] mb-2">
-                    {tasks.filter(t => t.status === 'completed').length}
-                  </div>
-                  <div className="text-gray-400 font-karla-medium text-sm">TERMINÉS</div>
+                                     <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
+                     {tasks.filter(t => t.status === 'completed').length}
+                   </div>
+                  <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>TERMINÉS</div>
                 </div>
               </motion.div>
             </div>

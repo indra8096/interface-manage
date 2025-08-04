@@ -8,15 +8,16 @@ export default function Footer() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.4 }}
-      className="bg-[#CCFF00] py-6 mt-16"
+      className="py-6 mt-16"
+      style={{ background: '#9933FF' }}
     >
       <div className="max-w-7xl mx-auto px-8">
         <div className="flex items-center justify-center">
           <div className="text-center">
-            <p className="text-[#000000] font-karla-bold text-sm">
-              © 2025 drelto. Tous droits réservés.
+            <p className="font-karla-bold text-sm" style={{ color: '#FFFFFF' }}>
+              © 2024 drelto. Tous droits réservés.
             </p>
-            <p className="text-[#000000] font-karla-regular text-xs mt-1">
+            <p className="font-karla-regular text-xs mt-1" style={{ color: '#FFFFFF' }}>
               Système de gestion des services de cybersécurité
             </p>
           </div>

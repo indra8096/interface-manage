@@ -2,6 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Variables CSS pour les thèmes */
+:root {
+  --color-primary: #CCFF00;
+  --color-secondary: #9933FF;
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+}
+
+/* Thème sombre (par défaut) */
+[data-theme="dark"] {
+  --bg-primary: #000000;
+  --bg-secondary: #111111;
+  --bg-card: #1a1a1a;
+  --text-primary: #FFFFFF;
+  --text-secondary: #CCCCCC;
+  --text-muted: #888888;
+  --border-primary: #333333;
+  --border-secondary: #444444;
+  --theme-primary: #CCFF00;
+  --theme-secondary: #9933FF;
+}
+
+/* Thème clair */
+[data-theme="light"] {
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8F9FA;
+  --bg-card: #FFFFFF;
+  --text-primary: #000000;
+  --text-secondary: #333333;
+  --text-muted: #666666;
+  --border-primary: #E5E7EB;
+  --border-secondary: #D1D5DB;
+  --theme-primary: #9933FF;
+  --theme-secondary: #CCFF00;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #000000;

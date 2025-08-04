@@ -110,10 +110,12 @@ const TaskCard: React.FC<TaskCardProps> = ({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, x: -100 }}
         transition={{ duration: 0.3 }}
-        className={`relative bg-gradient-to-br from-gray-900 to-black p-6 rounded-xl border border-gray-800 hover:border-[#CCFF00] transition-all duration-300 group ${
+        className={`relative p-6 rounded-xl border transition-all duration-300 group ${
           status === 'completed' ? 'overflow-hidden' : ''
         }`}
         style={{ 
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-primary)',
           borderLeft: `4px solid ${category ? categoryColors[category as keyof typeof categoryColors] : statusColors[status]}`,
           boxShadow: `0 10px 25px rgba(0,0,0,0.2), 0 0 0 1px ${category ? categoryColors[category as keyof typeof categoryColors] : statusColors[status]}20`
         }}
@@ -135,13 +137,14 @@ const TaskCard: React.FC<TaskCardProps> = ({
               {/* Header avec nom et score */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <h3 className="text-white font-karla-semibold text-sm">{name}</h3>
+                  <h3 className="font-karla-semibold text-sm transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>{name}</h3>
                   <button 
                     onClick={() => setShowInfo(true)} 
-                    className="text-gray-400 hover:text-[#CCFF00] transition-colors" 
+                    className="transition-colors" 
+                    style={{ color: 'var(--text-muted)' }}
                     title="Informations"
                   >
-                    <div className="w-4 h-4 rounded-full bg-gray-600 hover:bg-[#CCFF00] transition-colors"></div>
+                    <div className="w-4 h-4 rounded-full transition-colors" style={{ background: 'var(--text-muted)' }}></div>
                   </button>
                 </div>
                 <div className="flex items-center gap-2">
@@ -159,11 +162,16 @@ const TaskCard: React.FC<TaskCardProps> = ({
               {/* Section importance */}
               <div className="mb-4">
                 <div className="flex items-center gap-3">
-                  <span className="text-xs text-gray-400 font-karla-medium">PRIORITÉ:</span>
+                  <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>PRIORITÉ:</span>
                   <select
                     value={importance || 'Moyenne'}
                     onChange={handleImportanceChange}
-                    className="text-xs px-3 py-1 border border-gray-700 rounded-lg text-white font-karla-regular bg-gray-800 focus:outline-none focus:ring-2 focus:ring-[#CCFF00] focus:border-transparent"
+                    className="text-xs px-3 py-1 border rounded-lg font-karla-regular focus:outline-none focus:ring-2 focus:ring-[#CCFF00] focus:border-transparent transition-colors duration-300"
+                    style={{
+                      background: 'var(--bg-secondary)',
+                      color: 'var(--text-primary)',
+                      border: '1px solid var(--border-primary)'
+                    }}
                   >
                     <option value="Faible">Faible</option>
                     <option value="Moyenne">Moyenne</option>
@@ -182,7 +190,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                                      status === 'warning' ? '#f59e0b' : '#ef4444'
                     }}
                   />
-                  <span className="text-xs text-gray-400 font-karla-medium uppercase">
+                  <span className="text-xs font-karla-medium uppercase transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
                     {status === 'completed' ? 'Terminé' : 
                      status === 'warning' ? 'En cours' : 'En attente'}
                   </span>
@@ -194,21 +202,36 @@ const TaskCard: React.FC<TaskCardProps> = ({
             <div className="flex flex-col gap-2">
               <button
                 onClick={() => setShowEditModal(true)}
-                className="p-2 rounded-lg bg-gray-800 text-[#CCFF00] hover:bg-[#CCFF00] hover:text-black transition-all duration-200 group-hover:scale-105 border border-gray-700 hover:border-[#CCFF00]"
+                className="p-2 rounded-lg transition-all duration-200 group-hover:scale-105"
+                style={{
+                  background: 'var(--bg-secondary)',
+                  color: '#CCFF00',
+                  border: '1px solid var(--border-primary)'
+                }}
                 title="Modifier"
               >
                 <div className="w-4 h-4 rounded-full bg-current"></div>
               </button>
               <button
                 onClick={handleComplete}
-                className="p-2 rounded-lg bg-gray-800 text-[#10b981] hover:bg-[#10b981] hover:text-black transition-all duration-200 group-hover:scale-105 border border-gray-700 hover:border-[#10b981]"
+                className="p-2 rounded-lg transition-all duration-200 group-hover:scale-105"
+                style={{
+                  background: 'var(--bg-secondary)',
+                  color: '#10b981',
+                  border: '1px solid var(--border-primary)'
+                }}
                 title="Valider"
               >
                 <div className="w-4 h-4 rounded-full bg-current"></div>
               </button>
               <button
                 onClick={handleDelete}
-                className="p-2 rounded-lg bg-gray-800 text-[#ef4444] hover:bg-[#ef4444] hover:text-black transition-all duration-200 group-hover:scale-105 border border-gray-700 hover:border-[#ef4444]"
+                className="p-2 rounded-lg transition-all duration-200 group-hover:scale-105"
+                style={{
+                  background: 'var(--bg-secondary)',
+                  color: '#ef4444',
+                  border: '1px solid var(--border-primary)'
+                }}
                 title="Supprimer"
               >
                 <div className="w-4 h-4 rounded-full bg-current"></div>

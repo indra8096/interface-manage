@@ -3,6 +3,7 @@ import { Karla } from "next/font/google";
 import "./globals.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 config.autoAddCss = false;
 
@@ -25,7 +26,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
-      <body className={`${karla.variable} font-karla`}>{children}</body>
+      <body className={`${karla.variable} font-karla`}>
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
