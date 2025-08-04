@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import TaskColumn from '@/components/TaskColumn';
+import TaskModal from '@/components/TaskModal';
+import ServicesSidebar from '@/components/ServicesSidebar';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Footer from '@/components/Footer';
@@ -21,9 +23,21 @@ interface Task {
   updatedAt?: string;
 }
 
+interface ServiceCard {
+  id: string;
+  name: string;
+  description: string;
+  category: 'defensive' | 'general' | 'offensive';
+  icon: string;
+  defaultScore: number;
+  defaultImportance: string;
+}
+
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isServicesSidebarOpen, setIsServicesSidebarOpen] = useState(false);
   const router = useRouter();
 
   // Charger les tâches depuis l'API
@@ -99,6 +113,21 @@ export default function Home() {
     } catch (error) {
       console.error('Erreur lors de la création de la tâche:', error);
     }
+  };
+
+  const handleDropService = (service: ServiceCard, targetCategory: 'defensive' | 'general' | 'offensive') => {
+    // Créer automatiquement une nouvelle tâche basée sur le service glissé
+    const newTaskData = {
+      name: service.name,
+      score: service.defaultScore,
+      category: targetCategory,
+      description: service.description,
+      importance: service.defaultImportance,
+      dueDate: '',
+      assignedTo: '',
+    };
+
+    handleCreateTask(newTaskData);
   };
 
   const getTasksByCategory = (category: string) => {
@@ -255,6 +284,21 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Bouton pour ouvrir le menu des services */}
+          <div className="flex justify-end mb-8">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsServicesSidebarOpen(true)}
+              className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-[#CCFF00] to-[#9933FF] text-black rounded-xl font-karla-bold hover:from-[#9933FF] hover:to-[#CCFF00] transition-all duration-300 shadow-lg"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              SERVICES PRÉDÉFINIS
+            </motion.button>
+          </div>
+
           {/* Colonnes de tâches */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -267,24 +311,34 @@ export default function Home() {
               tasks={getTasksByCategory('defensive')}
               onAddTask={handleAddTask}
               onStatusChange={handleStatusChange}
+              onDropService={handleDropService}
             />
             <TaskColumn
               category="general"
               tasks={getTasksByCategory('general')}
               onAddTask={handleAddTask}
               onStatusChange={handleStatusChange}
+              onDropService={handleDropService}
             />
             <TaskColumn
               category="offensive"
               tasks={getTasksByCategory('offensive')}
               onAddTask={handleAddTask}
               onStatusChange={handleStatusChange}
+              onDropService={handleDropService}
             />
           </motion.div>
         </div>
       </main>
       
       <Footer />
+
+      {/* Menu latéral des services */}
+      <ServicesSidebar
+        isOpen={isServicesSidebarOpen}
+        onClose={() => setIsServicesSidebarOpen(false)}
+        onDropService={handleDropService}
+      />
     </div>
   );
 }

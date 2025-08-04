@@ -24,6 +24,7 @@ interface TaskColumnProps {
   tasks: Task[];
   onAddTask: (taskData: { name: string; score: number; category: string; description: string; importance: string; dueDate: string; assignedTo: string }) => void;
   onStatusChange: (id: number, newStatus: 'completed' | 'warning' | 'error') => void;
+  onDropService?: (service: any, targetCategory: 'defensive' | 'general' | 'offensive') => void;
 }
 
 const categoryTitles = {
@@ -44,7 +45,7 @@ const categoryDescriptions = {
   offensive: 'Tests de pénétration et évaluation',
 };
 
-export default function TaskColumn({ category, tasks, onAddTask, onStatusChange }: TaskColumnProps) {
+export default function TaskColumn({ category, tasks, onAddTask, onStatusChange, onDropService }: TaskColumnProps) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -54,6 +55,7 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange 
     dueDate: '',
     assignedTo: '',
   });
+  const [isDragOver, setIsDragOver] = useState(false);
 
   const percentage = Math.round((tasks.filter(t => t.status === 'completed').length / Math.max(tasks.length, 1)) * 100);
 
@@ -102,16 +104,49 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange 
     });
   };
 
+  // Gestion du drag & drop
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    
+    try {
+      const serviceData = e.dataTransfer.getData('application/json');
+      if (serviceData && onDropService) {
+        const service = JSON.parse(serviceData);
+        onDropService(service, category);
+      }
+    } catch (error) {
+      console.error('Erreur lors du drop du service:', error);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="rounded-2xl p-8 border border-[#9933FF] hover:border-[#CCFF00] transition-all duration-500 backdrop-blur-sm"
+      className={`rounded-2xl p-8 border transition-all duration-500 backdrop-blur-sm ${
+        isDragOver 
+          ? 'border-[#CCFF00] shadow-lg shadow-[#CCFF00]/20' 
+          : 'border-[#9933FF] hover:border-[#CCFF00]'
+      }`}
       style={{
         background: 'var(--bg-card)',
         boxShadow: `0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px ${categoryColors[category]}20`
       }}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
     >
       {/* Header futuriste */}
       <div className="mb-8">
@@ -349,11 +384,11 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange 
               color: 'var(--bg-primary)'
             }}
           >
-                         <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: 'var(--bg-primary)', opacity: 0.2 }}>
-               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" style={{ color: '#FFFFFF' }}>
-                 <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-               </svg>
-             </div>
+            <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: 'var(--bg-primary)', opacity: 0.2 }}>
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" style={{ color: '#FFFFFF' }}>
+                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+              </svg>
+            </div>
             <span className="text-sm font-karla-bold">AJOUTER UN SERVICE</span>
           </motion.button>
         )}
