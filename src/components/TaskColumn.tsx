@@ -242,6 +242,23 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
             <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>ONLINE</span>
           </div>
         </div>
+
+        {/* Indicateur de zone de drop - juste après "SERVICES ACTIFS" */}
+        {isDragOver && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: -10 }}
+            className="p-4 rounded-xl border-2 border-dashed border-[#CCFF00] bg-[#CCFF00]/10 flex items-center justify-center"
+          >
+            <div className="text-center">
+              <svg className="w-8 h-8 mx-auto mb-2 text-[#CCFF00]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+              </svg>
+              <p className="text-[#CCFF00] font-karla-bold text-sm">DÉPOSER ICI</p>
+            </div>
+          </motion.div>
+        )}
         
         <AnimatePresence mode="popLayout">
           {tasks.length === 0 ? (
@@ -429,22 +446,6 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
             </div>
             <span className="text-sm font-karla-bold">AJOUTER UN SERVICE</span>
           </motion.button>
-        )}
-
-        {/* Indicateur de zone de drop */}
-        {isDragOver && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mt-4 p-4 rounded-xl border-2 border-dashed border-[#CCFF00] bg-[#CCFF00]/10 flex items-center justify-center"
-          >
-            <div className="text-center">
-              <svg className="w-8 h-8 mx-auto mb-2 text-[#CCFF00]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-              </svg>
-              <p className="text-[#CCFF00] font-karla-bold text-sm">DÉPOSER ICI</p>
-            </div>
-          </motion.div>
         )}
       </AnimatePresence>
     </motion.div>
