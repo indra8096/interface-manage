@@ -162,8 +162,10 @@ const predefinedServices: ServiceCard[] = [
   }
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function ServicesSidebar({ isOpen, onClose, onDropService }: ServicesSidebarProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [draggedService, setDraggedService] = useState<ServiceCard | null>(null);
 
   const filteredServices = predefinedServices.filter(service =>
@@ -174,12 +176,45 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
 
   const handleDragStart = (e: React.DragEvent, service: ServiceCard) => {
     setDraggedService(service);
-    e.dataTransfer.setData('application/json', JSON.stringify(service));
+    e.dataTransfer.setData('text/plain', JSON.stringify(service));
     e.dataTransfer.effectAllowed = 'copy';
+    e.dataTransfer.dropEffect = 'copy';
+    
+    // Créer une image de drag personnalisée
+    const dragImage = new Image();
+    dragImage.src = 'data:image/svg+xml;base64,' + btoa(`
+      <svg width="200" height="80" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="80" fill="#1f2937" rx="8"/>
+        <text x="10" y="25" fill="#CCFF00" font-family="Arial" font-size="12">${service.name}</text>
+        <text x="10" y="45" fill="#9ca3af" font-family="Arial" font-size="10">${service.description.substring(0, 30)}...</text>
+        <text x="10" y="65" fill="#CCFF00" font-family="Arial" font-size="10">Glisser vers une colonne</text>
+      </svg>
+    `);
+    e.dataTransfer.setDragImage(dragImage, 100, 40);
+    
+    console.log('Drag started for service:', service.name);
+    
+    // Ajouter un effet visuel
+    const target = e.currentTarget as HTMLElement;
+    target.style.opacity = '0.5';
+    target.style.transform = 'scale(0.95)';
   };
 
   const handleDragEnd = () => {
     setDraggedService(null);
+    
+    // Restaurer l'effet visuel
+    const draggedElements = document.querySelectorAll('[draggable="true"]');
+    draggedElements.forEach((element) => {
+      const el = element as HTMLElement;
+      el.style.opacity = '1';
+      el.style.transform = 'scale(1)';
+    });
+    
+    console.log('Drag ended for service');
+    
+    // Ne pas fermer la sidebar automatiquement pour permettre le drop
+    // La sidebar se fermera seulement si le drop est réussi dans handleDropService
   };
 
   return (
@@ -192,17 +227,19 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => e.preventDefault()}
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 pointer-events-auto"
           />
 
-          {/* Sidebar */}
-          <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 h-full w-96 bg-gradient-to-b from-gray-900 to-black border-l border-gray-800 shadow-2xl z-50 overflow-hidden"
-          >
+                     {/* Sidebar */}
+           <motion.div
+             initial={{ x: '100%' }}
+             animate={{ x: 0 }}
+             exit={{ x: '100%' }}
+             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+             className="fixed right-0 top-0 h-full w-96 bg-gradient-to-b from-gray-900 to-black border-l border-gray-800 shadow-2xl z-50 flex flex-col"
+           >
             {/* Header */}
             <div className="p-6 border-b border-gray-800">
               <div className="flex items-center justify-between mb-4">
@@ -236,9 +273,9 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
               </div>
             </div>
 
-            {/* Liste des services */}
-            <div className="flex-1 overflow-y-auto p-6">
-              <div className="space-y-4">
+                         {/* Liste des services */}
+             <div className="flex-1 overflow-y-auto p-6 min-h-0">
+               <div className="space-y-4 pb-4">
                 {filteredServices.length === 0 ? (
                   <div className="text-center py-8">
                     <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center border border-gray-700">
@@ -257,9 +294,9 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
                       draggable
-                      onDragStart={(e) => handleDragStart(e, service)}
+                                             onDragStart={(e) => handleDragStart(e as unknown as React.DragEvent, service)}
                       onDragEnd={handleDragEnd}
-                      className="group cursor-grab active:cursor-grabbing"
+                      className="group cursor-grab active:cursor-grabbing select-none"
                     >
                       <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover:shadow-lg hover:shadow-[#CCFF00]/10">
                         <div className="flex items-start gap-4">
@@ -290,11 +327,11 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
                         
                         {/* Indicateur de drag */}
                         <div className="mt-3 pt-3 border-t border-gray-700">
-                          <div className="flex items-center justify-center text-xs text-gray-500">
+                          <div className="flex items-center justify-center text-xs text-[#CCFF00] font-karla-medium">
                             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
                             </svg>
-                            Glisser pour ajouter
+                            GLISSER POUR AJOUTER
                           </div>
                         </div>
                       </div>

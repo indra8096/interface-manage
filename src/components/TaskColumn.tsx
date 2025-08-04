@@ -24,7 +24,7 @@ interface TaskColumnProps {
   tasks: Task[];
   onAddTask: (taskData: { name: string; score: number; category: string; description: string; importance: string; dueDate: string; assignedTo: string }) => void;
   onStatusChange: (id: number, newStatus: 'completed' | 'warning' | 'error') => void;
-  onDropService?: (service: any, targetCategory: 'defensive' | 'general' | 'offensive') => void;
+  onDropService?: (service: { id: string; name: string; description: string; category: 'defensive' | 'general' | 'offensive'; icon: string; defaultScore: number; defaultImportance: string }, targetCategory: 'defensive' | 'general' | 'offensive') => void;
 }
 
 const categoryTitles = {
@@ -107,26 +107,60 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
   // Gestion du drag & drop
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
+    e.dataTransfer.dropEffect = 'copy';
+    e.dataTransfer.effectAllowed = 'copy';
     setIsDragOver(true);
+    console.log('Drag over sur la colonne:', category);
   };
 
   const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
-    setIsDragOver(false);
+    e.stopPropagation();
+    
+    // Vérifier si on quitte vraiment la colonne (pas juste un enfant)
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX;
+    const y = e.clientY;
+    
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+      setIsDragOver(false);
+      console.log('Drag leave de la colonne:', category);
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragOver(false);
+    console.log('=== DROP DÉTECTÉ ===');
+    console.log('Colonne cible:', category);
     
     try {
-      const serviceData = e.dataTransfer.getData('application/json');
+      const serviceData = e.dataTransfer.getData('text/plain');
+      console.log('Service data reçu:', serviceData);
+      
       if (serviceData && onDropService) {
         const service = JSON.parse(serviceData);
+        console.log('Service parsé:', service);
+        console.log('Catégorie cible:', category);
+        console.log('onDropService disponible:', !!onDropService);
+        
+        // Appeler onDropService avec le service et la catégorie
         onDropService(service, category);
+        console.log('✅ onDropService appelé avec succès');
+        
+        // Feedback visuel immédiat
+        alert(`Service "${service.name}" ajouté à la colonne ${category}!`);
+      } else {
+        console.log('❌ Pas de service data ou onDropService non défini');
+        console.log('serviceData:', !!serviceData);
+        console.log('onDropService:', !!onDropService);
+        alert('Erreur: Impossible de récupérer les données du service');
       }
     } catch (error) {
-      console.error('Erreur lors du drop du service:', error);
+      console.error('❌ Erreur lors du drop du service:', error);
+      alert('Erreur lors du drop: ' + error);
     }
   };
 
@@ -137,7 +171,7 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
       transition={{ duration: 0.5 }}
       className={`rounded-2xl p-8 border transition-all duration-500 backdrop-blur-sm ${
         isDragOver 
-          ? 'border-[#CCFF00] shadow-lg shadow-[#CCFF00]/20' 
+          ? 'border-[#CCFF00] shadow-lg shadow-[#CCFF00]/20 scale-105 bg-[#CCFF00]/5' 
           : 'border-[#9933FF] hover:border-[#CCFF00]'
       }`}
       style={{
@@ -147,6 +181,12 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
+      onDragEnter={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragOver(true);
+      }}
+      data-testid={`task-column-${category}`}
     >
       {/* Header futuriste */}
       <div className="mb-8">
@@ -391,6 +431,22 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
             </div>
             <span className="text-sm font-karla-bold">AJOUTER UN SERVICE</span>
           </motion.button>
+        )}
+
+        {/* Indicateur de zone de drop */}
+        {isDragOver && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mt-4 p-4 rounded-xl border-2 border-dashed border-[#CCFF00] bg-[#CCFF00]/10 flex items-center justify-center"
+          >
+            <div className="text-center">
+              <svg className="w-8 h-8 mx-auto mb-2 text-[#CCFF00]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+              </svg>
+              <p className="text-[#CCFF00] font-karla-bold text-sm">DÉPOSER ICI</p>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </motion.div>

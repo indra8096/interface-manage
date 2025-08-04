@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import TaskColumn from '@/components/TaskColumn';
-import TaskModal from '@/components/TaskModal';
+
 import ServicesSidebar from '@/components/ServicesSidebar';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -36,7 +36,7 @@ interface ServiceCard {
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [isServicesSidebarOpen, setIsServicesSidebarOpen] = useState(false);
   const router = useRouter();
 
@@ -116,6 +116,10 @@ export default function Home() {
   };
 
   const handleDropService = (service: ServiceCard, targetCategory: 'defensive' | 'general' | 'offensive') => {
+    console.log('=== handleDropService appelé ===');
+    console.log('Service déposé:', service.name, 'dans la catégorie:', targetCategory);
+    console.log('Service complet:', service);
+    
     // Créer automatiquement une nouvelle tâche basée sur le service glissé
     const newTaskData = {
       name: service.name,
@@ -127,7 +131,16 @@ export default function Home() {
       assignedTo: '',
     };
 
+    console.log('Nouvelle tâche à créer:', newTaskData);
+    console.log('Appel de handleCreateTask...');
+    
+    // Appeler handleCreateTask pour créer la nouvelle tâche
     handleCreateTask(newTaskData);
+    
+    // Fermer le menu des services après le drop
+    setIsServicesSidebarOpen(false);
+    console.log('✅ Menu des services fermé');
+    console.log('✅ handleDropService terminé avec succès');
   };
 
   const getTasksByCategory = (category: string) => {
@@ -290,7 +303,8 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsServicesSidebarOpen(true)}
-              className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-[#CCFF00] to-[#9933FF] text-black rounded-xl font-karla-bold hover:from-[#9933FF] hover:to-[#CCFF00] transition-all duration-300 shadow-lg"
+              className="flex items-center gap-3 px-6 py-3 text-white rounded-xl font-karla-bold hover:bg-[#7c3aed] transition-all duration-300 shadow-lg"
+              style={{ backgroundColor: '#9933FF' }}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
