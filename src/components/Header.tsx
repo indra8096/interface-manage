@@ -12,8 +12,8 @@ export default function Header() {
   };
 
   return (
-    <header 
-      className="bg-black border-b border-gray-800 px-8 py-6"
+         <header 
+       className="bg-black border-b border-[#CCFF00] px-8 py-6"
       style={{ 
         background: 'linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.98) 100%)',
         backdropFilter: 'blur(20px)'

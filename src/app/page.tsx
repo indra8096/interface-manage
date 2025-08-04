@@ -6,6 +6,7 @@ import TaskColumn from '@/components/TaskColumn';
 import AddTaskModal from '@/components/AddTaskModal';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import Footer from '@/components/Footer';
 
 interface Task {
   id: number;
@@ -138,11 +139,11 @@ export default function Home() {
           <div className="mb-16">
             <div className="flex items-center justify-between mb-12">
               <div>
-                <h1 className="text-5xl font-karla-bold text-white mb-4">
-                  <span style={{ color: '#CCFF00' }}>
-                    Tableau de bord
-                  </span>
-                </h1>
+                                 <h1 className="text-5xl font-karla-bold text-white mb-4">
+                   <span style={{ color: '#FFFFFF' }}>
+                     Tableau de bord
+                   </span>
+                 </h1>
                 <p className="text-gray-400 font-karla-regular text-lg">
                   Interface de contrôle des systèmes de cybersécurité
                 </p>
@@ -265,12 +266,14 @@ export default function Home() {
         </div>
       </main>
 
-      <AddTaskModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleCreateTask}
-        category={selectedCategory}
-      />
-    </div>
-  );
-}
+             <AddTaskModal
+         isOpen={isModalOpen}
+         onClose={() => setIsModalOpen(false)}
+         onSubmit={handleCreateTask}
+         category={selectedCategory}
+       />
+       
+       <Footer />
+     </div>
+   );
+ }
