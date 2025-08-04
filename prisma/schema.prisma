@@ -13,11 +13,26 @@ datasource db {
 model Task {
   id        Int      @id @default(autoincrement())
   name      String
+  description String? // Description complète
   status    String   @default("warning")
   score     Int      @default(5)
+  importance String  @default("Moyenne") // Faible, Moyenne, Élevée
+  dueDate   DateTime? // Échéance
+  assignedTo String? // Personne assignée
   category  String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("tasks")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      String   @default("user") // 'admin' ou 'user'
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
 } 

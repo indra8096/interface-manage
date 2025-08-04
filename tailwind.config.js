@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'karla': ['var(--font-karla)', 'Arial', 'Helvetica', 'sans-serif'],
+      },
       colors: {
         primary: '#000000',    // Noir pour le texte principal
         defensive: '#2563eb',  // Bleu pour défensif

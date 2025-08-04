@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import TaskColumn from '@/components/TaskColumn';
 import AddTaskModal from '@/components/AddTaskModal';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 interface Task {
   id: number;
@@ -12,6 +13,12 @@ interface Task {
   status: 'completed' | 'warning' | 'error';
   score: number;
   category: string;
+  description?: string;
+  importance?: string;
+  dueDate?: string;
+  assignedTo?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export default function Home() {
@@ -19,6 +26,7 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   // Charger les tâches depuis l'API
   const fetchTasks = async () => {
@@ -34,6 +42,15 @@ export default function Home() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/login');
+      }
+    }
+  }, [router]);
 
   useEffect(() => {
     fetchTasks();
@@ -93,6 +110,8 @@ export default function Home() {
     }
   };
 
+
+
   const getTasksByCategory = (category: string) => {
     return tasks.filter(task => task.category === category);
   };
@@ -100,7 +119,7 @@ export default function Home() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-primary flex items-center justify-center">
-        <div className="text-primary text-xl">Chargement...</div>
+        <div className="text-primary text-xl font-karla-regular">Chargement...</div>
       </div>
     );
   }
@@ -111,7 +130,7 @@ export default function Home() {
       
       <main className="p-8">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-bold text-primary mb-8">
+          <h1 className="text-2xl font-karla-bold text-primary mb-8">
             Tableau de bord client
           </h1>
 

@@ -22,7 +22,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { name, category, score = 5 } = body
+    const { name, category, score = 5, description = '', importance = 'Moyenne', dueDate = null, assignedTo = '' } = body
 
     if (!name || !category) {
       return NextResponse.json(
@@ -36,6 +36,10 @@ export async function POST(request: NextRequest) {
         name,
         category,
         score,
+        description,
+        importance,
+        dueDate: dueDate ? new Date(dueDate) : null,
+        assignedTo,
         status: 'warning'
       }
     })

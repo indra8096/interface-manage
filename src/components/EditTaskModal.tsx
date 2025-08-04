@@ -3,18 +3,31 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
-interface AddTaskModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (task: { name: string; score: number; category: string }) => void;
-  category: string;
+interface Task {
+  id: number;
+  name: string;
+  status: 'completed' | 'warning' | 'error';
+  score: number;
+  importance?: string;
+  description?: string;
+  dueDate?: string;
+  assignedTo?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-const AddTaskModal: React.FC<AddTaskModalProps> = ({
+interface EditTaskModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (taskId: number, taskData: { name: string; description: string; score: number; importance: string; dueDate: string; assignedTo: string }) => void;
+  task: Task | null;
+}
+
+const EditTaskModal: React.FC<EditTaskModalProps> = ({
   isOpen,
   onClose,
-  onSubmit,
-  category,
+  onSave,
+  task,
 }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -25,20 +38,25 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
     assignedTo: '',
   });
 
-  // Réinitialiser le formulaire quand la modal s'ouvre
+  // Pré-remplir le formulaire avec les données de la tâche
   useEffect(() => {
-    if (isOpen) {
-      setFormData({ name: '', description: '', score: 5, importance: 'Moyenne', dueDate: '', assignedTo: '' });
+    if (isOpen && task) {
+      setFormData({
+        name: task.name || '',
+        description: task.description || '',
+        score: task.score || 5,
+        importance: task.importance || 'Moyenne',
+        dueDate: task.dueDate ? task.dueDate.split('T')[0] : '',
+        assignedTo: task.assignedTo || '',
+      });
     }
-  }, [isOpen]);
+  }, [isOpen, task]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!category) {
-      alert("Erreur : aucune catégorie sélectionnée !");
-      return;
-    }
-    onSubmit({ ...formData, category });
+    if (!task) return;
+    
+    onSave(task.id, formData);
     onClose();
   };
 
@@ -55,11 +73,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
     10: '#8b5cf6',
   };
 
-  const categoryNames = {
-    defensive: 'Défensif',
-    general: 'Général',
-    offensive: 'Offensive',
-  };
+  if (!task) return null;
 
   return (
     <AnimatePresence>
@@ -79,7 +93,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-karla-bold text-primary">Ajouter une tâche</h2>
+              <h2 className="text-xl font-karla-bold text-primary">Modification de la tâche</h2>
               <button
                 onClick={onClose}
                 className="text-gray-400 hover:text-primary transition-colors"
@@ -88,14 +102,9 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
               </button>
             </div>
 
-            <div className="mb-4 p-3 bg-gray-50 rounded-md">
-              <span className="text-sm text-gray-600 font-karla-regular">Catégorie : </span>
-              <span className="font-karla-semibold text-primary">{categoryNames[category as keyof typeof categoryNames]}</span>
-            </div>
-
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-karla-semibold text-black mb-2">
+                <label className="block text-sm font-medium text-black mb-2">
                   Nom du service
                 </label>
                 <input
@@ -142,6 +151,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
                   rows={2}
                 />
               </div>
+              
               <div>
                 <label className="block text-sm font-medium text-black mb-2">
                   Importance
@@ -156,6 +166,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
                   <option value="Élevée">Élevée</option>
                 </select>
               </div>
+              
               <div>
                 <label className="block text-sm font-medium text-black mb-2">
                   Échéance
@@ -167,6 +178,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
                   className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-black"
                 />
               </div>
+              
               <div>
                 <label className="block text-sm font-medium text-black mb-2">
                   Personne assignée
@@ -183,10 +195,9 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
-                disabled={!category}
-                className="w-full py-3 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-all disabled:opacity-50"
+                className="w-full py-3 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-all"
               >
-                Ajouter la tâche
+                Sauvegarder les modifications
               </motion.button>
             </form>
           </motion.div>
@@ -196,4 +207,4 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({
   );
 };
 
-export default AddTaskModal; 
+export default EditTaskModal; 

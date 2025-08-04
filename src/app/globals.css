@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
   --background: #ffffff;
   --foreground: #000000;
@@ -11,8 +10,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-karla);
+  --font-mono: var(--font-karla);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,5 +24,67 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-karla), Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+/* Classes de typographie Karla */
+.font-karla-light {
+  font-family: var(--font-karla);
+  font-weight: 300;
+  font-style: normal;
+}
+
+.font-karla-light-italic {
+  font-family: var(--font-karla);
+  font-weight: 300;
+  font-style: italic;
+}
+
+.font-karla-regular {
+  font-family: var(--font-karla);
+  font-weight: 400;
+  font-style: normal;
+}
+
+.font-karla-italic {
+  font-family: var(--font-karla);
+  font-weight: 400;
+  font-style: italic;
+}
+
+.font-karla-medium {
+  font-family: var(--font-karla);
+  font-weight: 500;
+  font-style: normal;
+}
+
+.font-karla-medium-italic {
+  font-family: var(--font-karla);
+  font-weight: 500;
+  font-style: italic;
+}
+
+.font-karla-semibold {
+  font-family: var(--font-karla);
+  font-weight: 600;
+  font-style: normal;
+}
+
+.font-karla-semibold-italic {
+  font-family: var(--font-karla);
+  font-weight: 600;
+  font-style: italic;
+}
+
+.font-karla-bold {
+  font-family: var(--font-karla);
+  font-weight: 700;
+  font-style: normal;
+}
+
+.font-karla-bold-italic {
+  font-family: var(--font-karla);
+  font-weight: 700;
+  font-style: italic;
 }

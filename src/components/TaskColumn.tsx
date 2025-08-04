@@ -9,6 +9,12 @@ interface Task {
   name: string;
   status: 'completed' | 'warning' | 'error';
   score: number;
+  description?: string;
+  importance?: string;
+  dueDate?: string;
+  assignedTo?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface TaskColumnProps {
@@ -42,17 +48,17 @@ const TaskColumn: React.FC<TaskColumnProps> = ({
   onAddTask,
   onStatusChange,
 }) => {
-  // Filtrer les tâches non complétées
-  const visibleTasks = tasks.filter((task) => task.status !== 'completed');
-  const completedTasks = tasks.filter((task) => task.status === 'completed').length;
-  const percentage = Math.round((completedTasks / (tasks.length || 1)) * 100);
+  // Calcul du pourcentage basé sur le nombre de tâches (objectif 10)
+  const cappedCount = Math.min(tasks.length, 10);
+  const percentage = Math.round((cappedCount / 10) * 100);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-column-bg rounded-lg p-6 shadow-custom border border-gray-200 hover:shadow-custom-hover transition-all duration-300"
+      className="bg-column-bg rounded-lg p-6 shadow-custom border hover:shadow-custom-hover transition-all duration-300"
+      style={{ borderColor: '#9933FF' }}
     >
       <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200">
         <FontAwesomeIcon
@@ -60,7 +66,7 @@ const TaskColumn: React.FC<TaskColumnProps> = ({
           className="text-lg"
           style={{ color: categoryColors[category] }}
         />
-        <h2 className="text-lg font-semibold" style={{ color: categoryColors[category] }}>
+        <h2 className="text-lg font-karla-bold" style={{ color: categoryColors[category] }}>
           {categoryTitles[category]}
         </h2>
       </div>
@@ -75,7 +81,7 @@ const TaskColumn: React.FC<TaskColumnProps> = ({
 
       <div className="space-y-3">
         <AnimatePresence mode="popLayout">
-          {visibleTasks.map((task) => (
+          {tasks.map((task) => (
             <motion.div
               key={task.id}
               initial={{ opacity: 0, y: 20 }}
@@ -85,6 +91,7 @@ const TaskColumn: React.FC<TaskColumnProps> = ({
             >
               <TaskCard
                 {...task}
+                category={category}
                 onStatusChange={onStatusChange}
               />
             </motion.div>
@@ -100,7 +107,7 @@ const TaskColumn: React.FC<TaskColumnProps> = ({
         style={{ color: categoryColors[category] }}
       >
         <FontAwesomeIcon icon={faPlus} className="text-sm" />
-        <span className="text-sm">Ajouter une tâche</span>
+                 <span className="text-sm font-karla-medium">Ajouter une tâche</span>
       </motion.button>
     </motion.div>
   );
