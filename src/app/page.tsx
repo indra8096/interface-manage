@@ -36,6 +36,7 @@ interface ServiceCard {
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [userRole, setUserRole] = useState<string>('user');
 
   const [isServicesSidebarOpen, setIsServicesSidebarOpen] = useState(false);
   const router = useRouter();
@@ -58,8 +59,12 @@ export default function Home() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('token');
+      const role = localStorage.getItem('role');
       if (!token) {
         router.push('/login');
+      }
+      if (role) {
+        setUserRole(role);
       }
     }
   }, [router]);
@@ -318,21 +323,23 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Bouton pour ouvrir le menu des services - Visible pour tous les utilisateurs */}
-          <div className="flex justify-end mb-8">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setIsServicesSidebarOpen(true)}
-              className="flex items-center gap-3 px-6 py-3 text-white rounded-xl font-karla-bold hover:bg-[#7c3aed] transition-all duration-300 shadow-lg"
-              style={{ backgroundColor: '#9933FF' }}
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-              SERVICES PRÉDÉFINIS
-            </motion.button>
-          </div>
+          {/* Bouton pour ouvrir le menu des services - Visible seulement pour les admins */}
+          {userRole === 'admin' && (
+            <div className="flex justify-end mb-8">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsServicesSidebarOpen(true)}
+                className="flex items-center gap-3 px-6 py-3 text-white rounded-xl font-karla-bold hover:bg-[#7c3aed] transition-all duration-300 shadow-lg"
+                style={{ backgroundColor: '#9933FF' }}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                SERVICES PRÉDÉFINIS
+              </motion.button>
+            </div>
+          )}
 
           {/* Colonnes de tâches */}
           <motion.div
@@ -347,6 +354,7 @@ export default function Home() {
               onAddTask={handleAddTask}
               onStatusChange={handleStatusChange}
               onDropService={handleDropService}
+              userRole={userRole}
             />
             <TaskColumn
               category="general"
@@ -354,6 +362,7 @@ export default function Home() {
               onAddTask={handleAddTask}
               onStatusChange={handleStatusChange}
               onDropService={handleDropService}
+              userRole={userRole}
             />
             <TaskColumn
               category="offensive"
@@ -361,6 +370,7 @@ export default function Home() {
               onAddTask={handleAddTask}
               onStatusChange={handleStatusChange}
               onDropService={handleDropService}
+              userRole={userRole}
             />
           </motion.div>
         </div>

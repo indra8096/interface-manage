@@ -25,6 +25,7 @@ interface TaskColumnProps {
   onAddTask: (taskData: { name: string; score: number; category: string; description: string; importance: string; dueDate: string; assignedTo: string }) => void;
   onStatusChange: (id: number, newStatus: 'completed' | 'warning' | 'error') => void;
   onDropService?: (service: { id: string; name: string; description: string; category: 'defensive' | 'general' | 'offensive'; icon: string; defaultScore: number; defaultImportance: string }, targetCategory: 'defensive' | 'general' | 'offensive') => void;
+  userRole?: string;
 }
 
 const categoryTitles = {
@@ -45,7 +46,7 @@ const categoryDescriptions = {
   offensive: 'Tests de pénétration et évaluation',
 };
 
-export default function TaskColumn({ category, tasks, onAddTask, onStatusChange, onDropService }: TaskColumnProps) {
+export default function TaskColumn({ category, tasks, onAddTask, onStatusChange, onDropService, userRole = 'user' }: TaskColumnProps) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -339,6 +340,7 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
                   {...task}
                   category={category}
                   onStatusChange={onStatusChange}
+                  userRole={userRole}
                 />
               </motion.div>
             ))
