@@ -318,7 +318,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Bouton pour ouvrir le menu des services */}
+          {/* Bouton pour ouvrir le menu des services - Visible pour tous les utilisateurs */}
           <div className="flex justify-end mb-8">
             <motion.button
               whileHover={{ scale: 1.05 }}

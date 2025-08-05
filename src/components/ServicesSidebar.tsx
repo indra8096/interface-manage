@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ServiceCard {
@@ -167,6 +167,19 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
   const [searchTerm, setSearchTerm] = useState('');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [draggedService, setDraggedService] = useState<ServiceCard | null>(null);
+  const [userRole, setUserRole] = useState<string>('user');
+  const [showAddForm, setShowAddForm] = useState(false);
+
+  useEffect(() => {
+    // Récupérer le rôle de l'utilisateur depuis le localStorage
+    if (typeof window !== 'undefined') {
+      const role = localStorage.getItem('role');
+      setUserRole(role || 'user');
+    }
+  }, []);
+
+  // Tous les utilisateurs peuvent accéder au menu des services prédéfinis
+  // Seuls les admins peuvent ajouter de nouveaux services
 
   const filteredServices = predefinedServices.filter(service =>
     service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -246,11 +259,26 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
             {/* Header */}
             <div className="p-6 border-b border-gray-800">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-karla-bold text-white">
-                  <span className="bg-gradient-to-r from-[#CCFF00] to-[#9933FF] bg-clip-text text-transparent">
-                    SERVICES
-                  </span>
-                </h2>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-2xl font-karla-bold text-white">
+                    <span className="bg-gradient-to-r from-[#CCFF00] to-[#9933FF] bg-clip-text text-transparent">
+                      SERVICES
+                    </span>
+                  </h2>
+                                     {userRole === 'admin' && (
+                     <motion.button
+                       whileHover={{ scale: 1.1 }}
+                       whileTap={{ scale: 0.9 }}
+                       onClick={() => setShowAddForm(true)}
+                       className="w-8 h-8 rounded-full bg-[#CCFF00] text-black flex items-center justify-center hover:bg-[#9933FF] hover:text-white transition-all duration-300"
+                       title="Ajouter un service prédéfini"
+                     >
+                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                       </svg>
+                     </motion.button>
+                   )}
+                </div>
                 <button
                   onClick={onClose}
                   className="text-gray-400 hover:text-[#CCFF00] transition-colors p-2 rounded-lg hover:bg-gray-800"
@@ -275,6 +303,105 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
                 </svg>
               </div>
             </div>
+
+                         {/* Formulaire d'ajout de service prédéfini */}
+                         <AnimatePresence>
+                           {showAddForm && (
+                             <motion.div
+                               initial={{ opacity: 0, height: 0 }}
+                               animate={{ opacity: 1, height: 'auto' }}
+                               exit={{ opacity: 0, height: 0 }}
+                               transition={{ duration: 0.3 }}
+                               className="mb-6"
+                             >
+                               <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                                 <div className="flex justify-between items-center mb-4">
+                                   <h3 className="text-lg font-karla-bold text-white">
+                                     <span className="bg-gradient-to-r from-[#CCFF00] to-[#9933FF] bg-clip-text text-transparent">
+                                       NOUVEAU SERVICE PRÉDÉFINI
+                                     </span>
+                                   </h3>
+                                   <button
+                                     onClick={() => setShowAddForm(false)}
+                                     className="text-gray-400 hover:text-[#CCFF00] transition-colors p-1 rounded-lg hover:bg-gray-700"
+                                   >
+                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                     </svg>
+                                   </button>
+                                 </div>
+                                 
+                                 <div className="space-y-3">
+                                   <div>
+                                     <label className="block text-sm font-karla-semibold text-white mb-1">
+                                       Nom du service
+                                     </label>
+                                     <input
+                                       type="text"
+                                       className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:border-[#CCFF00] focus:ring-1 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular text-sm"
+                                       placeholder="Ex: Firewall"
+                                     />
+                                   </div>
+                                   
+                                   <div>
+                                     <label className="block text-sm font-karla-semibold text-white mb-1">
+                                       Description
+                                     </label>
+                                     <textarea
+                                       className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:border-[#CCFF00] focus:ring-1 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular text-sm"
+                                       rows={2}
+                                       placeholder="Description du service..."
+                                     />
+                                   </div>
+                                   
+                                   <div>
+                                     <label className="block text-sm font-karla-semibold text-white mb-1">
+                                       Catégorie
+                                     </label>
+                                     <select className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:border-[#CCFF00] focus:ring-1 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular text-sm">
+                                       <option value="defensive">Défensif</option>
+                                       <option value="general">Général</option>
+                                       <option value="offensive">Offensif</option>
+                                     </select>
+                                   </div>
+                                   
+                                   <div className="flex gap-3">
+                                     <div className="flex-1">
+                                       <label className="block text-sm font-karla-semibold text-white mb-1">
+                                         Score (1-10)
+                                       </label>
+                                       <input
+                                         type="number"
+                                         min="1"
+                                         max="10"
+                                         className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:border-[#CCFF00] focus:ring-1 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular text-sm"
+                                         placeholder="5"
+                                       />
+                                     </div>
+                                     <div className="flex-1">
+                                       <label className="block text-sm font-karla-semibold text-white mb-1">
+                                         Priorité
+                                       </label>
+                                       <select className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:border-[#CCFF00] focus:ring-1 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular text-sm">
+                                         <option value="Faible">Faible</option>
+                                         <option value="Moyenne">Moyenne</option>
+                                         <option value="Élevée">Élevée</option>
+                                       </select>
+                                     </div>
+                                   </div>
+                                   
+                                   <motion.button
+                                     whileHover={{ scale: 1.02 }}
+                                     whileTap={{ scale: 0.98 }}
+                                     className="w-full py-2 bg-[#CCFF00] text-black rounded-lg font-karla-bold hover:bg-[#9933FF] hover:text-white transition-all duration-300 text-sm"
+                                   >
+                                     AJOUTER LE SERVICE
+                                   </motion.button>
+                                 </div>
+                               </div>
+                             </motion.div>
+                           )}
+                         </AnimatePresence>
 
                          {/* Liste des services */}
              <div className="flex-1 overflow-y-auto p-6 min-h-0">
