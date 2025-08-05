@@ -169,6 +169,33 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
   const [draggedService, setDraggedService] = useState<ServiceCard | null>(null);
   const [userRole, setUserRole] = useState<string>('user');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [services, setServices] = useState<ServiceCard[]>(() => {
+    // Charger les services depuis le localStorage au démarrage
+    if (typeof window !== 'undefined') {
+      const savedServices = localStorage.getItem('customServices');
+      if (savedServices) {
+        const customServices = JSON.parse(savedServices);
+        
+        // Combiner et trier tous les services par catégorie
+        const allServices = [...predefinedServices, ...customServices];
+        const categoryOrder = ['defensive', 'general', 'offensive'];
+        
+        return allServices.sort((a, b) => {
+          const aIndex = categoryOrder.indexOf(a.category);
+          const bIndex = categoryOrder.indexOf(b.category);
+          return aIndex - bIndex;
+        });
+      }
+    }
+    return predefinedServices;
+  });
+  const [newService, setNewService] = useState({
+    name: '',
+    description: '',
+    category: 'defensive' as 'defensive' | 'general' | 'offensive',
+    score: 5,
+    importance: 'Moyenne'
+  });
 
   useEffect(() => {
     // Récupérer le rôle de l'utilisateur depuis le localStorage
@@ -181,11 +208,77 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
   // Tous les utilisateurs peuvent accéder au menu des services prédéfinis
   // Seuls les admins peuvent ajouter de nouveaux services
 
-  const filteredServices = predefinedServices.filter(service =>
+  const filteredServices = services.filter(service =>
     service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     service.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
     service.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleAddService = () => {
+    if (newService.name.trim() && newService.description.trim()) {
+      const serviceToAdd: ServiceCard = {
+        id: `custom-${Date.now()}`,
+        name: newService.name,
+        description: newService.description,
+        category: newService.category,
+        icon: '🔧', // Icône par défaut pour les services personnalisés
+        defaultScore: newService.score,
+        defaultImportance: newService.importance
+      };
+
+      setServices(prevServices => {
+        // Trouver l'index où insérer le nouveau service dans la bonne catégorie
+        let insertIndex = 0;
+        
+        // Définir l'ordre des catégories
+        const categoryOrder = ['defensive', 'general', 'offensive'];
+        const targetCategoryIndex = categoryOrder.indexOf(newService.category);
+        
+        // Parcourir les services existants pour trouver la bonne position
+        for (let i = 0; i < prevServices.length; i++) {
+          const currentCategoryIndex = categoryOrder.indexOf(prevServices[i].category);
+          
+          // Si on trouve une catégorie qui vient après, on insère avant
+          if (currentCategoryIndex > targetCategoryIndex) {
+            insertIndex = i;
+            break;
+          }
+          
+          // Si on est dans la même catégorie, on continue jusqu'à la fin de cette catégorie
+          if (currentCategoryIndex === targetCategoryIndex) {
+            insertIndex = i + 1;
+          }
+        }
+        
+        // Si on n'a pas trouvé de position, on ajoute à la fin
+        if (insertIndex === 0 && prevServices.length > 0) {
+          insertIndex = prevServices.length;
+        }
+        
+        // Insérer le service à la bonne position
+        const newServices = [...prevServices];
+        newServices.splice(insertIndex, 0, serviceToAdd);
+        
+        // Sauvegarder les services personnalisés dans le localStorage
+        const customServices = newServices.filter(service => service.id.startsWith('custom-'));
+        localStorage.setItem('customServices', JSON.stringify(customServices));
+        
+        return newServices;
+      });
+      
+      // Réinitialiser le formulaire
+      setNewService({
+        name: '',
+        description: '',
+        category: 'defensive',
+        score: 5,
+        importance: 'Moyenne'
+      });
+      
+      // Fermer le formulaire
+      setShowAddForm(false);
+    }
+  };
 
   const handleDragStart = (e: React.DragEvent, service: ServiceCard) => {
     setDraggedService(service);
@@ -332,71 +425,86 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
                                  </div>
                                  
                                  <div className="space-y-3">
-                                   <div>
-                                     <label className="block text-sm font-karla-semibold text-white mb-1">
-                                       Nom du service
-                                     </label>
-                                     <input
-                                       type="text"
-                                       className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:border-[#CCFF00] focus:ring-1 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular text-sm"
-                                       placeholder="Ex: Firewall"
-                                     />
-                                   </div>
+                                                                       <div>
+                                      <label className="block text-sm font-karla-semibold text-white mb-1">
+                                        Nom du service
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={newService.name}
+                                        onChange={(e) => setNewService({ ...newService, name: e.target.value })}
+                                        className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:border-[#CCFF00] focus:ring-1 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular text-sm"
+                                        placeholder="Ex: Firewall"
+                                      />
+                                    </div>
                                    
-                                   <div>
-                                     <label className="block text-sm font-karla-semibold text-white mb-1">
-                                       Description
-                                     </label>
-                                     <textarea
-                                       className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:border-[#CCFF00] focus:ring-1 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular text-sm"
-                                       rows={2}
-                                       placeholder="Description du service..."
-                                     />
-                                   </div>
+                                                                       <div>
+                                      <label className="block text-sm font-karla-semibold text-white mb-1">
+                                        Description
+                                      </label>
+                                      <textarea
+                                        value={newService.description}
+                                        onChange={(e) => setNewService({ ...newService, description: e.target.value })}
+                                        className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:border-[#CCFF00] focus:ring-1 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular text-sm"
+                                        rows={2}
+                                        placeholder="Description du service..."
+                                      />
+                                    </div>
                                    
-                                   <div>
-                                     <label className="block text-sm font-karla-semibold text-white mb-1">
-                                       Catégorie
-                                     </label>
-                                     <select className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:border-[#CCFF00] focus:ring-1 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular text-sm">
-                                       <option value="defensive">Défensif</option>
-                                       <option value="general">Général</option>
-                                       <option value="offensive">Offensif</option>
-                                     </select>
-                                   </div>
+                                                                       <div>
+                                      <label className="block text-sm font-karla-semibold text-white mb-1">
+                                        Catégorie
+                                      </label>
+                                      <select 
+                                        value={newService.category}
+                                        onChange={(e) => setNewService({ ...newService, category: e.target.value as 'defensive' | 'general' | 'offensive' })}
+                                        className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:border-[#CCFF00] focus:ring-1 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular text-sm"
+                                      >
+                                        <option value="defensive">Défensif</option>
+                                        <option value="general">Général</option>
+                                        <option value="offensive">Offensif</option>
+                                      </select>
+                                    </div>
                                    
                                    <div className="flex gap-3">
-                                     <div className="flex-1">
-                                       <label className="block text-sm font-karla-semibold text-white mb-1">
-                                         Score (1-10)
-                                       </label>
-                                       <input
-                                         type="number"
-                                         min="1"
-                                         max="10"
-                                         className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:border-[#CCFF00] focus:ring-1 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular text-sm"
-                                         placeholder="5"
-                                       />
-                                     </div>
-                                     <div className="flex-1">
-                                       <label className="block text-sm font-karla-semibold text-white mb-1">
-                                         Priorité
-                                       </label>
-                                       <select className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:border-[#CCFF00] focus:ring-1 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular text-sm">
-                                         <option value="Faible">Faible</option>
-                                         <option value="Moyenne">Moyenne</option>
-                                         <option value="Élevée">Élevée</option>
-                                       </select>
-                                     </div>
+                                                                           <div className="flex-1">
+                                        <label className="block text-sm font-karla-semibold text-white mb-1">
+                                          Score (1-10)
+                                        </label>
+                                        <input
+                                          type="number"
+                                          min="1"
+                                          max="10"
+                                          value={newService.score}
+                                          onChange={(e) => setNewService({ ...newService, score: parseInt(e.target.value) })}
+                                          className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:border-[#CCFF00] focus:ring-1 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular text-sm"
+                                          placeholder="5"
+                                        />
+                                      </div>
+                                      <div className="flex-1">
+                                        <label className="block text-sm font-karla-semibold text-white mb-1">
+                                          Priorité
+                                        </label>
+                                        <select 
+                                          value={newService.importance}
+                                          onChange={(e) => setNewService({ ...newService, importance: e.target.value })}
+                                          className="w-full px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:border-[#CCFF00] focus:ring-1 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular text-sm"
+                                        >
+                                          <option value="Faible">Faible</option>
+                                          <option value="Moyenne">Moyenne</option>
+                                          <option value="Élevée">Élevée</option>
+                                        </select>
+                                      </div>
                                    </div>
                                    
-                                   <motion.button
-                                     whileHover={{ scale: 1.02 }}
-                                     whileTap={{ scale: 0.98 }}
-                                     className="w-full py-2 bg-[#CCFF00] text-black rounded-lg font-karla-bold hover:bg-[#9933FF] hover:text-white transition-all duration-300 text-sm"
-                                   >
-                                     AJOUTER LE SERVICE
-                                   </motion.button>
+                                                                       <motion.button
+                                      whileHover={{ scale: 1.02 }}
+                                      whileTap={{ scale: 0.98 }}
+                                      onClick={handleAddService}
+                                      className="w-full py-2 bg-[#CCFF00] text-black rounded-lg font-karla-bold hover:bg-[#9933FF] hover:text-white transition-all duration-300 text-sm"
+                                    >
+                                      AJOUTER LE SERVICE
+                                    </motion.button>
                                  </div>
                                </div>
                              </motion.div>
