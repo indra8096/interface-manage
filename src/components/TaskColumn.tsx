@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import TaskCard from './TaskCard';
 import ProgressCircle from './ProgressCircle';
+import CategoryDetailsPanel from './CategoryDetailsPanel';
 
 interface Task {
   id: number;
@@ -26,6 +27,17 @@ interface TaskColumnProps {
   onStatusChange: (id: number, newStatus: 'completed' | 'warning' | 'error') => void;
   onDropService?: (service: { id: string; name: string; description: string; category: 'defensive' | 'general' | 'offensive'; icon: string; defaultScore: number; defaultImportance: string }, targetCategory: 'defensive' | 'general' | 'offensive') => void;
   userRole?: string;
+  onAddTaskFromPanel?: (taskData: { name: string; score: number; category: string; description: string; importance: string; dueDate: string; assignedTo: string }) => void;
+  tasksAddedFromPanel?: Array<{
+    name: string;
+    description: string;
+    importance: string;
+    category: string;
+    score: number;
+    dueDate: string;
+    assignedTo: string;
+  }>;
+  onRemoveTaskFromPanel?: (taskName: string) => void;
 }
 
 const categoryTitles = {
@@ -46,8 +58,9 @@ const categoryDescriptions = {
   offensive: 'Tests de pénétration et évaluation',
 };
 
-export default function TaskColumn({ category, tasks, onAddTask, onStatusChange, onDropService, userRole = 'user' }: TaskColumnProps) {
+export default function TaskColumn({ category, tasks, onAddTask, onStatusChange, onDropService, userRole = 'user', onAddTaskFromPanel, tasksAddedFromPanel = [], onRemoveTaskFromPanel }: TaskColumnProps) {
   const [showAddForm, setShowAddForm] = useState(false);
+  const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -209,10 +222,13 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
               {categoryDescriptions[category]}
             </p>
           </div>
-          <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{
-            background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-secondary))'
-          }}>
-            <div className="w-8 h-8 rounded-full" style={{ background: 'var(--bg-primary)' }}></div>
+          <div
+            className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 group"
+            style={{
+              background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-secondary))'
+            }}
+          >
+            <div className="w-8 h-8 rounded-full transition-all duration-300" style={{ background: 'var(--bg-primary)' }}></div>
           </div>
         </div>
         
@@ -499,6 +515,18 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
           </motion.button>
         )}
       </AnimatePresence>
+
+      {/* Panneau de détails de la catégorie */}
+      <CategoryDetailsPanel
+        isOpen={isDetailsPanelOpen}
+        onClose={() => setIsDetailsPanelOpen(false)}
+        category={category}
+        categoryTitle={categoryTitles[category]}
+        userRole={userRole}
+        onAddTask={onAddTaskFromPanel || onAddTask}
+        tasksAddedFromPanel={tasksAddedFromPanel}
+        onRemoveTaskFromPanel={onRemoveTaskFromPanel}
+      />
     </motion.div>
   );
 } 
