@@ -169,6 +169,8 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
   const [draggedService, setDraggedService] = useState<ServiceCard | null>(null);
   const [userRole, setUserRole] = useState<string>('user');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [serviceToDelete, setServiceToDelete] = useState<ServiceCard | null>(null);
   const [services, setServices] = useState<ServiceCard[]>(() => {
     // Charger les services depuis le localStorage au démarrage
     if (typeof window !== 'undefined') {
@@ -324,6 +326,51 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
     
     // Ne pas fermer la sidebar automatiquement pour permettre le drop
     // La sidebar se fermera seulement si le drop est réussi dans handleDropService
+  };
+
+
+
+  const handleDeleteClick = (service: ServiceCard) => {
+    setServiceToDelete(service);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!serviceToDelete) return;
+
+    try {
+      // Appel API pour supprimer le service de la base de données
+      const response = await fetch(`/api/services/${serviceToDelete.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // Supprimer du localStorage et de l'état local
+        setServices(prevServices => {
+          const updatedServices = prevServices.filter(service => service.id !== serviceToDelete.id);
+          const customServices = updatedServices.filter(service => service.id.startsWith('custom-'));
+          localStorage.setItem('customServices', JSON.stringify(customServices));
+          return updatedServices;
+        });
+        
+        console.log('Service supprimé avec succès');
+      } else {
+        console.error('Erreur lors de la suppression du service');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error);
+    } finally {
+      setShowDeleteModal(false);
+      setServiceToDelete(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setServiceToDelete(null);
   };
 
   return (
@@ -509,9 +556,68 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
                                </div>
                              </motion.div>
                            )}
-                         </AnimatePresence>
+                                                   </AnimatePresence>
 
-                         {/* Liste des services */}
+                          {/* Modal de confirmation de suppression */}
+                          <AnimatePresence>
+                            {showDeleteModal && serviceToDelete && (
+                              <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"
+                              >
+                                <motion.div
+                                  initial={{ scale: 0.8, opacity: 0 }}
+                                  animate={{ scale: 1, opacity: 1 }}
+                                  exit={{ scale: 0.8, opacity: 0 }}
+                                  className="bg-gray-800 rounded-xl p-6 border border-gray-700 max-w-md w-full mx-4"
+                                >
+                                  <div className="text-center">
+                                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500 flex items-center justify-center">
+                                      <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                      </svg>
+                                    </div>
+                                    
+                                    <h3 className="text-xl font-karla-bold text-white mb-2">
+                                      Confirmer la suppression
+                                    </h3>
+                                    
+                                    <p className="text-gray-300 mb-6 font-karla-regular">
+                                      Êtes-vous sûr de vouloir supprimer le service <span className="text-[#CCFF00] font-karla-bold">&ldquo;{serviceToDelete.name}&rdquo;</span> ?
+                                    </p>
+                                    
+                                    <p className="text-sm text-gray-400 mb-6 font-karla-regular">
+                                      Cette action sera définitive et supprimera le service pour tous les utilisateurs.
+                                    </p>
+                                    
+                                    <div className="flex gap-3">
+                                      <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={cancelDelete}
+                                        className="flex-1 py-3 px-4 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-karla-bold transition-all duration-300"
+                                      >
+                                        ANNULER
+                                      </motion.button>
+                                      
+                                      <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={confirmDelete}
+                                        className="flex-1 py-3 px-4 bg-red-500 hover:bg-red-600 text-white rounded-lg font-karla-bold transition-all duration-300"
+                                      >
+                                        SUPPRIMER
+                                      </motion.button>
+                                    </div>
+                                  </div>
+                                </motion.div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+
+                          {/* Liste des services */}
              <div className="flex-1 overflow-y-auto p-6 min-h-0">
                <div className="space-y-4 pb-4">
                 {filteredServices.length === 0 ? (
@@ -536,29 +642,47 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
                       onDragEnd={handleDragEnd}
                       className="group cursor-grab active:cursor-grabbing select-none"
                     >
-                      <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover:shadow-lg hover:shadow-[#CCFF00]/10">
-                        <div>
-                          <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors">
-                            {service.name}
-                          </h3>
-                          <p className="text-sm text-gray-400 mb-3 font-karla-regular">
-                            {service.description}
-                          </p>
-                          <div className="flex items-center justify-between">
-                            <span className={`px-2 py-1 rounded-full text-xs font-karla-medium ${
-                              service.category === 'defensive' ? 'bg-blue-900 text-blue-300' :
-                              service.category === 'general' ? 'bg-gray-700 text-gray-300' :
-                              'bg-red-900 text-red-300'
-                            }`}>
-                              {service.category.toUpperCase()}
-                            </span>
-                            <div className="flex items-center gap-2 text-xs text-gray-500">
-                              <span>Score: {service.defaultScore}</span>
-                              <span>•</span>
-                              <span>{service.defaultImportance}</span>
-                            </div>
-                          </div>
-                        </div>
+                                             <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover:shadow-lg hover:shadow-[#CCFF00]/10">
+                         <div className="relative">
+                           {/* Bouton de suppression pour l'admin - seulement pour les services personnalisés */}
+                           {userRole === 'admin' && service.id.startsWith('custom-') && (
+                             <motion.button
+                               whileHover={{ scale: 1.1 }}
+                               whileTap={{ scale: 0.9 }}
+                               onClick={(e) => {
+                                 e.stopPropagation();
+                                 handleDeleteClick(service);
+                               }}
+                               className="absolute top-0 right-0 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-all duration-300 z-10"
+                               title="Supprimer ce service"
+                             >
+                               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                               </svg>
+                             </motion.button>
+                           )}
+                           
+                           <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors">
+                             {service.name}
+                           </h3>
+                           <p className="text-sm text-gray-400 mb-3 font-karla-regular">
+                             {service.description}
+                           </p>
+                           <div className="flex items-center justify-between">
+                             <span className={`px-2 py-1 rounded-full text-xs font-karla-medium ${
+                               service.category === 'defensive' ? 'bg-blue-900 text-blue-300' :
+                               service.category === 'general' ? 'bg-gray-700 text-gray-300' :
+                               'bg-red-900 text-red-300'
+                             }`}>
+                               {service.category.toUpperCase()}
+                             </span>
+                             <div className="flex items-center gap-2 text-xs text-gray-500">
+                               <span>Score: {service.defaultScore}</span>
+                               <span>•</span>
+                               <span>{service.defaultImportance}</span>
+                             </div>
+                           </div>
+                         </div>
                         
                         {/* Indicateur de drag */}
                         <div className="mt-3 pt-3 border-t border-gray-700">
