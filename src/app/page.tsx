@@ -367,14 +367,11 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="mb-8"
             >
-              <div className="mb-6">
-                <h2 className="text-2xl font-karla-bold mb-2 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>
-                  Tâches Ajoutées depuis le Panneau
-                </h2>
-                <p className="font-karla-regular text-sm transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
-                  Tâches créées à partir des informations détaillées
-                </p>
-              </div>
+                              <div className="mb-6">
+                  <h2 className="text-2xl font-karla-bold mb-2 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>
+                    Indicateurs & Suivi Sécurité
+                  </h2>
+                </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {tasksAddedFromPanel.map((task, index) => (
@@ -418,6 +415,87 @@ export default function Home() {
                     <p className="text-sm mb-2" style={{ color: 'var(--text-muted)' }}>
                       {task.description}
                     </p>
+                    
+                    {/* Informations spécifiques selon le type de tâche */}
+                    {task.name === 'Formation Cybersécurité' && (
+                      <>
+                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>10 personnes formées sur 30</div>
+                        <div className="w-full bg-gray-800 rounded-full h-2 mb-3">
+                          <div 
+                            className="h-2 rounded-full transition-all duration-500" 
+                            style={{ 
+                              width: '33%', 
+                              background: '#CCFF00' 
+                            }}
+                          ></div>
+                        </div>
+                      </>
+                    )}
+                    
+                    {task.name === 'Pentest Infrastructure' && (
+                      <>
+                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>1 serveur testé sur 5</div>
+                        <div className="w-full bg-gray-800 rounded-full h-2 mb-3">
+                          <div 
+                            className="h-2 rounded-full transition-all duration-500" 
+                            style={{ 
+                              width: '20%', 
+                              background: '#CCFF00' 
+                            }}
+                          ></div>
+                        </div>
+                      </>
+                    )}
+                    
+                    {task.name === 'Configuration Switches' && (
+                      <>
+                        <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>15 équipements configurés</div>
+                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>État: Sécurisé</div>
+                      </>
+                    )}
+                    
+                    {task.name === 'Audit Serveurs' && (
+                      <>
+                        <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>8 serveurs actifs</div>
+                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>État: À vérifier</div>
+                      </>
+                    )}
+                    
+                    {task.name === 'Maintenance Firewalls' && (
+                      <>
+                        <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>3 firewalls déployés</div>
+                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>État: Critique</div>
+                      </>
+                    )}
+                    
+                    {task.name === 'Configuration Routers' && (
+                      <>
+                        <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>5 routeurs configurés</div>
+                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>État: Normal</div>
+                      </>
+                    )}
+                    
+                    {task.name === 'Audit ISO 27001' && (
+                      <>
+                        <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Certification obtenue en 2023</div>
+                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>Prochaine audit: Décembre 2024</div>
+                      </>
+                    )}
+                    
+                    {task.name === 'Mise en conformité NIS2' && (
+                      <>
+                        <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Mise en conformité en cours</div>
+                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>Échéance: Octobre 2024</div>
+                      </>
+                    )}
+                    
+                    {task.name === 'Vérification RGPD' && (
+                      <>
+                        <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Conformité validée</div>
+                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>Dernière vérification: Mars 2024</div>
+                      </>
+                    )}
+                    
                     <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
                       <span>Importance: {task.importance}</span>
                       <span>•</span>
@@ -442,7 +520,7 @@ export default function Home() {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 5c7.18 0 13 5.82 13 13M6 11a7 7 0 017 7m-6 0a1 1 0 11-2 0 1 1 0 012 0z" />
                 </svg>
-                DÉTAILS CATÉGORIES
+                PANEL DE SUIVIS
               </motion.button>
               
               <motion.button
@@ -518,7 +596,7 @@ export default function Home() {
         isOpen={isDetailsPanelOpen}
         onClose={() => setIsDetailsPanelOpen(false)}
         category="defensive"
-        categoryTitle="DÉFENSIF"
+        categoryTitle="PANEL DE SUIVIS"
         userRole={userRole}
         onAddTask={handleAddTaskFromPanel}
         tasksAddedFromPanel={tasksAddedFromPanel}

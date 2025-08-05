@@ -86,21 +86,24 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
               background: 'var(--bg-secondary)', 
               borderColor: 'var(--border-primary)' 
             }}>
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>Indicateurs de Couverture</h3>
-                {userRole === 'admin' && (
-                  <button
-                    onClick={() => setIsEditing(!isEditing)}
-                    className="px-3 py-1 rounded-lg text-xs font-karla-medium transition-all duration-300"
-                    style={{ 
-                      background: isEditing ? '#ef4444' : categoryColors[category],
-                      color: 'black'
-                    }}
-                  >
-                    {isEditing ? 'TERMINER' : 'MODIFIER'}
-                  </button>
-                )}
-              </div>
+                             <div className="flex items-center justify-between mb-6">
+                 <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>Indicateurs de Couverture</h3>
+                 {userRole === 'admin' && (
+                   <button
+                     onClick={() => {/* TODO: Ajouter une nouvelle carte */}}
+                     className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-karla-medium transition-all duration-300"
+                     style={{ 
+                       background: categoryColors[category],
+                       color: 'black'
+                     }}
+                     title="Ajouter une nouvelle carte"
+                   >
+                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                     </svg>
+                   </button>
+                 )}
+               </div>
               
               {/* Couverture globale */}
               <div className="mb-8">
@@ -123,19 +126,31 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
               <div className="space-y-4">
                 {renderCardWithStatus('Formation Cybersécurité', 'Formation de sensibilisation à la cybersécurité pour les employés', 'Haute',
                   <>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-karla-medium" style={{ color: 'var(--text-primary)' }}>Formation Cybersécurité</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-karla-bold" style={{ color: categoryColors[category] }}>33%</span>
-                                                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Formation Cybersécurité') && (
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: categoryColors[category] }}>
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                                         <div className="flex justify-between items-center mb-2">
+                       <span className="text-sm font-karla-medium" style={{ color: 'var(--text-primary)' }}>Formation Cybersécurité</span>
+                       <div className="flex items-center gap-2">
+                         <span className="text-xs font-karla-bold" style={{ color: categoryColors[category] }}>33%</span>
+                         {userRole === 'admin' && (
+                           <button
+                             onClick={() => setIsEditing(!isEditing)}
+                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                             style={{ 
+                               background: isEditing ? '#ef4444' : categoryColors[category],
+                               color: 'black'
+                             }}
+                           >
+                             {isEditing ? 'TERMINER' : 'MODIFIER'}
+                           </button>
+                         )}
+                                                  {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Formation Cybersécurité') && (
+                           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: categoryColors[category] }}>
+                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                             </svg>
+                           </div>
+                         )}
+                       </div>
+                     </div>
                     <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>10 personnes formées sur 30</div>
                     <div className="w-full bg-gray-800 rounded-full h-2">
                       <div 
@@ -151,19 +166,31 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
 
                 {renderCardWithStatus('Pentest Infrastructure', 'Test de pénétration sur l\'infrastructure réseau', 'Haute',
                   <>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-karla-medium" style={{ color: 'var(--text-primary)' }}>Pentest Infrastructure</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-karla-bold" style={{ color: categoryColors[category] }}>20%</span>
-                                                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Pentest Infrastructure') && (
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: categoryColors[category] }}>
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                                         <div className="flex justify-between items-center mb-2">
+                       <span className="text-sm font-karla-medium" style={{ color: 'var(--text-primary)' }}>Pentest Infrastructure</span>
+                       <div className="flex items-center gap-2">
+                         <span className="text-xs font-karla-bold" style={{ color: categoryColors[category] }}>20%</span>
+                         {userRole === 'admin' && (
+                           <button
+                             onClick={() => setIsEditing(!isEditing)}
+                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                             style={{ 
+                               background: isEditing ? '#ef4444' : categoryColors[category],
+                               color: 'black'
+                             }}
+                           >
+                             {isEditing ? 'TERMINER' : 'MODIFIER'}
+                           </button>
+                         )}
+                                                  {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Pentest Infrastructure') && (
+                           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: categoryColors[category] }}>
+                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                             </svg>
+                           </div>
+                         )}
+                       </div>
+                     </div>
                     <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>1 serveur testé sur 5</div>
                     <div className="w-full bg-gray-800 rounded-full h-2">
                       <div 
