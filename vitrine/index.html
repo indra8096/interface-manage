@@ -18,6 +18,15 @@
     <meta name="twitter:title" content="Drelto - Gestion d'infrastructure moderne">
     <meta name="twitter:description" content="Plateforme de gestion d'infrastructure avec contrôle d'accès avancé">
     
+    <!-- Security Headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload">
+    <!-- Content Security Policy temporairement désactivée pour le développement -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;"> -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -118,6 +127,7 @@
                 
                                  <div class="hidden md:flex space-x-8">
                      <button onclick="scrollToSection('features')" class="text-sm font-karla-medium transition-colors text-gray-300 hover:text-white">Fonctionnalités</button>
+                     <button onclick="scrollToSection('purple-team')" class="text-sm font-karla-medium transition-colors text-gray-300 hover:text-white">Purple Team</button>
                      <button onclick="scrollToSection('tech')" class="text-sm font-karla-medium transition-colors text-gray-300 hover:text-white">Technologies</button>
                      <button onclick="scrollToSection('architecture')" class="text-sm font-karla-medium transition-colors text-gray-300 hover:text-white">Architecture</button>
                      <button onclick="scrollToSection('interfaces')" class="text-sm font-karla-medium transition-colors text-gray-300 hover:text-white">Interfaces</button>
@@ -140,7 +150,7 @@
                     Drelto
                 </h1>
                 <p class="text-xl md:text-2xl text-gray-300 font-karla-medium max-w-3xl mx-auto">
-                    ClientConnect est une plateforme de gestion d'infrastructure moderne avec contrôle d'accès avancé et services prédéfinis
+                    <span style="color: #9933FF;">ClientConnect</span> est une plateforme de gestion d'infrastructure moderne avec contrôle d'accès avancé et services prédéfinis
                 </p>
             </div>
 
@@ -244,103 +254,8 @@
                     </ul>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Technologies Section -->
-    <section id="tech" class="py-16 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16 animate-slide-up">
-                                            <h2 class="text-4xl md:text-5xl font-karla-bold mb-6" style="color: #9933FF;">
-                    Technologies
-                </h2>
-                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
-                    Stack technologique moderne et robuste pour une application performante
-                </p>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div class="text-center group animate-slide-up">
-                    <h3 class="font-karla-bold text-lg" style="color: var(--theme-primary);">Next.js 15</h3>
-                </div>
-
-                <div class="text-center group animate-slide-up" style="animation-delay: 0.1s;">
-                    <h3 class="font-karla-bold text-lg" style="color: var(--theme-primary);">TypeScript</h3>
-                </div>
-
-                <div class="text-center group animate-slide-up" style="animation-delay: 0.2s;">
-                    <h3 class="font-karla-bold text-lg" style="color: var(--theme-primary);">Tailwind CSS</h3>
-                </div>
-
-                <div class="text-center group animate-slide-up" style="animation-delay: 0.3s;">
-                    <h3 class="font-karla-bold text-lg" style="color: var(--theme-primary);">Framer Motion</h3>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Architecture Section -->
-    <section id="architecture" class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-900/30">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16 animate-slide-up">
-                                            <h2 class="text-4xl md:text-5xl font-karla-bold mb-6" style="color: #9933FF;">
-                    Architecture
-                </h2>
-                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
-                    Architecture moderne et scalable pour une application robuste
-                </p>
-            </div>
-
-            <div class="glass-effect rounded-2xl p-8 border border-gray-700 animate-slide-up" style="animation-delay: 0.2s;">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="text-center">
-                        <h3 class="text-xl font-karla-bold mb-4" style="color: var(--theme-primary);">Frontend</h3>
-                        <div class="space-y-2 text-sm text-gray-300">
-                            <p>• Next.js 15 App Router</p>
-                            <p>• TypeScript</p>
-                            <p>• Tailwind CSS</p>
-                            <p>• Framer Motion</p>
-                            <p>• Responsive Design</p>
-                        </div>
-                    </div>
-
-                    <div class="text-center">
-                        <h3 class="text-xl font-karla-bold mb-4" style="color: var(--theme-primary);">Backend</h3>
-                        <div class="space-y-2 text-sm text-gray-300">
-                            <p>• API Routes Next.js</p>
-                            <p>• Prisma ORM</p>
-                            <p>• PostgreSQL</p>
-                            <p>• Authentication</p>
-                            <p>• Role-based Access</p>
-                        </div>
-                    </div>
-
-                    <div class="text-center">
-                        <h3 class="text-xl font-karla-bold mb-4" style="color: var(--theme-primary);">Infrastructure</h3>
-                        <div class="space-y-2 text-sm text-gray-300">
-                            <p>• Vercel Deployment</p>
-                            <p>• Docker Containerization</p>
-                            <p>• Database Migrations</p>
-                            <p>• Environment Variables</p>
-                            <p>• CI/CD Pipeline</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-12 p-6 bg-gray-900/50 rounded-xl border border-gray-700 animate-fade-in" style="animation-delay: 0.4s;">
-                    <div class="flex flex-col items-center space-y-4">
-                        <div class="w-full max-w-2xl h-2 gradient-bg rounded-full"></div>
-                        <div class="text-center">
-                            <p class="text-lg font-karla-bold mb-2">Flux de données</p>
-                            <p class="text-gray-400 text-sm">
-                                Client → Next.js API Routes → Prisma → PostgreSQL → Response
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+                 </div>
+     </section>
 
     <!-- Interfaces Section -->
     <section id="interfaces" class="py-16 px-4 sm:px-6 lg:px-8">
@@ -439,6 +354,172 @@
             </div>
         </div>
     </section>
+
+
+
+     <!-- Technologies Section -->
+    <section id="tech" class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 animate-slide-up">
+                                            <h2 class="text-4xl md:text-5xl font-karla-bold mb-6" style="color: #9933FF;">
+                    Technologies
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Stack technologique moderne et robuste pour une application performante
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div class="text-center group animate-slide-up">
+                    <h3 class="font-karla-bold text-lg" style="color: var(--theme-primary);">Next.js 15</h3>
+                </div>
+
+                <div class="text-center group animate-slide-up" style="animation-delay: 0.1s;">
+                    <h3 class="font-karla-bold text-lg" style="color: var(--theme-primary);">TypeScript</h3>
+                </div>
+
+                <div class="text-center group animate-slide-up" style="animation-delay: 0.2s;">
+                    <h3 class="font-karla-bold text-lg" style="color: var(--theme-primary);">Tailwind CSS</h3>
+                </div>
+
+                <div class="text-center group animate-slide-up" style="animation-delay: 0.3s;">
+                    <h3 class="font-karla-bold text-lg" style="color: var(--theme-primary);">Framer Motion</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-900/30">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 animate-slide-up">
+                                            <h2 class="text-4xl md:text-5xl font-karla-bold mb-6" style="color: #9933FF;">
+                    Architecture
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Architecture moderne et scalable pour une application robuste
+                </p>
+            </div>
+
+            <div class="glass-effect rounded-2xl p-8 border border-gray-700 animate-slide-up" style="animation-delay: 0.2s;">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="text-center">
+                        <h3 class="text-xl font-karla-bold mb-4" style="color: var(--theme-primary);">Frontend</h3>
+                        <div class="space-y-2 text-sm text-gray-300">
+                            <p>• Next.js 15 App Router</p>
+                            <p>• TypeScript</p>
+                            <p>• Tailwind CSS</p>
+                            <p>• Framer Motion</p>
+                            <p>• Responsive Design</p>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <h3 class="text-xl font-karla-bold mb-4" style="color: var(--theme-primary);">Backend</h3>
+                        <div class="space-y-2 text-sm text-gray-300">
+                            <p>• API Routes Next.js</p>
+                            <p>• Prisma ORM</p>
+                            <p>• PostgreSQL</p>
+                            <p>• Authentication</p>
+                            <p>• Role-based Access</p>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <h3 class="text-xl font-karla-bold mb-4" style="color: var(--theme-primary);">Infrastructure</h3>
+                        <div class="space-y-2 text-sm text-gray-300">
+                            <p>• Vercel Deployment</p>
+                            <p>• Docker Containerization</p>
+                            <p>• Database Migrations</p>
+                            <p>• Environment Variables</p>
+                            <p>• CI/CD Pipeline</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-12 p-6 bg-gray-900/50 rounded-xl border border-gray-700 animate-fade-in" style="animation-delay: 0.4s;">
+                    <div class="flex flex-col items-center space-y-4">
+                        <div class="w-full max-w-2xl h-2 gradient-bg rounded-full"></div>
+                        <div class="text-center">
+                            <p class="text-lg font-karla-bold mb-2">Flux de données</p>
+                            <p class="text-gray-400 text-sm">
+                                Client → Next.js API Routes → Prisma → PostgreSQL → Response
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+     <!-- Purple Team Section -->
+     <section id="purple-team" class="py-16 px-4 sm:px-6 lg:px-8">
+         <div class="max-w-7xl mx-auto">
+             <div class="text-center mb-16 animate-slide-up">
+                 <h2 class="text-4xl md:text-5xl font-karla-bold mb-6" style="color: #9933FF;">
+                     Purple Team
+                 </h2>
+                 <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                     Un pont entre attaque et défense pour renforcer la sécurité de manière proactive
+                 </p>
+             </div>
+
+                                                       <div class="glass-effect rounded-2xl p-8 border border-gray-700 animate-slide-up" style="animation-delay: 0.2s;">
+                   <div class="text-center mb-8">
+                       <p class="text-lg text-gray-300 font-karla-medium max-w-4xl mx-auto">
+                           La Purple Team combine les forces de la Red Team et de la Blue Team pour renforcer la sécurité de manière proactive, 
+                           en apprenant des tests offensifs et en améliorant les défenses en continu.
+                       </p>
+                   </div>
+
+                   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      <div class="text-center p-6 rounded-xl border border-gray-700 hover:border-[#CCFF00] transition-all duration-300">
+                          <h3 class="text-xl font-karla-bold mb-3" style="color: var(--theme-primary);">Collaboration</h3>
+                          <p class="text-gray-400">Facilite la collaboration entre Red et Blue Teams pour une approche unifiée</p>
+                      </div>
+
+                      <div class="text-center p-6 rounded-xl border border-gray-700 hover:border-[#CCFF00] transition-all duration-300">
+                          <h3 class="text-xl font-karla-bold mb-3" style="color: var(--theme-primary);">Identification</h3>
+                          <p class="text-gray-400">Identifie les lacunes dans la détection et la réponse aux incidents</p>
+                      </div>
+
+                      <div class="text-center p-6 rounded-xl border border-gray-700 hover:border-[#CCFF00] transition-all duration-300">
+                          <h3 class="text-xl font-karla-bold mb-3" style="color: var(--theme-primary);">Optimisation</h3>
+                          <p class="text-gray-400">Optimise les techniques offensives pour tester efficacement les défenses</p>
+                      </div>
+
+                      <div class="text-center p-6 rounded-xl border border-gray-700 hover:border-[#CCFF00] transition-all duration-300">
+                          <h3 class="text-xl font-karla-bold mb-3" style="color: var(--theme-primary);">Amélioration</h3>
+                          <p class="text-gray-400">Améliore les règles de détection (SIEM, EDR, etc.)</p>
+                      </div>
+
+                      <div class="text-center p-6 rounded-xl border border-gray-700 hover:border-[#CCFF00] transition-all duration-300">
+                          <h3 class="text-xl font-karla-bold mb-3" style="color: var(--theme-primary);">Documentation</h3>
+                          <p class="text-gray-400">Documente les enseignements pour renforcer la sécurité</p>
+                      </div>
+
+                      <div class="text-center p-6 rounded-xl border border-gray-700 hover:border-[#CCFF00] transition-all duration-300">
+                          <h3 class="text-xl font-karla-bold mb-3" style="color: var(--theme-primary);">Amélioration Continue</h3>
+                          <p class="text-gray-400">Processus d'amélioration continue basé sur les retours d'expérience</p>
+                      </div>
+                  </div>
+
+                  <!-- Section Drelto et Purple Team -->
+                  <div class="mt-12 p-8 bg-gray-900/50 rounded-xl border border-gray-700 animate-fade-in" style="animation-delay: 0.4s;">
+                      <div class="text-center">
+                          <h3 class="text-xl font-karla-bold mb-4" style="color: var(--theme-primary);">Comment Drelto facilite l'approche Purple Team</h3>
+                          <p class="text-gray-300 text-sm leading-relaxed max-w-4xl mx-auto">
+                              Notre plateforme Drelto est conçue pour soutenir l'approche Purple Team en permettant aux équipes Red et Blue de collaborer efficacement. 
+                              Les services prédéfinis (défensifs et offensifs) facilitent le partage de connaissances, tandis que le système de gestion des tâches 
+                              permet de documenter les enseignements et d'améliorer continuellement les processus de sécurité.
+                          </p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+     </section>
+
+
 
     <!-- Footer -->
     <footer class="py-12 px-4 sm:px-6 lg:px-8 bg-gray-900/50 border-t border-gray-800">
