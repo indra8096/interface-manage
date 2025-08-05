@@ -56,6 +56,7 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
     assignedTo: '',
   });
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isOverCancel, setIsOverCancel] = useState(false);
 
   const percentage = Math.round((tasks.filter(t => t.status === 'completed').length / Math.max(tasks.length, 1)) * 100);
 
@@ -133,8 +134,18 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
     e.preventDefault();
     e.stopPropagation();
     setIsDragOver(false);
+    setIsOverCancel(false);
     console.log('=== DROP DÉTECTÉ ===');
     console.log('Colonne cible:', category);
+    
+    // Vérifier si on dépose sur le bouton annuler
+    const target = e.target as HTMLElement;
+    const isCancelButton = target.closest('[data-cancel-button]');
+    
+    if (isCancelButton) {
+      console.log('✅ Drop sur bouton ANNULER - Action annulée');
+      return; // Annuler l'action sans créer de tâche
+    }
     
     try {
       const serviceData = e.dataTransfer.getData('text/plain');
@@ -249,14 +260,52 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
             initial={{ opacity: 0, scale: 0.8, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: -10 }}
-            className="p-4 rounded-xl border-2 border-dashed border-[#CCFF00] bg-[#CCFF00]/10 flex items-center justify-center"
+            className="space-y-3"
           >
-            <div className="text-center">
-              <svg className="w-8 h-8 mx-auto mb-2 text-[#CCFF00]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-              </svg>
-              <p className="text-[#CCFF00] font-karla-bold text-sm">DÉPOSER ICI</p>
+            <div className="p-4 rounded-xl border-2 border-dashed border-[#CCFF00] bg-[#CCFF00]/10 flex items-center justify-center">
+              <div className="text-center">
+                <svg className="w-8 h-8 mx-auto mb-2 text-[#CCFF00]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                </svg>
+                <p className="text-[#CCFF00] font-karla-bold text-sm">DÉPOSER ICI</p>
+              </div>
             </div>
+            
+            {/* Bouton Annuler */}
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+              onClick={() => setIsDragOver(false)}
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsOverCancel(true);
+              }}
+              onDragLeave={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsOverCancel(false);
+              }}
+              data-cancel-button
+              className={`w-full p-3 rounded-xl border-2 border-dashed flex items-center justify-center transition-all duration-300 ${
+                isOverCancel 
+                  ? 'border-red-400 bg-red-500/20 shadow-lg shadow-red-500/20' 
+                  : 'border-red-500 bg-red-500/10 hover:bg-red-500/20'
+              }`}
+            >
+              <div className="text-center">
+                <svg className={`w-6 h-6 mx-auto mb-1 transition-colors duration-300 ${
+                  isOverCancel ? 'text-red-400' : 'text-red-500'
+                }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <p className={`font-karla-bold text-sm transition-colors duration-300 ${
+                  isOverCancel ? 'text-red-400' : 'text-red-500'
+                }`}>ANNULER</p>
+              </div>
+            </motion.button>
           </motion.div>
         )}
         
