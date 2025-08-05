@@ -2,14 +2,31 @@
 
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import ThemeToggle from './ThemeToggle';
 
 export default function Header() {
   const router = useRouter();
+  const [userRole, setUserRole] = useState<string>('user');
+
+  useEffect(() => {
+    // Récupérer le rôle de l'utilisateur depuis le localStorage
+    if (typeof window !== 'undefined') {
+      const role = localStorage.getItem('role');
+      setUserRole(role || 'user');
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     router.push('/login');
+  };
+
+  const handleAdminClick = () => {
+    if (userRole === 'admin') {
+      window.location.href = '/admin/users';
+    }
   };
 
   return (
@@ -54,16 +71,21 @@ export default function Header() {
              <ThemeToggle />
              
              <button
-               onClick={() => window.location.href = '/admin/users'}
-               className="px-4 py-2 rounded-lg hover:from-[#CCFF00] hover:to-[#9933FF] hover:text-black transition-all duration-300 font-karla-medium hover:border-transparent"
+               onClick={handleAdminClick}
+               className={`px-4 py-2 rounded-lg transition-all duration-300 font-karla-medium ${
+                 userRole === 'admin' 
+                   ? 'hover:from-[#CCFF00] hover:to-[#9933FF] hover:text-black hover:border-transparent cursor-pointer' 
+                   : 'cursor-not-allowed opacity-50'
+               }`}
                style={{
-                 background: 'var(--bg-secondary)',
+                 background: userRole === 'admin' ? 'var(--bg-secondary)' : 'var(--bg-card)',
                  color: 'var(--text-primary)',
                  border: '1px solid var(--border-primary)'
                }}
-               title="Gérer les utilisateurs"
+               title={userRole === 'admin' ? "Gérer les utilisateurs" : "Accès réservé aux administrateurs"}
+               disabled={userRole !== 'admin'}
              >
-               ADMIN
+               {userRole === 'admin' ? 'ADMIN' : 'USER'}
              </button>
            </div>
           
