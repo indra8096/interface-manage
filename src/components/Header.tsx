@@ -70,23 +70,23 @@ export default function Header() {
              
              <ThemeToggle />
              
-             <button
-               onClick={handleAdminClick}
-               className={`px-4 py-2 rounded-lg transition-all duration-300 font-karla-medium ${
-                 userRole === 'admin' 
-                   ? 'hover:from-[#CCFF00] hover:to-[#9933FF] hover:text-black hover:border-transparent cursor-pointer' 
-                   : 'cursor-not-allowed opacity-50'
-               }`}
-               style={{
-                 background: userRole === 'admin' ? 'var(--bg-secondary)' : 'var(--bg-card)',
-                 color: 'var(--text-primary)',
-                 border: '1px solid var(--border-primary)'
-               }}
-               title={userRole === 'admin' ? "Gérer les utilisateurs" : "Accès réservé aux administrateurs"}
-               disabled={userRole !== 'admin'}
-             >
-               {userRole === 'admin' ? 'ADMIN' : 'USER'}
-             </button>
+                         <button
+              onClick={handleAdminClick}
+              className={`px-4 py-2 rounded-lg transition-all duration-300 font-karla-medium ${
+                userRole === 'admin' 
+                  ? 'hover:from-[#CCFF00] hover:to-[#9933FF] hover:text-black hover:border-transparent cursor-pointer' 
+                  : 'cursor-not-allowed opacity-50'
+              }`}
+              style={{
+                background: userRole === 'admin' ? 'var(--bg-secondary)' : 'var(--bg-card)',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--border-primary)'
+              }}
+              title={userRole === 'admin' ? "Gérer les utilisateurs" : "Accès réservé aux administrateurs"}
+              disabled={userRole !== 'admin'}
+            >
+              {userRole === 'admin' ? 'ADMIN' : 'USER'}
+            </button>
            </div>
           
                      <button

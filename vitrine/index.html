@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drelto - Gestion d'infrastructure moderne</title>
+    <meta name="description" content="Plateforme de gestion d'infrastructure avec contrôle d'accès avancé, services prédéfinis et interface moderne. Développé avec Next.js, TypeScript et Tailwind CSS.">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Drelto - Gestion d'infrastructure moderne">
+    <meta property="og:description" content="Plateforme de gestion d'infrastructure avec contrôle d'accès avancé et services prédéfinis">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://your-domain.vercel.app">
+    <meta property="og:image" content="/og-image.png">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Drelto - Gestion d'infrastructure moderne">
+    <meta name="twitter:description" content="Plateforme de gestion d'infrastructure avec contrôle d'accès avancé">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Framer Motion -->
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'karla': ['Karla', 'sans-serif'],
+                        'karla-light': ['Karla', 'sans-serif'],
+                        'karla-regular': ['Karla', 'sans-serif'],
+                        'karla-medium': ['Karla', 'sans-serif'],
+                        'karla-semibold': ['Karla', 'sans-serif'],
+                        'karla-bold': ['Karla', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#CCFF00',
+                        'secondary': '#9933FF',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * {
+            font-family: 'Karla', sans-serif;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #CCFF00 0%, #9933FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #CCFF00 0%, #9933FF 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(17, 17, 17, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .animate-slide-up {
+            animation: slideUp 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-black text-white font-karla min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-effect border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2 animate-fade-in">
+                    <span class="text-xl font-karla-bold" style="color: #CCFF00;">
+                        Drelto
+                    </span>
+                </div>
+                
+                                 <div class="hidden md:flex space-x-8">
+                     <button onclick="scrollToSection('features')" class="text-sm font-karla-medium transition-colors text-gray-300 hover:text-white">Fonctionnalités</button>
+                     <button onclick="scrollToSection('tech')" class="text-sm font-karla-medium transition-colors text-gray-300 hover:text-white">Technologies</button>
+                     <button onclick="scrollToSection('architecture')" class="text-sm font-karla-medium transition-colors text-gray-300 hover:text-white">Architecture</button>
+                     <button onclick="scrollToSection('interfaces')" class="text-sm font-karla-medium transition-colors text-gray-300 hover:text-white">Interfaces</button>
+                 </div>
+
+                <div class="animate-fade-in">
+                                    <a href="https://your-app-domain.vercel.app" target="_blank" class="px-6 py-2 text-black font-karla-bold rounded-lg hover-scale transition-all duration-300" style="background: var(--theme-primary);">
+                    DÉMO LIVE
+                </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="mb-8 animate-slide-up">
+                                            <h1 class="text-5xl md:text-7xl font-karla-bold mb-6" style="color: #CCFF00;">
+                    Drelto
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 font-karla-medium max-w-3xl mx-auto">
+                    ClientConnect est une plateforme de gestion d'infrastructure moderne avec contrôle d'accès avancé et services prédéfinis
+                </p>
+            </div>
+
+                         <div class="flex justify-center items-center animate-slide-up" style="animation-delay: 0.2s;">
+                 <button onclick="scrollToSection('features')" class="px-8 py-4 border-2 font-karla-bold rounded-xl transition-all duration-300 text-lg" style="border-color: var(--theme-primary); color: var(--theme-primary);">
+                     DÉCOUVRIR
+                 </button>
+             </div>
+
+            <div class="mt-16 animate-fade-in" style="animation-delay: 0.5s;">
+                <div class="relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-[#CCFF00]/20 to-[#9933FF]/20 rounded-2xl blur-3xl"></div>
+                    <div class="relative glass-effect rounded-2xl p-8 border border-gray-800">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="text-center">
+                                <h3 class="text-xl font-karla-bold mb-2" style="color: var(--theme-primary);">Performance</h3>
+                                <p class="text-gray-400">Interface rapide, détaillée, simple et optimisée.</p>
+                            </div>
+                            <div class="text-center">
+                                <h3 class="text-xl font-karla-bold mb-2" style="color: var(--theme-primary);">Sécurité</h3>
+                                <p class="text-gray-400">Contrôle d'accès basé sur les rôles</p>
+                            </div>
+                            <div class="text-center">
+                                <h3 class="text-xl font-karla-bold mb-2" style="color: var(--theme-primary);">Design</h3>
+                                <p class="text-gray-400">Interface moderne et intuitive</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-900/30">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 animate-slide-up">
+                                            <h2 class="text-4xl md:text-5xl font-karla-bold mb-6" style="color: #9933FF;">
+                    Fonctionnalités
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Découvrez les principales fonctionnalités de notre plateforme de gestion d'infrastructure
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="glass-effect rounded-xl p-6 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up">
+                    <h3 class="text-xl font-karla-bold mb-3" style="color: var(--theme-primary);">Dashboard Interactif</h3>
+                    <p class="text-gray-400 mb-4">Tableau de bord moderne avec drag & drop pour la gestion des tâches</p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-sm text-gray-300">
+                            <span class="w-2 h-2 rounded-full mr-3" style="background: var(--theme-primary);"></span>
+                            Colonnes Kanban
+                        </li>
+                        <li class="flex items-center text-sm text-gray-300">
+                            <span class="w-2 h-2 rounded-full mr-3" style="background: var(--theme-primary);"></span>
+                            Drag & Drop
+                        </li>
+                        <li class="flex items-center text-sm text-gray-300">
+                            <span class="w-2 h-2 rounded-full mr-3" style="background: var(--theme-primary);"></span>
+                            Statistiques temps réel
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="glass-effect rounded-xl p-6 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up" style="animation-delay: 0.1s;">
+                    <h3 class="text-xl font-karla-bold mb-3" style="color: var(--theme-primary);">Gestion des Utilisateurs</h3>
+                    <p class="text-gray-400 mb-4">Administration complète des utilisateurs avec contrôle d'accès</p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-sm text-gray-300">
+                            <span class="w-2 h-2 rounded-full mr-3" style="background: var(--theme-primary);"></span>
+                            Rôles Admin/User
+                        </li>
+                        <li class="flex items-center text-sm text-gray-300">
+                            <span class="w-2 h-2 rounded-full mr-3" style="background: var(--theme-primary);"></span>
+                            CRUD Utilisateurs
+                        </li>
+                        <li class="flex items-center text-sm text-gray-300">
+                            <span class="w-2 h-2 rounded-full mr-3" style="background: var(--theme-primary);"></span>
+                            Permissions granulaires
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="glass-effect rounded-xl p-6 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up" style="animation-delay: 0.2s;">
+                    <h3 class="text-xl font-karla-bold mb-3" style="color: var(--theme-primary);">Services Prédéfinis</h3>
+                    <p class="text-gray-400 mb-4">Bibliothèque de services configurables pour l'infrastructure</p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-sm text-gray-300">
+                            <span class="w-2 h-2 rounded-full mr-3" style="background: var(--theme-primary);"></span>
+                            Services Défensifs
+                        </li>
+                        <li class="flex items-center text-sm text-gray-300">
+                            <span class="w-2 h-2 rounded-full mr-3" style="background: var(--theme-primary);"></span>
+                            Services Offensifs
+                        </li>
+                        <li class="flex items-center text-sm text-gray-300">
+                            <span class="w-2 h-2 rounded-full mr-3" style="background: var(--theme-primary);"></span>
+                            Ajout personnalisé
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technologies Section -->
+    <section id="tech" class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 animate-slide-up">
+                                            <h2 class="text-4xl md:text-5xl font-karla-bold mb-6" style="color: #9933FF;">
+                    Technologies
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Stack technologique moderne et robuste pour une application performante
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div class="text-center group animate-slide-up">
+                    <h3 class="font-karla-bold text-lg" style="color: var(--theme-primary);">Next.js 15</h3>
+                </div>
+
+                <div class="text-center group animate-slide-up" style="animation-delay: 0.1s;">
+                    <h3 class="font-karla-bold text-lg" style="color: var(--theme-primary);">TypeScript</h3>
+                </div>
+
+                <div class="text-center group animate-slide-up" style="animation-delay: 0.2s;">
+                    <h3 class="font-karla-bold text-lg" style="color: var(--theme-primary);">Tailwind CSS</h3>
+                </div>
+
+                <div class="text-center group animate-slide-up" style="animation-delay: 0.3s;">
+                    <h3 class="font-karla-bold text-lg" style="color: var(--theme-primary);">Framer Motion</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-900/30">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 animate-slide-up">
+                                            <h2 class="text-4xl md:text-5xl font-karla-bold mb-6" style="color: #9933FF;">
+                    Architecture
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Architecture moderne et scalable pour une application robuste
+                </p>
+            </div>
+
+            <div class="glass-effect rounded-2xl p-8 border border-gray-700 animate-slide-up" style="animation-delay: 0.2s;">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="text-center">
+                        <h3 class="text-xl font-karla-bold mb-4" style="color: var(--theme-primary);">Frontend</h3>
+                        <div class="space-y-2 text-sm text-gray-300">
+                            <p>• Next.js 15 App Router</p>
+                            <p>• TypeScript</p>
+                            <p>• Tailwind CSS</p>
+                            <p>• Framer Motion</p>
+                            <p>• Responsive Design</p>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <h3 class="text-xl font-karla-bold mb-4" style="color: var(--theme-primary);">Backend</h3>
+                        <div class="space-y-2 text-sm text-gray-300">
+                            <p>• API Routes Next.js</p>
+                            <p>• Prisma ORM</p>
+                            <p>• PostgreSQL</p>
+                            <p>• Authentication</p>
+                            <p>• Role-based Access</p>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <h3 class="text-xl font-karla-bold mb-4" style="color: var(--theme-primary);">Infrastructure</h3>
+                        <div class="space-y-2 text-sm text-gray-300">
+                            <p>• Vercel Deployment</p>
+                            <p>• Docker Containerization</p>
+                            <p>• Database Migrations</p>
+                            <p>• Environment Variables</p>
+                            <p>• CI/CD Pipeline</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-12 p-6 bg-gray-900/50 rounded-xl border border-gray-700 animate-fade-in" style="animation-delay: 0.4s;">
+                    <div class="flex flex-col items-center space-y-4">
+                        <div class="w-full max-w-2xl h-2 gradient-bg rounded-full"></div>
+                        <div class="text-center">
+                            <p class="text-lg font-karla-bold mb-2">Flux de données</p>
+                            <p class="text-gray-400 text-sm">
+                                Client → Next.js API Routes → Prisma → PostgreSQL → Response
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interfaces Section -->
+    <section id="interfaces" class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 animate-slide-up">
+                <h2 class="text-4xl md:text-5xl font-karla-bold mb-6" style="color: #9933FF;">
+                    Interfaces
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Découvrez les différentes interfaces de notre plateforme de gestion d'infrastructure
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                 <!-- Carte Interface de Connexion -->
+                 <div class="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up">
+                     <div class="aspect-video bg-gray-800 flex items-center justify-center relative overflow-hidden">
+                         <img src="images/connexion.png" alt="Interface de Connexion" class="w-full h-full object-cover">
+                         <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                             <div class="text-center p-6">
+                                
+                             </div>
+                         </div>
+                     </div>
+                    <div class="p-6">
+                        <h4 class="font-karla-bold mb-2" style="color: #CCFF00;">Fonctionnalités</h4>
+                        <ul class="space-y-1 text-sm text-gray-300">
+                            <li>• Design futuriste avec couleurs Drelto</li>
+                            <li>• Authentification sécurisée</li>
+                            <li>• Interface responsive</li>
+                        </ul>
+                    </div>
+                </div>
+
+                                 <!-- Carte Dashboard Principal -->
+                 <div class="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up" style="animation-delay: 0.1s;">
+                     <div class="aspect-video bg-gray-800 flex items-center justify-center relative overflow-hidden">
+                         <img src="images/tableau.png" alt="Dashboard Principal" class="w-full h-full object-cover">
+                         <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                             <div class="text-center p-6">
+                                
+                             </div>
+                         </div>
+                     </div>
+                    <div class="p-6">
+                        <h4 class="font-karla-bold mb-2" style="color: #CCFF00;">Fonctionnalités</h4>
+                        <ul class="space-y-1 text-sm text-gray-300">
+                            <li>• Statistiques en temps réel</li>
+                            <li>• Services actifs et terminés</li>
+                            <li>• Navigation intuitive</li>
+                        </ul>
+                    </div>
+                </div>
+
+                                 <!-- Carte Gestion des Services -->
+                 <div class="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up" style="animation-delay: 0.2s;">
+                     <div class="aspect-video bg-gray-800 flex items-center justify-center relative overflow-hidden">
+                         <img src="images/services.png" alt="Gestion des Services" class="w-full h-full object-cover">
+                         <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                             <div class="text-center p-6">
+                                
+                             </div>
+                         </div>
+                     </div>
+                    <div class="p-6">
+                        <h4 class="font-karla-bold mb-2" style="color: #CCFF00;">Fonctionnalités</h4>
+                        <ul class="space-y-1 text-sm text-gray-300">
+                            <li>• Colonnes Défensif/Général/Offensif</li>
+                            <li>• Drag & Drop interactif</li>
+                            <li>• Suivi de progression</li>
+                        </ul>
+                    </div>
+                </div>
+
+                                 <!-- Carte Services Prédéfinis -->
+                 <div class="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up" style="animation-delay: 0.3s;">
+                     <div class="aspect-video bg-gray-800 flex items-center justify-center relative overflow-hidden">
+                         <img src="images/predefinis.png" alt="Services Prédéfinis" class="w-full h-full object-cover">
+                         <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                             <div class="text-center p-6">
+                                 
+                             </div>
+                         </div>
+                     </div>
+                    <div class="p-6">
+                        <h4 class="font-karla-bold mb-2" style="color: #CCFF00;">Fonctionnalités</h4>
+                        <ul class="space-y-1 text-sm text-gray-300">
+                            <li>• Catalogue de services</li>
+                            <li>• Recherche et filtrage</li>
+                            <li>• Ajout personnalisé (Admin)</li>
+                        </ul>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-4 sm:px-6 lg:px-8 bg-gray-900/50 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="animate-fade-in">
+                <div class="flex items-center justify-center space-x-2 mb-6">
+                    <span class="text-2xl font-karla-bold" style="color: #CCFF00;">
+                        Drelto
+                    </span>
+                </div>
+                <p class="text-gray-400 mb-6">
+                    Plateforme moderne de gestion d'infrastructure développée avec les dernières technologies
+                </p>
+                <div class="flex justify-center space-x-6">
+                    <a href="#interfaces" class="text-gray-400 hover:text-[#CCFF00] transition-colors">
+                        Interfaces
+                    </a>
+                    <a href="#tech" class="text-gray-400 hover:text-[#CCFF00] transition-colors">
+                        Technologies
+                    </a>
+                    <a href="#architecture" class="text-gray-400 hover:text-[#CCFF00] transition-colors">
+                        Architecture
+                    </a>
+                </div>
+                <div class="mt-8 pt-8 border-t border-gray-800">
+                    <p class="text-sm text-gray-500">
+                        © 2024 Drelto.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Intersection Observer pour les animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observer tous les éléments avec animation
+        document.querySelectorAll('.animate-slide-up').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html> 

@@ -13,7 +13,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const id = Number(params.id);
   if (!id) return NextResponse.json({ error: 'ID manquant' }, { status: 400 });
   const { email, password } = await req.json();
-  const data: any = {};
+  const data: { email?: string; password?: string } = {};
   if (email) data.email = email;
   if (password) data.password = await bcrypt.hash(password, 10);
   const user = await prisma.user.update({ where: { id }, data });
