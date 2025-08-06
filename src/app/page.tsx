@@ -538,6 +538,12 @@ export default function Home() {
                         importance={task.importance}
                         total={cardData?.total}
                         completed={cardData?.completed}
+                        equipmentCount={cardData?.equipmentCount}
+                        status={cardData?.status}
+                        certificationDate={cardData?.certificationDate}
+                        nextAudit={cardData?.nextAudit}
+                        priority={cardData?.priority}
+                        deadline={cardData?.deadline}
                         category={category}
                         userRole={userRole}
                         cardType={cardData?.type || 'coverage'}
