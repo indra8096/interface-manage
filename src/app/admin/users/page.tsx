@@ -16,12 +16,14 @@ export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('user');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
   const [editEmail, setEditEmail] = useState('');
   const [editPassword, setEditPassword] = useState('');
+  const [editRole, setEditRole] = useState('user');
   const router = useRouter();
 
   useEffect(() => {
@@ -48,12 +50,12 @@ export default function AdminUsersPage() {
     const res = await fetch('/api/users', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, role }),
     });
     setLoading(false);
     if (res.ok) {
       setSuccess('Utilisateur créé avec succès !');
-      setEmail(''); setPassword('');
+      setEmail(''); setPassword(''); setRole('user');
       fetchUsers();
     } else {
       setError('Erreur lors de la création de l\'utilisateur');
@@ -73,6 +75,7 @@ export default function AdminUsersPage() {
     setEditId(user.id);
     setEditEmail(user.email);
     setEditPassword('');
+    setEditRole(user.role);
   };
 
   const handleUpdate = async (e: React.FormEvent) => {
@@ -81,7 +84,7 @@ export default function AdminUsersPage() {
     const res = await fetch(`/api/users/${editId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: editEmail, password: editPassword }),
+      body: JSON.stringify({ email: editEmail, password: editPassword, role: editRole }),
     });
     setLoading(false);
     if (res.ok) {
@@ -89,6 +92,7 @@ export default function AdminUsersPage() {
       setEditId(null);
       setEditEmail('');
       setEditPassword('');
+      setEditRole('user');
       fetchUsers();
     } else {
       setError('Erreur lors de la modification de l\'utilisateur');
@@ -214,7 +218,7 @@ export default function AdminUsersPage() {
               <h2 className="text-2xl font-karla-bold mb-6" style={{ color: 'var(--text-primary)' }}>
                 Créer un nouvel utilisateur
               </h2>
-              <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+              <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                 <div>
                   <label className="block text-sm font-karla-semibold mb-2 transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
                     Adresse email
@@ -248,6 +252,25 @@ export default function AdminUsersPage() {
                      }}
                      required 
                    />
+                </div>
+                <div>
+                  <label className="block text-sm font-karla-semibold mb-2 transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
+                    Rôle
+                  </label>
+                  <select 
+                    value={role} 
+                    onChange={e => setRole(e.target.value)} 
+                    className="w-full px-4 py-3 rounded-xl border transition-all duration-300 font-karla-regular focus:outline-none focus:ring-2 focus:ring-[#CCFF00] focus:border-transparent" 
+                    style={{ 
+                      background: 'var(--bg-secondary)',
+                      borderColor: 'var(--border-primary)',
+                      color: 'var(--text-primary)'
+                    }}
+                    required 
+                  >
+                    <option value="user">Utilisateur</option>
+                    <option value="admin">Administrateur</option>
+                  </select>
                 </div>
                 <motion.button 
                   type="submit" 
@@ -331,7 +354,7 @@ export default function AdminUsersPage() {
                     >
                       {editId === user.id ? (
                         <td colSpan={3} className="p-4" style={{ background: 'var(--bg-secondary)' }}>
-                          <form onSubmit={handleUpdate} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                          <form onSubmit={handleUpdate} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                                                          <input 
                                type="email" 
                                value={editEmail} 
@@ -356,6 +379,20 @@ export default function AdminUsersPage() {
                                }}
                                placeholder="Nouveau mot de passe (optionnel)" 
                              />
+                            <select 
+                              value={editRole} 
+                              onChange={e => setEditRole(e.target.value)} 
+                              className="px-4 py-3 rounded-xl border transition-all duration-300 font-karla-regular focus:outline-none focus:ring-2 focus:ring-[#CCFF00] focus:border-transparent" 
+                              style={{ 
+                                background: 'var(--bg-primary)',
+                                borderColor: 'var(--border-primary)',
+                                color: 'var(--text-primary)'
+                              }}
+                              required 
+                            >
+                              <option value="user">Utilisateur</option>
+                              <option value="admin">Administrateur</option>
+                            </select>
                             <div className="flex gap-2">
                               <motion.button 
                                 type="submit" 

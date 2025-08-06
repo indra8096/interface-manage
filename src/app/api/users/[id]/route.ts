@@ -14,10 +14,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const { id: idParam } = await params;
   const id = Number(idParam);
   if (!id) return NextResponse.json({ error: 'ID manquant' }, { status: 400 });
-  const { email, password } = await req.json();
-  const data: { email?: string; password?: string } = {};
+  const { email, password, role } = await req.json();
+  const data: { email?: string; password?: string; role?: string } = {};
   if (email) data.email = email;
   if (password) data.password = await bcrypt.hash(password, 10);
+  if (role) data.role = role;
   const user = await prisma.user.update({ where: { id }, data });
   return NextResponse.json({ success: true, user });
 } 

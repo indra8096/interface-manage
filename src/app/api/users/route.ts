@@ -11,7 +11,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const { email, password } = await req.json();
+  const { email, password, role = 'user' } = await req.json();
   if (!email || !password) {
     return NextResponse.json({ error: 'Champs manquants' }, { status: 400 });
   }
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   }
   const hashed = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
-    data: { email, password: hashed, role: 'user' },
+    data: { email, password: hashed, role },
     select: { id: true, email: true, role: true },
   });
   return NextResponse.json(user);
