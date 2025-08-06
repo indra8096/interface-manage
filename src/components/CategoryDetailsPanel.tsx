@@ -331,10 +331,10 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     
     // Si c'est une carte sauvegardée, la supprimer du localStorage
     if (savedCards[cardName]) {
-      const updatedCards = { ...savedCards };
+    const updatedCards = { ...savedCards };
       delete updatedCards[cardName];
-      localStorage.setItem('panelCards', JSON.stringify(updatedCards));
-      setSavedCards(updatedCards);
+    localStorage.setItem('panelCards', JSON.stringify(updatedCards));
+    setSavedCards(updatedCards);
       setRenderKey(prev => prev + 1); // Forcer le re-rendu
       
       // Supprimer la carte de tasksAddedFromPanel si elle y est présente
@@ -438,78 +438,78 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     switch (cardType) {
       case 'coverage':
         return (
-          <>
-            <div className="flex justify-between items-center mb-2">
+                  <>
+                    <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-karla-medium" style={{ color: 'var(--text-primary)' }}>{card.name}</span>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-karla-bold" style={{ color: categoryColors[category] }}>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-karla-bold" style={{ color: categoryColors[category] }}>
                   {card.total && card.completed ? 
                     Math.round((card.completed / card.total) * 100) : 0}%
-                </span>
-                {userRole === 'admin' && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
+                        </span>
+                        {userRole === 'admin' && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
                       handleEditCard(card.name, 'coverage');
-                    }}
-                    className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                    style={{ 
-                      background: categoryColors[category],
-                      color: 'black'
-                    }}
-                  >
-                    MODIFIER
-                  </button>
-                )}
-                {userRole === 'admin' && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
+                            }}
+                            className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                            style={{ 
+                              background: categoryColors[category],
+                              color: 'black'
+                            }}
+                          >
+                            MODIFIER
+                          </button>
+                        )}
+                        {userRole === 'admin' && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
                       handleDeleteCard(card.name);
-                    }}
-                    className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                    style={{ 
-                      background: '#ef4444',
-                      color: 'white'
-                    }}
-                    title="Supprimer"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                )}
+                            }}
+                            className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                            style={{ 
+                              background: '#ef4444',
+                              color: 'white'
+                            }}
+                            title="Supprimer"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        )}
                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
                       handleAddToDashboard(card.name, card.description || '', 'Moyenne');
-                    }}
-                    className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                    style={{ 
-                      background: categoryColors[category],
-                      color: 'black'
-                    }}
-                  >
-                    A
-                  </button>
-                )}
-              </div>
-            </div>
-            <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
+                            }}
+                            className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                            style={{ 
+                              background: categoryColors[category],
+                              color: 'black'
+                            }}
+                          >
+                            A
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
               {card.completed || 0} complété sur {card.total || 0}
-            </div>
-            <div className="w-full bg-gray-800 rounded-full h-2">
-              <div 
-                className="h-2 rounded-full transition-all duration-500" 
-                style={{ 
+                    </div>
+                    <div className="w-full bg-gray-800 rounded-full h-2">
+                      <div 
+                        className="h-2 rounded-full transition-all duration-500" 
+                        style={{ 
                   width: `${card.total && card.completed ? 
                     Math.round((card.completed / card.total) * 100) : 0}%`, 
-                  background: categoryColors[category] 
-                }}
-              ></div>
-            </div>
-          </>
+                          background: categoryColors[category] 
+                        }}
+                      ></div>
+                    </div>
+                  </>
         );
 
       case 'infrastructure':
@@ -523,135 +523,135 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
               }}></div>
               <span className="text-sm font-karla-bold" style={{ color: 'var(--text-primary)' }}>{card.name}</span>
               <div className="flex items-center gap-2 ml-auto">
-                {userRole === 'admin' && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
+                        {userRole === 'admin' && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
                       handleEditCard(card.name, 'infrastructure');
-                    }}
-                    className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                    style={{ 
-                      background: categoryColors[category],
-                      color: 'black'
-                    }}
-                  >
-                    MODIFIER
-                  </button>
-                )}
-                {userRole === 'admin' && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
+                            }}
+                            className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                            style={{ 
+                              background: categoryColors[category],
+                              color: 'black'
+                            }}
+                          >
+                            MODIFIER
+                          </button>
+                        )}
+                        {userRole === 'admin' && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
                       handleDeleteCard(card.name);
-                    }}
-                    className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                    style={{ 
-                      background: '#ef4444',
-                      color: 'white'
-                    }}
-                    title="Supprimer"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                )}
+                            }}
+                            className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                            style={{ 
+                              background: '#ef4444',
+                              color: 'white'
+                            }}
+                            title="Supprimer"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        )}
                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
                       handleAddToDashboard(card.name, card.description || '', 'Moyenne');
-                    }}
-                    className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                    style={{ 
-                      background: categoryColors[category],
-                      color: 'black'
-                    }}
-                  >
-                    A
-                  </button>
-                )}
-              </div>
-            </div>
+                            }}
+                            className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                            style={{ 
+                              background: categoryColors[category],
+                              color: 'black'
+                            }}
+                          >
+                            A
+                          </button>
+                        )}
+                      </div>
+                    </div>
             <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>
               {card.equipmentCount || 0} équipements
-            </div>
+                    </div>
             <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
               État: {card.status || 'Normal'}
-            </div>
-          </>
+                    </div>
+                  </>
         );
 
       case 'compliance':
-        return (
-          <>
+                  return (
+                    <>
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-karla-bold" style={{ color: 'var(--text-primary)' }}>{card.name}</span>
-              <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2">
                 <span className="px-3 py-1 rounded-full text-xs font-karla-bold" style={{ 
                   background: card.status === 'CONFORME' ? '#10b981' : 
                              card.status === 'EN COURS' ? '#f59e0b' : '#ef4444', 
                   color: 'black'
                 }}>
                   {card.status}
-                </span>
-                {userRole === 'admin' && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
+                          </span>
+                          {userRole === 'admin' && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
                       handleEditCard(card.name, 'compliance');
-                    }}
-                    className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                    style={{ 
-                      background: categoryColors[category],
-                      color: 'black'
-                    }}
-                  >
-                    MODIFIER
-                  </button>
-                )}
-                {userRole === 'admin' && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteCard(card.name);
-                    }}
-                    className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                    style={{ 
-                      background: '#ef4444',
-                      color: 'white'
-                    }}
-                    title="Supprimer"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                )}
-                {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAddToDashboard(card.name, card.description || '', 'Moyenne');
-                    }}
-                    className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                    style={{ 
-                      background: categoryColors[category],
-                      color: 'black'
-                    }}
-                  >
-                    A
-                  </button>
-                )}
-              </div>
-            </div>
+                              }}
+                              className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                              style={{ 
+                                background: categoryColors[category],
+                                color: 'black'
+                              }}
+                            >
+                              MODIFIER
+                            </button>
+                          )}
+                          {userRole === 'admin' && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteCard(card.name);
+                              }}
+                              className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                              style={{ 
+                                background: '#ef4444',
+                                color: 'white'
+                              }}
+                              title="Supprimer"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          )}
+                          {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddToDashboard(card.name, card.description || '', 'Moyenne');
+                              }}
+                              className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                              style={{ 
+                                background: categoryColors[category],
+                                color: 'black'
+                              }}
+                            >
+                              A
+                            </button>
+                          )}
+                        </div>
+                      </div>
             <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>
               {card.certificationDate ? `Certification obtenue en ${card.certificationDate}` : 'Mise en conformité en cours'}
-            </div>
+                      </div>
             <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
               {card.nextAudit ? `Prochaine audit: ${card.nextAudit}` : 'Échéance: Octobre 2024'}
-            </div>
-          </>
+                      </div>
+                    </>
         );
 
       case 'recommendation':
@@ -671,59 +671,59 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                 </p>
                 <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
                   Échéance: {card.deadline || 'Non définie'}
-                </div>
+              </div>
               </div>
               <div className="flex items-center gap-2">
-                {userRole === 'admin' && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
+                      {userRole === 'admin' && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
                       handleEditCard(card.name, 'recommendation');
-                    }}
-                    className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                    style={{ 
-                      background: categoryColors[category],
-                      color: 'black'
-                    }}
-                  >
-                    MODIFIER
-                  </button>
-                )}
-                {userRole === 'admin' && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
+                          }}
+                          className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                          style={{ 
+                            background: categoryColors[category],
+                            color: 'black'
+                          }}
+                        >
+                          MODIFIER
+                        </button>
+                      )}
+                      {userRole === 'admin' && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
                       handleDeleteCard(card.name);
-                    }}
-                    className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                    style={{ 
-                      background: '#ef4444',
-                      color: 'white'
-                    }}
-                    title="Supprimer"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                )}
+                          }}
+                          className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                          style={{ 
+                            background: '#ef4444',
+                            color: 'white'
+                          }}
+                          title="Supprimer"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      )}
                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
                       handleAddToDashboard(card.name, card.description || '', 'Moyenne');
-                    }}
-                    className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                    style={{ 
-                      background: categoryColors[category],
-                      color: 'black'
-                    }}
-                  >
-                    A
-                  </button>
-                )}
-              </div>
-            </div>
+                          }}
+                          className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                          style={{ 
+                            background: categoryColors[category],
+                            color: 'black'
+                          }}
+                        >
+                          A
+                        </button>
+                      )}
+                    </div>
+                  </div>
           </>
         );
 
@@ -743,22 +743,22 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
             }}>
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>Indicateurs de Couverture</h3>
-                {userRole === 'admin' && (
-                  <button
+                         {userRole === 'admin' && (
+                           <button
                     onClick={() => handleAddNewCard('coverage')}
                     className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-karla-medium transition-all duration-300"
-                    style={{ 
-                      background: categoryColors[category],
-                      color: 'black'
-                    }}
+                             style={{ 
+                               background: categoryColors[category],
+                               color: 'black'
+                             }}
                     title="Ajouter une nouvelle carte"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           >
+                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                  </button>
-                )}
-              </div>
+                             </svg>
+                           </button>
+                         )}
+                       </div>
               
               {/* Couverture globale */}
               <div className="mb-8">
@@ -769,13 +769,13 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                 <div className="w-full bg-gray-800 rounded-full h-3">
                   <div 
                     className="h-3 rounded-full transition-all duration-700 ease-out" 
-                    style={{ 
+                             style={{ 
                       width: '67%', 
                       background: `linear-gradient(90deg, ${categoryColors[category]}, ${categoryColors[category]}80)` 
                     }}
                   ></div>
-                </div>
-              </div>
+                       </div>
+                     </div>
 
               {/* Détails par service */}
               <div className="space-y-4">
@@ -785,16 +785,16 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                     <>
                       {renderCardByType(card)}
                     </>
-                  )}
-                    </div>
+                         )}
+                       </div>
                 ))}
-              </div>
-            </div>
-          </div>
+                     </div>
+                     </div>
+                     </div>
         );
 
       case 'infrastructure':
-        return (
+                  return (
           <div className="space-y-6">
             <div className="p-6 rounded-xl border transition-all duration-300" style={{ 
               background: 'var(--bg-secondary)', 
@@ -802,22 +802,22 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
             }}>
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>Équipements d&apos;Infrastructure</h3>
-                {userRole === 'admin' && (
-                  <button
+                          {userRole === 'admin' && (
+                            <button
                     onClick={() => handleAddNewCard('infrastructure')}
                     className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-karla-medium transition-all duration-300"
-                    style={{ 
-                      background: categoryColors[category],
-                      color: 'black'
-                    }}
+                              style={{ 
+                                background: categoryColors[category],
+                                color: 'black'
+                              }}
                     title="Ajouter une nouvelle carte"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                  </button>
-                )}
-              </div>
+                              </svg>
+                            </button>
+                          )}
+                        </div>
               
               <div className="grid grid-cols-1 gap-4">
                 {getCardsByType('infrastructure').map((card) => (
@@ -825,7 +825,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                     {renderCardWithStatus(card.name, card.description || '', 'Moyenne',
                       <>
                   {renderCardByType(card)}
-                      </>
+                    </>
                   )}
                     </div>
                 ))}
@@ -867,8 +867,8 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                    <>
                      {renderCardByType(card)}
                    </>
-                 )}
-                  </div>
+                         )}
+                       </div>
                 ))}
               </div>
             </div>

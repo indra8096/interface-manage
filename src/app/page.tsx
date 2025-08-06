@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Footer from '@/components/Footer';
 import PanelCard from '../components/PanelCard';
+import { AnimatePresence } from 'framer-motion';
 
 interface Task {
   id: number;
@@ -68,6 +69,7 @@ export default function Home() {
 
   const [isServicesSidebarOpen, setIsServicesSidebarOpen] = useState(false);
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false); // Nouvel état pour la popup d'historique
   const router = useRouter();
 
   // Charger les tâches depuis l'API
@@ -354,6 +356,23 @@ export default function Home() {
     }
   };
 
+  // Fonction pour récupérer les tâches terminées
+  const getCompletedTasks = () => {
+    const completedTasks = tasks.filter(task => task.status === 'completed');
+    const completedPanelTasks = tasksAddedFromPanel.filter(task => {
+      const cardData = getCardData(task.name);
+      if (cardData?.type === 'coverage') {
+        return cardData.total && cardData.completed && cardData.completed >= cardData.total;
+      }
+      return false; // Pour l'instant, on ne considère que les tâches de type coverage comme "terminées"
+    });
+    
+    return {
+      regularTasks: completedTasks,
+      panelTasks: completedPanelTasks
+    };
+  };
+
      if (isLoading) {
      return (
        <div className="min-h-screen flex items-center justify-center transition-all duration-300" style={{ background: 'var(--bg-primary)' }}>
@@ -486,13 +505,16 @@ export default function Home() {
                 </div>
               </motion.div>
               
-              <motion.div 
-                className="p-6 rounded-xl hover:border-[#9933FF] transition-all duration-300"
+              <motion.div
+                key="completed"
+                whileHover={{ scale: 1.05, y: -5 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsHistoryModalOpen(true)}
+                className="p-6 rounded-xl hover:border-[#9933FF] transition-all duration-300 cursor-pointer"
                 style={{
                   background: 'var(--bg-card)',
                   border: '1px solid var(--border-primary)'
                 }}
-                whileHover={{ y: -5 }}
               >
                 <div className="text-center">
                                      <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
@@ -652,6 +674,163 @@ export default function Home() {
         tasksAddedFromPanel={tasksAddedFromPanel}
         forceSyncPanelData={forceSyncPanelData}
       />
+
+      {/* Popup d'historique des tâches terminées */}
+      <AnimatePresence>
+        {isHistoryModalOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsHistoryModalOpen(false)}
+              className="fixed inset-0 bg-black bg-opacity-50 z-[100]"
+            />
+            
+            <div className="fixed inset-0 flex items-center justify-center z-[110] p-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="w-full max-w-4xl bg-black border rounded-xl p-6 max-h-[90vh] overflow-y-auto"
+                style={{ borderColor: 'var(--border-primary)' }}
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-karla-bold" style={{ color: 'var(--text-primary)' }}>
+                    Historique des Tâches Terminées
+                  </h3>
+                  <button
+                    onClick={() => setIsHistoryModalOpen(false)}
+                    className="p-2 rounded-lg hover:bg-gray-800 transition-all duration-300"
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  {/* Tâches régulières terminées */}
+                  {getCompletedTasks().regularTasks.length > 0 && (
+                    <div>
+                      <h4 className="text-lg font-karla-bold mb-4" style={{ color: 'var(--text-primary)' }}>
+                        Tâches Régulières Terminées ({getCompletedTasks().regularTasks.length})
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {getCompletedTasks().regularTasks.map((task, index) => (
+                          <motion.div
+                            key={`regular-${task.id}`}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="p-4 rounded-lg border"
+                            style={{ 
+                              background: 'var(--bg-card)', 
+                              borderColor: 'var(--border-secondary)' 
+                            }}
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-karla-bold" style={{ color: 'var(--text-primary)' }}>
+                                {task.name}
+                              </span>
+                              <span className="px-2 py-1 rounded-full text-xs font-karla-bold" style={{ 
+                                background: '#10b981', 
+                                color: 'black' 
+                              }}>
+                                TERMINÉ
+                              </span>
+                            </div>
+                            <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                              Score: {task.score}/100
+                            </div>
+                            <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                              Catégorie: {task.category}
+                            </div>
+                            {task.description && (
+                              <div className="text-sm mt-2" style={{ color: 'var(--text-muted)' }}>
+                                {task.description}
+                              </div>
+                            )}
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Tâches du panel terminées */}
+                  {getCompletedTasks().panelTasks.length > 0 && (
+                    <div>
+                      <h4 className="text-lg font-karla-bold mb-4" style={{ color: 'var(--text-primary)' }}>
+                        Tâches du Panel Terminées ({getCompletedTasks().panelTasks.length})
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {getCompletedTasks().panelTasks.map((task, index) => {
+                          const cardData = getCardData(task.name);
+                          
+                          return (
+                            <motion.div
+                              key={`panel-${task.name}`}
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                              className="p-4 rounded-lg border"
+                              style={{ 
+                                background: 'var(--bg-card)', 
+                                borderColor: 'var(--border-secondary)' 
+                              }}
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="font-karla-bold" style={{ color: 'var(--text-primary)' }}>
+                                  {task.name}
+                                </span>
+                                <span className="px-2 py-1 rounded-full text-xs font-karla-bold" style={{ 
+                                  background: '#10b981', 
+                                  color: 'black' 
+                                }}>
+                                  100%
+                                </span>
+                              </div>
+                              <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                                {cardData?.completed || 0} complété sur {cardData?.total || 0}
+                              </div>
+                              <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                                Type: {cardData?.type || 'coverage'}
+                              </div>
+                              {cardData?.description && (
+                                <div className="text-sm mt-2" style={{ color: 'var(--text-muted)' }}>
+                                  {cardData.description}
+                                </div>
+                              )}
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Message si aucune tâche terminée */}
+                  {getCompletedTasks().regularTasks.length === 0 && getCompletedTasks().panelTasks.length === 0 && (
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ background: 'var(--bg-secondary)' }}>
+                        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: 'var(--text-muted)' }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <h4 className="text-lg font-karla-bold mb-2" style={{ color: 'var(--text-primary)' }}>
+                        Aucune tâche terminée
+                      </h4>
+                      <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                        Les tâches terminées apparaîtront ici
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            </div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
