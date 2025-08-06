@@ -143,12 +143,35 @@ const PanelCard: React.FC<PanelCardProps> = ({
 
   return (
     <div 
-      className="p-4 rounded-lg border transition-all duration-300 hover:border-opacity-60 group relative"
+      className={`p-4 rounded-lg border transition-all duration-300 hover:border-opacity-60 group relative ${
+        userRole === 'admin' && onDelete ? 'pr-12' : ''
+      }`}
       style={{ 
         background: 'var(--bg-card)', 
         borderColor: 'var(--border-secondary)' 
       }}
     >
+      {/* Icône corbeille - Toujours à droite */}
+      {userRole === 'admin' && onDelete && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(name);
+          }}
+          className="absolute top-2 right-2 p-2 rounded-lg transition-all duration-200 hover:scale-105"
+          style={{
+            background: 'var(--bg-secondary)',
+            color: '#ef4444',
+            border: '1px solid var(--border-primary)'
+          }}
+          title="Supprimer"
+        >
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+          </svg>
+        </button>
+      )}
+
       <div className="flex justify-between items-center mb-2">
         {cardType !== 'infrastructure' && cardType !== 'compliance' && cardType !== 'recommendation' && (
           <span className="text-sm font-karla-medium" style={{ color: 'var(--text-primary)' }}>{name}</span>
@@ -172,24 +195,6 @@ const PanelCard: React.FC<PanelCardProps> = ({
               }}
             >
               MODIFIER
-            </button>
-          )}
-          {userRole === 'admin' && onDelete && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete(name);
-              }}
-              className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-              style={{ 
-                background: '#ef4444',
-                color: 'white'
-              }}
-              title="Supprimer"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
             </button>
           )}
           {userRole === 'admin' && onAddToDashboard && !isAddedToDashboard && (

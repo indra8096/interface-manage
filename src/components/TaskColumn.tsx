@@ -242,7 +242,6 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
       }}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-karla-semibold transition-colors duration-300" style={{ color: 'var(--text-secondary)' }}>PROGRESSION</h3>
-          <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>OBJECTIF: 100%</span>
         </div>
         <div className="flex items-center justify-center">
           <ProgressCircle
@@ -252,9 +251,6 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
           />
         </div>
         <div className="text-center mt-4">
-          <div className="text-xs font-karla-medium mb-1 transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
-            SERVICES COMPLÉTÉS
-          </div>
           <div className="text-lg font-karla-bold" style={{ color: categoryColors[category] }}>
             {tasks.length}/10
           </div>
@@ -263,8 +259,7 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
 
       {/* Liste des tâches avec design futuriste */}
       <div className="space-y-4 mb-6">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-karla-semibold transition-colors duration-300" style={{ color: 'var(--text-secondary)' }}>SERVICES ACTIFS</h3>
+        <div className="flex items-center justify-end">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--theme-primary)' }}></div>
             <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>ONLINE</span>

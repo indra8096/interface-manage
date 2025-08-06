@@ -151,16 +151,6 @@ const TaskCard: React.FC<TaskCardProps> = ({
                     <FontAwesomeIcon icon={faInfoCircle} className="w-4 h-4" />
                   </button>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div 
-                    className="px-3 py-1 rounded-full text-xs font-karla-bold text-black"
-                    style={{ 
-                      background: `linear-gradient(135deg, ${category ? categoryColors[category as keyof typeof categoryColors] : statusColors[status]}, ${category ? categoryColors[category as keyof typeof categoryColors] : statusColors[status]}80)`
-                    }}
-                  >
-                    {score}
-                  </div>
-                </div>
               </div>
 
               {/* Section importance */}

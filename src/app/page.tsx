@@ -564,7 +564,7 @@ export default function Home() {
                 </div>
               </motion.div>
               
-              <motion.div
+              <motion.div 
                 key="completed"
                 whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.95 }}
@@ -576,9 +576,9 @@ export default function Home() {
                 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
-                    {tasks.filter(t => t.status === 'completed').length}
-                  </div>
+                                     <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
+                     {tasks.filter(t => t.status === 'completed').length}
+                   </div>
                   <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>TERMINÉS</div>
                 </div>
                 {/* Indicateur "voir plus" */}

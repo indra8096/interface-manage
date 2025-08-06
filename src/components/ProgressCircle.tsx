@@ -76,13 +76,10 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({ percentage, color, cate
           className="text-center"
         >
           <div 
-            className="text-3xl font-karla-bold mb-2"
+            className="text-3xl font-karla-bold"
             style={{ color }}
           >
             {percentage}%
-          </div>
-          <div className="text-xs text-gray-400 font-karla-medium">
-            COMPLÉTÉ
           </div>
         </motion.div>
       </div>
