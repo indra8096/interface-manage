@@ -569,17 +569,21 @@ export default function Home() {
                 whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsHistoryModalOpen(true)}
-                className="p-6 rounded-xl hover:border-[#9933FF] transition-all duration-300 cursor-pointer"
+                className="p-6 rounded-xl hover:border-[#9933FF] transition-all duration-300 cursor-pointer relative"
                 style={{
                   background: 'var(--bg-card)',
                   border: '1px solid var(--border-primary)'
                 }}
               >
                 <div className="text-center">
-                                     <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
-                     {tasks.filter(t => t.status === 'completed').length}
-                   </div>
+                  <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
+                    {tasks.filter(t => t.status === 'completed').length}
+                  </div>
                   <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>TERMINÉS</div>
+                </div>
+                {/* Indicateur "voir plus" */}
+                <div className="absolute bottom-2 right-3 text-xs font-karla-medium" style={{ color: 'white' }}>
+                  voir plus &gt;
                 </div>
               </motion.div>
             </div>
@@ -593,13 +597,13 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="mb-8"
             >
-              <div className="mb-6">
-                <h2 className="text-2xl font-karla-bold mb-2 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>
-                  Indicateurs & Suivi Sécurité
-                </h2>
-              </div>
+                              <div className="mb-6">
+                  <h2 className="text-2xl font-karla-bold mb-2 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>
+                    Indicateurs & Suivi Sécurité
+                  </h2>
+                </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
                 {tasksAddedFromPanel.map((task, index) => {
                   const cardData = getCardData(task.name);
                   const category = getCategoryFromTask(task.name);
@@ -607,11 +611,11 @@ export default function Home() {
                   console.log('Rendu de la carte:', task.name, 'cardData:', cardData, 'category:', category);
                   
                   return (
-                    <motion.div
+                  <motion.div
                       key={`${task.name}-${renderKey}-${index}`}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
                     >
                       <PanelCard 
                         name={task.name} 
@@ -631,7 +635,7 @@ export default function Home() {
                         tasksAddedFromPanel={tasksAddedFromPanel}
                         onDelete={removeTaskFromPanel}
                       />
-                    </motion.div>
+                  </motion.div>
                   );
                 })}
               </div>
@@ -789,17 +793,19 @@ export default function Home() {
                               borderColor: 'var(--border-secondary)' 
                             }}
                           >
-                            {/* Bouton de suppression */}
-                            <button
-                              onClick={() => confirmDeleteFromHistory(task.id)}
-                              className="absolute bottom-2 right-2 p-1 rounded-full transition-all duration-300 hover:bg-red-600"
-                              style={{ color: '#ef4444' }}
-                              title="Supprimer de l'historique"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
+                            {/* Bouton de suppression - Visible seulement pour les admins */}
+                            {userRole === 'admin' && (
+                              <button
+                                onClick={() => confirmDeleteFromHistory(task.id)}
+                                className="absolute bottom-2 right-2 p-1 rounded-full transition-all duration-300 hover:bg-red-600"
+                                style={{ color: '#ef4444' }}
+                                title="Supprimer de l'historique"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            )}
                             
                             <div className="flex items-center justify-between mb-2">
                               <span className="font-karla-bold" style={{ color: 'var(--text-primary)' }}>
@@ -851,17 +857,19 @@ export default function Home() {
                                 borderColor: 'var(--border-secondary)' 
                               }}
                             >
-                              {/* Bouton de suppression */}
-                              <button
-                                onClick={() => confirmDeleteFromHistory(undefined, task.name, 'panel')}
-                                className="absolute bottom-2 right-2 p-1 rounded-full transition-all duration-300 hover:bg-red-600"
-                                style={{ color: '#ef4444' }}
-                                title="Supprimer de l'historique"
-                              >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                              </button>
+                              {/* Bouton de suppression - Visible seulement pour les admins */}
+                              {userRole === 'admin' && (
+                                <button
+                                  onClick={() => confirmDeleteFromHistory(undefined, task.name, 'panel')}
+                                  className="absolute bottom-2 right-2 p-1 rounded-full transition-all duration-300 hover:bg-red-600"
+                                  style={{ color: '#ef4444' }}
+                                  title="Supprimer de l'historique"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                </button>
+                              )}
                               
                               <div className="flex items-center justify-between mb-2">
                                 <span className="font-karla-bold" style={{ color: 'var(--text-primary)' }}>

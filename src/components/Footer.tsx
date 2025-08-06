@@ -15,7 +15,7 @@ export default function Footer() {
         <div className="flex items-center justify-center">
           <div className="text-center">
             <p className="font-karla-bold text-sm" style={{ color: '#FFFFFF' }}>
-              © 2024 drelto. Tous droits réservés.
+              © 2025 drelto. Tous droits réservés.
             </p>
             <p className="font-karla-regular text-xs mt-1" style={{ color: '#FFFFFF' }}>
               Système de gestion des services de cybersécurité
