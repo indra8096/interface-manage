@@ -331,11 +331,19 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     
     // Si c'est une carte sauvegardée, la supprimer du localStorage
     if (savedCards[cardName]) {
-    const updatedCards = { ...savedCards };
+      const updatedCards = { ...savedCards };
       delete updatedCards[cardName];
-    localStorage.setItem('panelCards', JSON.stringify(updatedCards));
-    setSavedCards(updatedCards);
+      localStorage.setItem('panelCards', JSON.stringify(updatedCards));
+      setSavedCards(updatedCards);
       setRenderKey(prev => prev + 1); // Forcer le re-rendu
+      
+      // Supprimer la carte de tasksAddedFromPanel si elle y est présente
+      const currentTasksFromPanel = JSON.parse(localStorage.getItem('tasksAddedFromPanel') || '[]');
+      const updatedTasksFromPanel = currentTasksFromPanel.filter((task: { name: string; [key: string]: unknown }) => task.name !== cardName);
+      if (updatedTasksFromPanel.length !== currentTasksFromPanel.length) {
+        console.log('Suppression de la carte de tasksAddedFromPanel:', cardName);
+        localStorage.setItem('tasksAddedFromPanel', JSON.stringify(updatedTasksFromPanel));
+      }
     }
     
     // Si c'est une carte de base, l'ajouter à la liste des cartes supprimées
@@ -345,6 +353,14 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
       localStorage.setItem('deletedCards', JSON.stringify([...updatedDeletedCards]));
       setDeletedCards(updatedDeletedCards);
       setRenderKey(prev => prev + 1); // Forcer le re-rendu
+      
+      // Supprimer la carte de tasksAddedFromPanel si elle y est présente
+      const currentTasksFromPanel = JSON.parse(localStorage.getItem('tasksAddedFromPanel') || '[]');
+      const updatedTasksFromPanel = currentTasksFromPanel.filter((task: { name: string; [key: string]: unknown }) => task.name !== cardName);
+      if (updatedTasksFromPanel.length !== currentTasksFromPanel.length) {
+        console.log('Suppression de la carte de base de tasksAddedFromPanel:', cardName);
+        localStorage.setItem('tasksAddedFromPanel', JSON.stringify(updatedTasksFromPanel));
+      }
     }
     
     // Déclencher la synchronisation dans la page d'accueil
