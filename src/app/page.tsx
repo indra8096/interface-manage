@@ -70,6 +70,7 @@ export default function Home() {
   const [isServicesSidebarOpen, setIsServicesSidebarOpen] = useState(false);
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false); // Nouvel état pour la popup d'historique
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{ show: boolean; taskId?: number; taskName?: string; type: 'regular' | 'panel' }>({ show: false, type: 'regular' });
   const router = useRouter();
 
   // Charger les tâches depuis l'API
@@ -371,6 +372,64 @@ export default function Home() {
       regularTasks: completedTasks,
       panelTasks: completedPanelTasks
     };
+  };
+
+  // Fonction pour supprimer une tâche régulière de l'historique
+  const removeFromHistory = async (taskId: number) => {
+    try {
+      // Supprimer de la base de données
+      const response = await fetch(`/api/tasks/${taskId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        // Mettre à jour l'état local
+        setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+        console.log('Tâche supprimée de l\'historique:', taskId);
+      } else {
+        console.error('Erreur lors de la suppression de la tâche');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error);
+    }
+  };
+
+  // Fonction pour supprimer une tâche du panel de l'historique
+  const removePanelTaskFromHistory = (taskName: string) => {
+    // Supprimer de tasksAddedFromPanel
+    const updatedTasks = tasksAddedFromPanel.filter(task => task.name !== taskName);
+    setTasksAddedFromPanel(updatedTasks);
+    localStorage.setItem('tasksAddedFromPanel', JSON.stringify(updatedTasks));
+    
+    // Supprimer des données du panel si elle existe
+    const currentPanelCards = JSON.parse(localStorage.getItem('panelCards') || '{}');
+    if (currentPanelCards[taskName]) {
+      delete currentPanelCards[taskName];
+      localStorage.setItem('panelCards', JSON.stringify(currentPanelCards));
+      setPanelCards(currentPanelCards);
+    }
+    
+    console.log('Tâche du panel supprimée de l\'historique:', taskName);
+  };
+
+  // Fonction pour demander la confirmation de suppression
+  const confirmDeleteFromHistory = (taskId?: number, taskName?: string, type: 'regular' | 'panel' = 'regular') => {
+    setDeleteConfirmation({ show: true, taskId, taskName, type });
+  };
+
+  // Fonction pour confirmer la suppression
+  const handleConfirmDeleteFromHistory = () => {
+    if (deleteConfirmation.type === 'regular' && deleteConfirmation.taskId) {
+      removeFromHistory(deleteConfirmation.taskId);
+    } else if (deleteConfirmation.type === 'panel' && deleteConfirmation.taskName) {
+      removePanelTaskFromHistory(deleteConfirmation.taskName);
+    }
+    setDeleteConfirmation({ show: false, type: 'regular' });
+  };
+
+  // Fonction pour annuler la suppression
+  const cancelDeleteFromHistory = () => {
+    setDeleteConfirmation({ show: false, type: 'regular' });
   };
 
      if (isLoading) {
@@ -724,12 +783,24 @@ export default function Home() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
-                            className="p-4 rounded-lg border"
+                            className="p-4 rounded-lg border relative group"
                             style={{ 
                               background: 'var(--bg-card)', 
                               borderColor: 'var(--border-secondary)' 
                             }}
                           >
+                            {/* Bouton de suppression */}
+                            <button
+                              onClick={() => confirmDeleteFromHistory(task.id)}
+                              className="absolute bottom-2 right-2 p-1 rounded-full transition-all duration-300 hover:bg-red-600"
+                              style={{ color: '#ef4444' }}
+                              title="Supprimer de l'historique"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                            
                             <div className="flex items-center justify-between mb-2">
                               <span className="font-karla-bold" style={{ color: 'var(--text-primary)' }}>
                                 {task.name}
@@ -774,12 +845,24 @@ export default function Home() {
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ delay: index * 0.1 }}
-                              className="p-4 rounded-lg border"
+                              className="p-4 rounded-lg border relative group"
                               style={{ 
                                 background: 'var(--bg-card)', 
                                 borderColor: 'var(--border-secondary)' 
                               }}
                             >
+                              {/* Bouton de suppression */}
+                              <button
+                                onClick={() => confirmDeleteFromHistory(undefined, task.name, 'panel')}
+                                className="absolute bottom-2 right-2 p-1 rounded-full transition-all duration-300 hover:bg-red-600"
+                                style={{ color: '#ef4444' }}
+                                title="Supprimer de l'historique"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                              
                               <div className="flex items-center justify-between mb-2">
                                 <span className="font-karla-bold" style={{ color: 'var(--text-primary)' }}>
                                   {task.name}
@@ -825,6 +908,94 @@ export default function Home() {
                       </p>
                     </div>
                   )}
+                </div>
+              </motion.div>
+            </div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Popup de confirmation de suppression */}
+      <AnimatePresence>
+        {deleteConfirmation.show && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={cancelDeleteFromHistory}
+              className="fixed inset-0 bg-black bg-opacity-50 z-[120]"
+            />
+            
+            <div className="fixed inset-0 flex items-center justify-center z-[130] p-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="w-full max-w-md bg-black border rounded-xl p-6"
+                style={{ borderColor: 'var(--border-primary)' }}
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>
+                    Confirmer la suppression
+                  </h3>
+                  <button
+                    onClick={cancelDeleteFromHistory}
+                    className="p-2 rounded-lg hover:bg-gray-800 transition-all duration-300"
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="mb-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: '#ef4444' }}>
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="text-base font-karla-bold" style={{ color: 'var(--text-primary)' }}>
+                        Supprimer de l&apos;historique
+                      </h4>
+                      <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                        Cette action est irréversible
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                    Êtes-vous sûr de vouloir supprimer cette tâche de l&apos;historique ?
+                  </p>
+                  <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
+                    La tâche sera également supprimée de la liste des tâches actives.
+                  </p>
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={cancelDeleteFromHistory}
+                    className="flex-1 px-4 py-3 rounded-lg border transition-all duration-300 font-karla-medium"
+                    style={{ 
+                      borderColor: 'var(--border-secondary)',
+                      color: 'var(--text-muted)'
+                    }}
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    onClick={handleConfirmDeleteFromHistory}
+                    className="flex-1 px-4 py-3 rounded-lg font-karla-medium transition-all duration-300"
+                    style={{ 
+                      background: '#ef4444',
+                      color: 'white'
+                    }}
+                  >
+                    Supprimer
+                  </button>
                 </div>
               </motion.div>
             </div>
