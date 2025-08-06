@@ -64,6 +64,7 @@ export default function Home() {
     assignedTo: string;
   }>>([]);
   const [panelCards, setPanelCards] = useState<Record<string, PanelCardData>>({});
+  const [renderKey, setRenderKey] = useState(0); // Pour forcer le re-rendu des cartes
 
   const [isServicesSidebarOpen, setIsServicesSidebarOpen] = useState(false);
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
@@ -118,6 +119,56 @@ export default function Home() {
 
   useEffect(() => {
     fetchTasks();
+  }, []);
+
+  // Synchronisation avec les données du panel
+  useEffect(() => {
+    let lastPanelCards = '';
+    let lastTasksFromPanel = '';
+
+    const syncPanelData = () => {
+      if (typeof window !== 'undefined') {
+        // Vérifier les changements dans panelCards
+        const savedPanelCards = localStorage.getItem('panelCards') || '';
+        if (savedPanelCards !== lastPanelCards) {
+          console.log('Changement détecté dans panelCards');
+          lastPanelCards = savedPanelCards;
+          try {
+            const parsedCards = JSON.parse(savedPanelCards);
+            console.log('Synchronisation - Cartes mises à jour:', parsedCards);
+            setPanelCards(parsedCards);
+            setRenderKey(prev => prev + 1);
+          } catch (error) {
+            console.error('Erreur lors de la synchronisation des cartes du panneau:', error);
+          }
+        }
+
+        // Vérifier les changements dans tasksAddedFromPanel
+        const savedTasksFromPanel = localStorage.getItem('tasksAddedFromPanel') || '';
+        if (savedTasksFromPanel !== lastTasksFromPanel) {
+          console.log('Changement détecté dans tasksAddedFromPanel');
+          lastTasksFromPanel = savedTasksFromPanel;
+          try {
+            const parsedTasks = JSON.parse(savedTasksFromPanel);
+            console.log('Synchronisation - Tâches mises à jour:', parsedTasks);
+            setTasksAddedFromPanel(parsedTasks);
+            setRenderKey(prev => prev + 1);
+          } catch (error) {
+            console.error('Erreur lors de la synchronisation des tâches du panneau:', error);
+          }
+        }
+      }
+    };
+
+    // Synchroniser immédiatement
+    syncPanelData();
+
+    // Vérifier les changements toutes les 500ms pour une synchronisation plus rapide
+    const interval = setInterval(syncPanelData, 500);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   const handleAddTask = (taskData: { name: string; score: number; category: string; description: string; importance: string; dueDate: string; assignedTo: string }) => {
@@ -246,8 +297,61 @@ export default function Home() {
     if (cardData && cardData.category) {
       return cardData.category;
     }
+    
+    // Si pas de catégorie dans les données, déterminer basé sur le type de carte
+    if (cardData && cardData.type) {
+      const typeToCategoryMap: Record<string, 'defensive' | 'general' | 'offensive'> = {
+        'coverage': 'defensive',      // Couverture = défensif
+        'infrastructure': 'defensive', // Infrastructure = défensif
+        'compliance': 'general',      // Conformité = général
+        'recommendation': 'general'   // Recommandations = général
+      };
+      
+      return typeToCategoryMap[cardData.type] || 'general';
+    }
+    
     // Valeur par défaut basée sur le contexte
     return 'general';
+  };
+
+  // Fonction pour forcer la synchronisation des données du panel
+  const forceSyncPanelData = () => {
+    console.log('ForceSyncPanelData appelé - Synchronisation immédiate');
+    if (typeof window !== 'undefined') {
+      // Forcer la récupération immédiate des données
+      const savedPanelCards = localStorage.getItem('panelCards');
+      const savedTasksFromPanel = localStorage.getItem('tasksAddedFromPanel');
+      
+      console.log('Données actuelles - panelCards:', savedPanelCards);
+      console.log('Données actuelles - tasksAddedFromPanel:', savedTasksFromPanel);
+      
+      if (savedPanelCards) {
+        try {
+          const parsedCards = JSON.parse(savedPanelCards);
+          console.log('Mise à jour immédiate des cartes:', parsedCards);
+          setPanelCards(parsedCards);
+        } catch (error) {
+          console.error('Erreur lors de la synchronisation des cartes:', error);
+        }
+      }
+
+      if (savedTasksFromPanel) {
+        try {
+          const parsedTasks = JSON.parse(savedTasksFromPanel);
+          console.log('Mise à jour immédiate des tâches:', parsedTasks);
+          setTasksAddedFromPanel(parsedTasks);
+        } catch (error) {
+          console.error('Erreur lors de la synchronisation des tâches:', error);
+        }
+      }
+      
+      // Forcer le re-rendu immédiat
+      setRenderKey(prev => {
+        const newKey = prev + 1;
+        console.log('Nouveau renderKey:', newKey);
+        return newKey;
+      });
+    }
   };
 
      if (isLoading) {
@@ -419,9 +523,11 @@ export default function Home() {
                   const cardData = getCardData(task.name);
                   const category = getCategoryFromTask(task.name);
                   
+                  console.log('Rendu de la carte:', task.name, 'cardData:', cardData, 'category:', category);
+                  
                   return (
                     <motion.div
-                      key={index}
+                      key={`${task.name}-${renderKey}-${index}`}
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -538,6 +644,7 @@ export default function Home() {
         userRole={userRole}
         onAddTask={handleAddTaskFromPanel}
         tasksAddedFromPanel={tasksAddedFromPanel}
+        forceSyncPanelData={forceSyncPanelData}
       />
     </div>
   );
