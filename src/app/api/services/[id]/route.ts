@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const serviceId = params.id;
+    const { id: serviceId } = await params;
 
     // Vérifier que c'est un service personnalisé (commence par 'custom-')
     if (!serviceId.startsWith('custom-')) {

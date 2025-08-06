@@ -33,6 +33,7 @@ interface CategoryDetailsPanelProps {
     dueDate: string;
     assignedTo: string;
   }>;
+  onRemoveTaskFromPanel?: (taskName: string) => void;
   forceSyncPanelData?: () => void;
 }
 
@@ -139,7 +140,7 @@ const defaultCards: Record<string, CardFormData> = {
   }
 };
 
-export default function CategoryDetailsPanel({ isOpen, onClose, category, categoryTitle, userRole = 'user', onAddTask, tasksAddedFromPanel = [], forceSyncPanelData }: CategoryDetailsPanelProps) {
+export default function CategoryDetailsPanel({ isOpen, onClose, category, categoryTitle, userRole = 'user', onAddTask, tasksAddedFromPanel = [], onRemoveTaskFromPanel, forceSyncPanelData }: CategoryDetailsPanelProps) {
   const [activeTab, setActiveTab] = useState<'coverage' | 'infrastructure' | 'compliance' | 'recommendations'>('coverage');
   const [editingCard, setEditingCard] = useState<string | null>(null);
   const [editFormData, setEditFormData] = useState<CardFormData>({} as CardFormData);
@@ -366,6 +367,11 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     // Déclencher la synchronisation dans la page d'accueil
     if (forceSyncPanelData) {
       forceSyncPanelData();
+    }
+    
+    // Appeler onRemoveTaskFromPanel si fourni
+    if (onRemoveTaskFromPanel) {
+      onRemoveTaskFromPanel(cardName);
     }
     
     setDeleteConfirmation({ show: false, cardName: '' });
