@@ -9,6 +9,7 @@ import CategoryDetailsPanel from '@/components/CategoryDetailsPanel';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Footer from '@/components/Footer';
+import PanelCard from '../components/PanelCard';
 
 interface Task {
   id: number;
@@ -34,6 +35,21 @@ interface ServiceCard {
   defaultImportance: string;
 }
 
+interface PanelCardData {
+  name: string;
+  type: 'coverage' | 'infrastructure' | 'compliance' | 'recommendation';
+  total?: number;
+  completed?: number;
+  equipmentCount?: number;
+  status?: string;
+  certificationDate?: string;
+  nextAudit?: string;
+  priority?: string;
+  description?: string;
+  deadline?: string;
+  category?: 'defensive' | 'general' | 'offensive';
+}
+
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -47,6 +63,7 @@ export default function Home() {
     dueDate: string;
     assignedTo: string;
   }>>([]);
+  const [panelCards, setPanelCards] = useState<Record<string, PanelCardData>>({});
 
   const [isServicesSidebarOpen, setIsServicesSidebarOpen] = useState(false);
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
@@ -72,6 +89,7 @@ export default function Home() {
       const token = localStorage.getItem('token');
       const role = localStorage.getItem('role');
       const savedTasksFromPanel = localStorage.getItem('tasksAddedFromPanel');
+      const savedPanelCards = localStorage.getItem('panelCards');
       
       if (!token) {
         router.push('/login');
@@ -85,6 +103,14 @@ export default function Home() {
           setTasksAddedFromPanel(parsedTasks);
         } catch (error) {
           console.error('Erreur lors du chargement des tâches du panneau:', error);
+        }
+      }
+      if (savedPanelCards) {
+        try {
+          const parsedCards = JSON.parse(savedPanelCards);
+          setPanelCards(parsedCards);
+        } catch (error) {
+          console.error('Erreur lors du chargement des cartes du panneau:', error);
         }
       }
     }
@@ -207,6 +233,21 @@ export default function Home() {
 
   const getTasksByCategory = (category: string) => {
     return tasks.filter(task => task.category === category);
+  };
+
+  const getCardData = (taskName: string) => {
+    // Récupérer les données de la carte depuis le localStorage du panel
+    return panelCards[taskName] || null;
+  };
+
+  const getCategoryFromTask = (taskName: string) => {
+    // Déterminer la catégorie basée sur le nom de la tâche ou utiliser une valeur par défaut
+    const cardData = getCardData(taskName);
+    if (cardData && cardData.category) {
+      return cardData.category;
+    }
+    // Valeur par défaut basée sur le contexte
+    return 'general';
   };
 
      if (isLoading) {
@@ -367,142 +408,39 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="mb-8"
             >
-                              <div className="mb-6">
-                  <h2 className="text-2xl font-karla-bold mb-2 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>
-                    Indicateurs & Suivi Sécurité
-                  </h2>
-                </div>
+              <div className="mb-6">
+                <h2 className="text-2xl font-karla-bold mb-2 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>
+                  Indicateurs & Suivi Sécurité
+                </h2>
+              </div>
               
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-              {tasksAddedFromPanel.map((task, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="p-6 rounded-xl border transition-all duration-300 hover:border-opacity-60"
-                    style={{
-                      background: 'var(--bg-card)',
-                      borderColor: 'var(--border-secondary)'
-                    }}
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>
-                        {task.name}
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <div className="px-3 py-1 rounded-full text-xs font-karla-bold" style={{ background: '#10b981', color: 'black' }}>
-                          AJOUTÉE
-                        </div>
-                        {userRole === 'admin' && (
-                          <button
-                            onClick={() => removeTaskFromPanel(task.name)}
-                            className="p-1 rounded-lg transition-all duration-200 hover:scale-105"
-                            style={{
-                              background: 'var(--bg-secondary)',
-                              color: '#ef4444',
-                              border: '1px solid var(--border-primary)'
-                            }}
-                            title="Supprimer de la liste"
-                          >
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                            </svg>
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                    <p className="text-sm mb-2" style={{ color: 'var(--text-muted)' }}>
-                      {task.description}
-                    </p>
-                    
-                    {/* Informations spécifiques selon le type de tâche */}
-                    {task.name === 'Formation Cybersécurité' && (
-                      <>
-                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>10 personnes formées sur 30</div>
-                        <div className="w-full bg-gray-800 rounded-full h-2 mb-3">
-                          <div 
-                            className="h-2 rounded-full transition-all duration-500" 
-                            style={{ 
-                              width: '33%', 
-                              background: '#CCFF00' 
-                            }}
-                          ></div>
-                        </div>
-                      </>
-                    )}
-                    
-                    {task.name === 'Pentest Infrastructure' && (
-                      <>
-                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>1 serveur testé sur 5</div>
-                        <div className="w-full bg-gray-800 rounded-full h-2 mb-3">
-                          <div 
-                            className="h-2 rounded-full transition-all duration-500" 
-                            style={{ 
-                              width: '20%', 
-                              background: '#CCFF00' 
-                            }}
-                          ></div>
-                        </div>
-                      </>
-                    )}
-                    
-                    {task.name === 'Configuration Switches' && (
-                      <>
-                        <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>15 équipements configurés</div>
-                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>État: Sécurisé</div>
-                      </>
-                    )}
-                    
-                    {task.name === 'Audit Serveurs' && (
-                      <>
-                        <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>8 serveurs actifs</div>
-                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>État: À vérifier</div>
-                      </>
-                    )}
-                    
-                    {task.name === 'Maintenance Firewalls' && (
-                      <>
-                        <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>3 firewalls déployés</div>
-                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>État: Critique</div>
-                      </>
-                    )}
-                    
-                    {task.name === 'Configuration Routers' && (
-                      <>
-                        <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>5 routeurs configurés</div>
-                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>État: Normal</div>
-                      </>
-                    )}
-                    
-                    {task.name === 'Audit ISO 27001' && (
-                      <>
-                        <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Certification obtenue en 2023</div>
-                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>Prochaine audit: Décembre 2024</div>
-                      </>
-                    )}
-                    
-                    {task.name === 'Mise en conformité NIS2' && (
-                      <>
-                        <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Mise en conformité en cours</div>
-                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>Échéance: Octobre 2024</div>
-                      </>
-                    )}
-                    
-                    {task.name === 'Vérification RGPD' && (
-                      <>
-                        <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Conformité validée</div>
-                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>Dernière vérification: Mars 2024</div>
-                      </>
-                    )}
-                    
-                    <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-                      <span>Importance: {task.importance}</span>
-                      <span>•</span>
-                      <span>Score: {task.score}</span>
-                    </div>
-                  </motion.div>
-                ))}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+                {tasksAddedFromPanel.map((task, index) => {
+                  const cardData = getCardData(task.name);
+                  const category = getCategoryFromTask(task.name);
+                  
+                  return (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                    >
+                      <PanelCard 
+                        name={task.name} 
+                        description={cardData?.description || task.description} 
+                        importance={task.importance}
+                        total={cardData?.total}
+                        completed={cardData?.completed}
+                        category={category}
+                        userRole={userRole}
+                        cardType={cardData?.type || 'coverage'}
+                        tasksAddedFromPanel={tasksAddedFromPanel}
+                        onDelete={removeTaskFromPanel}
+                      />
+                    </motion.div>
+                  );
+                })}
               </div>
             </motion.div>
           )}
@@ -600,7 +538,6 @@ export default function Home() {
         userRole={userRole}
         onAddTask={handleAddTaskFromPanel}
         tasksAddedFromPanel={tasksAddedFromPanel}
-        onRemoveTaskFromPanel={removeTaskFromPanel}
       />
     </div>
   );

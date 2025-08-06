@@ -47,6 +47,97 @@ const categoryDescriptions = {
   offensive: 'Tests de pénétration et évaluation',
 };
 
+// Cartes de base par défaut
+const defaultCards: Record<string, CardFormData> = {
+  'Formation Cybersécurité': {
+    name: 'Formation Cybersécurité',
+    type: 'coverage',
+    total: 30,
+    completed: 10,
+    description: 'Formation de sensibilisation à la cybersécurité pour les employés'
+  },
+  'Pentest Infrastructure': {
+    name: 'Pentest Infrastructure',
+    type: 'coverage',
+    total: 5,
+    completed: 1,
+    description: 'Test de pénétration sur l\'infrastructure réseau'
+  },
+  'Configuration Switches': {
+    name: 'Configuration Switches',
+    type: 'infrastructure',
+    equipmentCount: 15,
+    status: 'Sécurisé',
+    description: 'Configuration et sécurisation des switches réseau'
+  },
+  'Audit Serveurs': {
+    name: 'Audit Serveurs',
+    type: 'infrastructure',
+    equipmentCount: 8,
+    status: 'À vérifier',
+    description: 'Audit de sécurité des serveurs actifs'
+  },
+  'Maintenance Firewalls': {
+    name: 'Maintenance Firewalls',
+    type: 'infrastructure',
+    equipmentCount: 3,
+    status: 'Critique',
+    description: 'Maintenance et mise à jour des firewalls'
+  },
+  'Configuration Routers': {
+    name: 'Configuration Routers',
+    type: 'infrastructure',
+    equipmentCount: 5,
+    status: 'Normal',
+    description: 'Configuration et optimisation des routeurs'
+  },
+  'Audit ISO 27001': {
+    name: 'Audit ISO 27001',
+    type: 'compliance',
+    status: 'CONFORME',
+    certificationDate: '2023',
+    nextAudit: 'Décembre 2024',
+    description: 'Audit de conformité ISO 27001'
+  },
+  'Mise en conformité NIS2': {
+    name: 'Mise en conformité NIS2',
+    type: 'compliance',
+    status: 'EN COURS',
+    certificationDate: '',
+    nextAudit: 'Octobre 2024',
+    description: 'Mise en conformité avec la directive NIS2'
+  },
+  'Vérification RGPD': {
+    name: 'Vérification RGPD',
+    type: 'compliance',
+    status: 'CONFORME',
+    certificationDate: '',
+    nextAudit: 'Mars 2024',
+    description: 'Vérification de la conformité RGPD'
+  },
+  'Formation Cybersécurité Étendue': {
+    name: 'Formation Cybersécurité Étendue',
+    type: 'recommendation',
+    priority: 'Haute',
+    description: 'Étendre la formation cybersécurité aux 20 personnes restantes',
+    deadline: '2 mois'
+  },
+  'Pentest Serveurs Restants': {
+    name: 'Pentest Serveurs Restants',
+    type: 'recommendation',
+    priority: 'Moyenne',
+    description: 'Effectuer des pentests sur les 4 serveurs restants',
+    deadline: '3 mois'
+  },
+  'Mise à jour Documentation': {
+    name: 'Mise à jour Documentation',
+    type: 'recommendation',
+    priority: 'Basse',
+    description: 'Mettre à jour la documentation de sécurité',
+    deadline: '6 mois'
+  }
+};
+
 export default function CategoryDetailsPanel({ isOpen, onClose, category, categoryTitle, userRole = 'user', onAddTask, tasksAddedFromPanel = [] }: CategoryDetailsPanelProps) {
   const [activeTab, setActiveTab] = useState<'coverage' | 'infrastructure' | 'compliance' | 'recommendations'>('coverage');
   const [editingCard, setEditingCard] = useState<string | null>(null);
@@ -54,9 +145,11 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [addFormData, setAddFormData] = useState<CardFormData>({} as CardFormData);
   const [savedCards, setSavedCards] = useState<Record<string, CardFormData>>({});
+  const [deletedCards, setDeletedCards] = useState<Set<string>>(new Set());
   const [deleteConfirmation, setDeleteConfirmation] = useState<{ show: boolean; cardName: string }>({ show: false, cardName: '' });
+  const [renderKey, setRenderKey] = useState(0); // Pour forcer le re-rendu
 
-  // Charger les cartes sauvegardées au montage du composant
+  // Charger les cartes sauvegardées et les cartes supprimées au montage du composant
   useEffect(() => {
     const loadSavedCards = () => {
       try {
@@ -68,10 +161,19 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
       }
     };
 
+    const loadDeletedCards = () => {
+      try {
+        const deleted = JSON.parse(localStorage.getItem('deletedCards') || '[]');
+        setDeletedCards(new Set(deleted));
+      } catch (error) {
+        console.error('Erreur lors du chargement des cartes supprimées:', error);
+        setDeletedCards(new Set());
+      }
+    };
+
     loadSavedCards();
+    loadDeletedCards();
   }, []);
-
-
 
   const tabs = [
     { id: 'coverage', label: 'COUVERTURE' },
@@ -95,51 +197,30 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
   };
 
   const handleEditCard = (cardName: string, cardType: 'coverage' | 'infrastructure' | 'compliance' | 'recommendation') => {
-    // Récupérer les données existantes de la carte
-    const existingCard = savedCards[cardName];
+    // Récupérer les données existantes de la carte (sauvegardées ou par défaut)
+    const existingCard = savedCards[cardName] || defaultCards[cardName];
     
     setEditingCard(cardName);
     setEditFormData({
-      name: cardName, // S'assurer que le nom est correctement pré-rempli
-      type: cardType,
-      // Utiliser les données existantes ou les valeurs par défaut
-      ...(cardType === 'coverage' && {
-        total: existingCard?.total || (cardName === 'Formation Cybersécurité' ? 30 : 5),
-        completed: existingCard?.completed || (cardName === 'Formation Cybersécurité' ? 10 : 1)
-      }),
-      ...(cardType === 'infrastructure' && {
-        equipmentCount: existingCard?.equipmentCount || (cardName === 'Configuration Switches' ? 15 : 
-                       cardName === 'Audit Serveurs' ? 8 :
-                       cardName === 'Maintenance Firewalls' ? 3 : 5),
-        status: existingCard?.status || (cardName === 'Configuration Switches' ? 'Sécurisé' :
-                cardName === 'Audit Serveurs' ? 'À vérifier' :
-                cardName === 'Maintenance Firewalls' ? 'Critique' : 'Normal')
-      }),
-      ...(cardType === 'compliance' && {
-        status: existingCard?.status || (cardName === 'ISO 27001' ? 'CONFORME' :
-                cardName === 'NIS2' ? 'EN COURS' : 'CONFORME'),
-        certificationDate: existingCard?.certificationDate || (cardName === 'ISO 27001' ? '2023' : ''),
-        nextAudit: existingCard?.nextAudit || (cardName === 'ISO 27001' ? 'Décembre 2024' :
-                    cardName === 'NIS2' ? 'Octobre 2024' : 'Mars 2024')
-      }),
-      ...(cardType === 'recommendation' && {
-        priority: existingCard?.priority || (cardName === 'Formation Cybersécurité Étendue' ? 'Haute' :
-                   cardName === 'Pentest Serveurs Restants' ? 'Moyenne' : 'Basse'),
-        description: existingCard?.description || (cardName === 'Formation Cybersécurité Étendue' ? 'Étendre la formation cybersécurité aux 20 personnes restantes' :
-                      cardName === 'Pentest Serveurs Restants' ? 'Effectuer des pentests sur les 4 serveurs restants' :
-                      'Mettre à jour la documentation de sécurité'),
-        deadline: existingCard?.deadline || (cardName === 'Formation Cybersécurité Étendue' ? '2 mois' :
-                   cardName === 'Pentest Serveurs Restants' ? '3 mois' : '6 mois')
-      })
+      ...existingCard,
+      name: cardName,
+      type: cardType
     });
   };
 
   const handleSaveEdit = () => {
+    // Debug: afficher les données avant sauvegarde
+    console.log('Sauvegarde de la modification:');
+    console.log('Carte en cours d\'édition:', editingCard);
+    console.log('Nouvelles données:', editFormData);
+    console.log('Cartes sauvegardées avant:', savedCards);
+    
     // Sauvegarder les modifications dans localStorage
     const updatedCards = { ...savedCards };
     
     // Supprimer l'ancienne entrée si le nom a changé
     if (editingCard && editingCard !== editFormData.name) {
+      console.log('Suppression de l\'ancienne entrée:', editingCard);
       delete updatedCards[editingCard];
     }
     
@@ -151,6 +232,10 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     setSavedCards(updatedCards);
     setEditingCard(null);
     setEditFormData({} as CardFormData);
+    setRenderKey(prev => prev + 1); // Forcer le re-rendu
+    
+    // Debug: afficher les données après sauvegarde
+    console.log('Cartes sauvegardées après:', updatedCards);
   };
 
   const handleAddNewCard = (cardType: 'coverage' | 'infrastructure' | 'compliance' | 'recommendation') => {
@@ -195,6 +280,11 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     setSavedCards(updatedCards);
     setIsAddingCard(false);
     setAddFormData({} as CardFormData);
+    setRenderKey(prev => prev + 1); // Forcer le re-rendu
+    
+    // Debug: afficher les cartes pour vérifier
+    console.log('Nouvelle carte ajoutée:', addFormData);
+    console.log('Cartes sauvegardées mises à jour:', updatedCards);
   };
 
   const handleCancelAdd = () => {
@@ -207,16 +297,31 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     setEditFormData({} as CardFormData);
   };
 
-  // Nouvelle fonction pour supprimer une carte
   const handleDeleteCard = (cardName: string) => {
     setDeleteConfirmation({ show: true, cardName });
   };
 
   const confirmDelete = () => {
-    const updatedCards = { ...savedCards };
-    delete updatedCards[deleteConfirmation.cardName];
-    localStorage.setItem('panelCards', JSON.stringify(updatedCards));
-    setSavedCards(updatedCards);
+    const cardName = deleteConfirmation.cardName;
+    
+    // Si c'est une carte sauvegardée, la supprimer du localStorage
+    if (savedCards[cardName]) {
+      const updatedCards = { ...savedCards };
+      delete updatedCards[cardName];
+      localStorage.setItem('panelCards', JSON.stringify(updatedCards));
+      setSavedCards(updatedCards);
+      setRenderKey(prev => prev + 1); // Forcer le re-rendu
+    }
+    
+    // Si c'est une carte de base, l'ajouter à la liste des cartes supprimées
+    if (defaultCards[cardName]) {
+      const updatedDeletedCards = new Set(deletedCards);
+      updatedDeletedCards.add(cardName);
+      localStorage.setItem('deletedCards', JSON.stringify([...updatedDeletedCards]));
+      setDeletedCards(updatedDeletedCards);
+      setRenderKey(prev => prev + 1); // Forcer le re-rendu
+    }
+    
     setDeleteConfirmation({ show: false, cardName: '' });
   };
 
@@ -224,15 +329,40 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     setDeleteConfirmation({ show: false, cardName: '' });
   };
 
-  // Fonction pour obtenir les cartes par type
+  // Fonction pour obtenir toutes les cartes d'un type donné (base + ajoutées - supprimées)
   const getCardsByType = (type: string) => {
-    return Object.values(savedCards).filter(card => card.type === type);
+    const cards: CardFormData[] = [];
+    const processedNames = new Set<string>();
+    
+    // Ajouter les cartes de base qui ne sont pas supprimées
+    Object.values(defaultCards).forEach(card => {
+      if (card.type === type && !deletedCards.has(card.name)) {
+        // Utiliser la version sauvegardée si elle existe, sinon la version par défaut
+        const savedCard = savedCards[card.name];
+        const cardToAdd = savedCard || card;
+        cards.push(cardToAdd);
+        processedNames.add(cardToAdd.name);
+      }
+    });
+    
+    // Ajouter les cartes ajoutées dynamiquement (qui ne sont pas dans defaultCards)
+    Object.values(savedCards).forEach(card => {
+      if (card.type === type && !processedNames.has(card.name)) {
+        cards.push(card);
+        processedNames.add(card.name);
+      }
+    });
+    
+    // Debug: afficher les cartes trouvées
+    console.log(`Cartes trouvées pour le type ${type}:`, cards);
+    console.log('Cartes sauvegardées:', savedCards);
+    console.log('Cartes supprimées:', deletedCards);
+    console.log('Noms traités:', processedNames);
+    
+    return cards;
   };
 
-  // Fonction pour obtenir une carte par nom
-  const getCardByName = (name: string) => {
-    return savedCards[name];
-  };
+
 
   const renderCardWithStatus = (taskName: string, description: string, importance: string, children: React.ReactNode) => (
     <div 
@@ -302,265 +432,84 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
 
               {/* Détails par service */}
               <div className="space-y-4">
-                {/* Cartes par défaut */}
-                {renderCardWithStatus('Formation Cybersécurité', 'Formation de sensibilisation à la cybersécurité pour les employés', 'Haute',
-                  <>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-karla-medium" style={{ color: 'var(--text-primary)' }}>Formation Cybersécurité</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-karla-bold" style={{ color: categoryColors[category] }}>
-                          {(() => {
-                            const card = getCardByName('Formation Cybersécurité');
-                            return card && card.total && card.completed ? 
-                              Math.round((card.completed / card.total) * 100) : 33;
-                          })()}%
-                        </span>
-                        {userRole === 'admin' && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEditCard('Formation Cybersécurité', 'coverage');
-                            }}
-                            className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                            style={{ 
-                              background: categoryColors[category],
-                              color: 'black'
-                            }}
-                          >
-                            MODIFIER
-                          </button>
-                        )}
-                        {userRole === 'admin' && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteCard('Formation Cybersécurité');
-                            }}
-                            className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                            style={{ 
-                              background: '#ef4444',
-                              color: 'white'
-                            }}
-                            title="Supprimer"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
-                        )}
-                        {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Formation Cybersécurité') && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleAddToDashboard('Formation Cybersécurité', 'Formation de sensibilisation à la cybersécurité pour les employés', 'Haute');
-                            }}
-                            className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                            style={{ 
-                              background: categoryColors[category],
-                              color: 'black'
-                            }}
-                          >
-                            A
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                    <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
-                      {(() => {
-                        const card = getCardByName('Formation Cybersécurité');
-                        const completed = card?.completed || 10;
-                        const total = card?.total || 30;
-                        return `${completed} personnes formées sur ${total}`;
-                      })()}
-                    </div>
-                    <div className="w-full bg-gray-800 rounded-full h-2">
-                      <div 
-                        className="h-2 rounded-full transition-all duration-500" 
-                        style={{ 
-                          width: `${(() => {
-                            const card = getCardByName('Formation Cybersécurité');
-                            return card && card.total && card.completed ? 
-                              Math.round((card.completed / card.total) * 100) : 33;
-                          })()}%`, 
-                          background: categoryColors[category] 
-                        }}
-                      ></div>
-                    </div>
-                  </>
-                )}
-
-                {renderCardWithStatus('Pentest Infrastructure', 'Test de pénétration sur l\'infrastructure réseau', 'Haute',
-                  <>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-karla-medium" style={{ color: 'var(--text-primary)' }}>Pentest Infrastructure</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-karla-bold" style={{ color: categoryColors[category] }}>
-                          {(() => {
-                            const card = getCardByName('Pentest Infrastructure');
-                            return card && card.total && card.completed ? 
-                              Math.round((card.completed / card.total) * 100) : 20;
-                          })()}%
-                        </span>
-                        {userRole === 'admin' && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEditCard('Pentest Infrastructure', 'coverage');
-                            }}
-                            className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                            style={{ 
-                              background: categoryColors[category],
-                              color: 'black'
-                            }}
-                          >
-                            MODIFIER
-                          </button>
-                        )}
-                        {userRole === 'admin' && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteCard('Pentest Infrastructure');
-                            }}
-                            className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                            style={{ 
-                              background: '#ef4444',
-                              color: 'white'
-                            }}
-                            title="Supprimer"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
-                        )}
-                        {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Pentest Infrastructure') && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleAddToDashboard('Pentest Infrastructure', 'Test de pénétration sur l\'infrastructure réseau', 'Haute');
-                            }}
-                            className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                            style={{ 
-                              background: categoryColors[category],
-                              color: 'black'
-                            }}
-                          >
-                            A
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                    <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
-                      {(() => {
-                        const card = getCardByName('Pentest Infrastructure');
-                        const completed = card?.completed || 1;
-                        const total = card?.total || 5;
-                        return `${completed} serveur testé sur ${total}`;
-                      })()}
-                    </div>
-                    <div className="w-full bg-gray-800 rounded-full h-2">
-                      <div 
-                        className="h-2 rounded-full transition-all duration-500" 
-                        style={{ 
-                          width: `${(() => {
-                            const card = getCardByName('Pentest Infrastructure');
-                            return card && card.total && card.completed ? 
-                              Math.round((card.completed / card.total) * 100) : 20;
-                          })()}%`, 
-                          background: categoryColors[category] 
-                        }}
-                      ></div>
-                    </div>
-                  </>
-                )}
-
-                {/* Cartes ajoutées dynamiquement */}
-                {getCardsByType('coverage').map((card) => {
-                  // Ne pas afficher les cartes par défaut qui sont déjà affichées ci-dessus
-                  if (card.name === 'Formation Cybersécurité' || card.name === 'Pentest Infrastructure') {
-                    return null;
-                  }
-                  
-                  return (
-                    <div key={card.name}>
-                      {renderCardWithStatus(card.name, card.description || '', 'Moyenne',
-                    <>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-karla-medium" style={{ color: 'var(--text-primary)' }}>{card.name}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-karla-bold" style={{ color: categoryColors[category] }}>
-                            {card.total && card.completed ? 
-                              Math.round((card.completed / card.total) * 100) : 0}%
-                          </span>
-                          {userRole === 'admin' && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEditCard(card.name, 'coverage');
-                              }}
-                              className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                              style={{ 
-                                background: categoryColors[category],
-                                color: 'black'
-                              }}
-                            >
-                              MODIFIER
-                            </button>
-                          )}
-                          {userRole === 'admin' && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteCard(card.name);
-                              }}
-                              className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                              style={{ 
-                                background: '#ef4444',
-                                color: 'white'
-                              }}
-                              title="Supprimer"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                          )}
-                          {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleAddToDashboard(card.name, card.description || '', 'Moyenne');
-                              }}
-                              className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                              style={{ 
-                                background: categoryColors[category],
-                                color: 'black'
-                              }}
-                            >
-                              A
-                            </button>
-                          )}
+                {getCardsByType('coverage').map((card) => (
+                  <div key={`${card.name}-${renderKey}-${JSON.stringify(savedCards[card.name])}`}>
+                    {renderCardWithStatus(card.name, card.description || '', 'Moyenne',
+                      <>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-karla-medium" style={{ color: 'var(--text-primary)' }}>{card.name}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-karla-bold" style={{ color: categoryColors[category] }}>
+                              {card.total && card.completed ? 
+                                Math.round((card.completed / card.total) * 100) : 0}%
+                            </span>
+                            {userRole === 'admin' && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditCard(card.name, 'coverage');
+                                }}
+                                className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                                style={{ 
+                                  background: categoryColors[category],
+                                  color: 'black'
+                                }}
+                              >
+                                MODIFIER
+                              </button>
+                            )}
+                            {userRole === 'admin' && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteCard(card.name);
+                                }}
+                                className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                                style={{ 
+                                  background: '#ef4444',
+                                  color: 'white'
+                                }}
+                                title="Supprimer"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            )}
+                            {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleAddToDashboard(card.name, card.description || '', 'Moyenne');
+                                }}
+                                className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                                style={{ 
+                                  background: categoryColors[category],
+                                  color: 'black'
+                                }}
+                              >
+                                A
+                              </button>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
-                        {card.completed || 0} complété sur {card.total || 0}
-                      </div>
-                      <div className="w-full bg-gray-800 rounded-full h-2">
-                        <div 
-                          className="h-2 rounded-full transition-all duration-500" 
-                          style={{ 
-                            width: `${card.total && card.completed ? 
-                              Math.round((card.completed / card.total) * 100) : 0}%`, 
-                            background: categoryColors[category] 
-                          }}
-                        ></div>
-                      </div>
-                    </>
-                  )}
-                    </div>
-                  );
-                })}
+                        <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
+                          {card.completed || 0} complété sur {card.total || 0}
+                        </div>
+                        <div className="w-full bg-gray-800 rounded-full h-2">
+                          <div 
+                            className="h-2 rounded-full transition-all duration-500" 
+                            style={{ 
+                              width: `${card.total && card.completed ? 
+                                Math.round((card.completed / card.total) * 100) : 0}%`, 
+                              background: categoryColors[category] 
+                            }}
+                          ></div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -593,348 +542,78 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
               </div>
               
               <div className="grid grid-cols-1 gap-4">
-                {/* Cartes par défaut */}
-                <div 
-                  className="p-4 rounded-lg border transition-all duration-300 hover:border-opacity-60 cursor-pointer group relative"
-                  style={{ 
-                    background: 'var(--bg-card)', 
-                    borderColor: 'var(--border-secondary)' 
-                  }}
-                  onClick={() => userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Configuration Switches') && handleAddToDashboard('Configuration Switches', 'Configuration et sécurisation des switches réseau', 'Moyenne')}
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-3 h-3 rounded-full" style={{ background: '#10b981' }}></div>
-                    <span className="text-sm font-karla-bold" style={{ color: 'var(--text-primary)' }}>Switches</span>
-                    <div className="flex items-center gap-2 ml-auto">
-                      {userRole === 'admin' && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditCard('Configuration Switches', 'infrastructure');
-                          }}
-                          className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                          style={{ 
-                            background: categoryColors[category],
-                            color: 'black'
-                          }}
-                        >
-                          MODIFIER
-                        </button>
-                      )}
-                      {userRole === 'admin' && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteCard('Configuration Switches');
-                          }}
-                          className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                          style={{ 
-                            background: '#ef4444',
-                            color: 'white'
-                          }}
-                          title="Supprimer"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                        </button>
-                      )}
-                      {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Configuration Switches') && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleAddToDashboard('Configuration Switches', 'Configuration et sécurisation des switches réseau', 'Moyenne');
-                          }}
-                          className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                          style={{ 
-                            background: categoryColors[category],
-                            color: 'black'
-                          }}
-                        >
-                          A
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                  <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>
-                    {(() => {
-                      const card = getCardByName('Configuration Switches');
-                      return `${card?.equipmentCount || 15} équipements configurés`;
-                    })()}
-                  </div>
-                  <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                    État: {(() => {
-                      const card = getCardByName('Configuration Switches');
-                      return card?.status || 'Sécurisé';
-                    })()}
-                  </div>
-                  {tasksAddedFromPanel.some(task => task.name === 'Configuration Switches') && (
-                    <div className="mt-3 pt-2 border-t" style={{ borderColor: 'var(--border-secondary)' }}>
-                      <div className="text-center">
-                        <span className="px-2 py-1 rounded-full text-xs font-karla-bold" style={{ background: '#10b981', color: 'black' }}>
-                          AFFICHÉ
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                                 {renderCardWithStatus('Audit Serveurs', 'Audit de sécurité des serveurs actifs', 'Haute',
-                   <>
-                     <div className="flex items-center gap-3 mb-3">
-                       <div className="w-3 h-3 rounded-full" style={{ background: '#f59e0b' }}></div>
-                       <span className="text-sm font-karla-bold" style={{ color: 'var(--text-primary)' }}>Serveurs</span>
-                       <div className="flex items-center gap-2 ml-auto">
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={() => handleEditCard('Audit Serveurs', 'infrastructure')}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             MODIFIER
-                           </button>
-                         )}
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={() => handleDeleteCard('Audit Serveurs')}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: '#ef4444',
-                               color: 'white'
-                             }}
-                             title="Supprimer"
-                           >
-                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                             </svg>
-                           </button>
-                         )}
-                         {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Audit Serveurs') && (
-                           <button
-                             onClick={() => handleAddToDashboard('Audit Serveurs', 'Audit de sécurité des serveurs actifs', 'Haute')}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             A
-                           </button>
-                         )}
-                       </div>
-                     </div>
-                     <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>
-                       {(() => {
-                         const card = getCardByName('Audit Serveurs');
-                         return `${card?.equipmentCount || 8} serveurs actifs`;
-                       })()}
-                     </div>
-                     <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                       État: {(() => {
-                         const card = getCardByName('Audit Serveurs');
-                         return card?.status || 'À vérifier';
-                       })()}
-                     </div>
-                   </>
-                 )}
-
-                {renderCardWithStatus('Maintenance Firewalls', 'Maintenance et mise à jour des firewalls', 'Critique',
-                   <>
-                     <div className="flex items-center gap-3 mb-3">
-                       <div className="w-3 h-3 rounded-full" style={{ background: '#ef4444' }}></div>
-                       <span className="text-sm font-karla-bold" style={{ color: 'var(--text-primary)' }}>Firewalls</span>
-                       <div className="flex items-center gap-2 ml-auto">
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={() => handleEditCard('Maintenance Firewalls', 'infrastructure')}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             MODIFIER
-                           </button>
-                         )}
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={() => handleDeleteCard('Maintenance Firewalls')}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: '#ef4444',
-                               color: 'white'
-                             }}
-                             title="Supprimer"
-                           >
-                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                             </svg>
-                           </button>
-                         )}
-                         {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Maintenance Firewalls') && (
-                           <button
-                             onClick={() => handleAddToDashboard('Maintenance Firewalls', 'Maintenance et mise à jour des firewalls', 'Critique')}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             A
-                           </button>
-                         )}
-                       </div>
-                     </div>
-                     <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>
-                       {(() => {
-                         const card = getCardByName('Maintenance Firewalls');
-                         return `${card?.equipmentCount || 3} firewalls déployés`;
-                       })()}
-                     </div>
-                     <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                       État: {(() => {
-                         const card = getCardByName('Maintenance Firewalls');
-                         return card?.status || 'Critique';
-                       })()}
-                     </div>
-                   </>
-                 )}
-
-                {renderCardWithStatus('Configuration Routers', 'Configuration et optimisation des routeurs', 'Moyenne',
-                   <>
-                     <div className="flex items-center gap-3 mb-3">
-                       <div className="w-3 h-3 rounded-full" style={{ background: '#3b82f6' }}></div>
-                       <span className="text-sm font-karla-bold" style={{ color: 'var(--text-primary)' }}>Routers</span>
-                       <div className="flex items-center gap-2 ml-auto">
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={() => handleEditCard('Configuration Routers', 'infrastructure')}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             MODIFIER
-                           </button>
-                         )}
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={() => handleDeleteCard('Configuration Routers')}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: '#ef4444',
-                               color: 'white'
-                             }}
-                             title="Supprimer"
-                           >
-                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                             </svg>
-                           </button>
-                         )}
-                         {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Configuration Routers') && (
-                           <button
-                             onClick={() => handleAddToDashboard('Configuration Routers', 'Configuration et optimisation des routeurs', 'Moyenne')}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             A
-                           </button>
-                         )}
-                       </div>
-                     </div>
-                     <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>
-                       {(() => {
-                         const card = getCardByName('Configuration Routers');
-                         return `${card?.equipmentCount || 5} routeurs configurés`;
-                       })()}
-                     </div>
-                     <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                       État: {(() => {
-                         const card = getCardByName('Configuration Routers');
-                         return card?.status || 'Normal';
-                       })()}
-                     </div>
-                   </>
-                 )}
-
-                {/* Cartes ajoutées dynamiquement */}
-                {getCardsByType('infrastructure').map((card) => {
-                  // Ne pas afficher les cartes par défaut qui sont déjà affichées ci-dessus
-                  if (['Configuration Switches', 'Audit Serveurs', 'Maintenance Firewalls', 'Configuration Routers'].includes(card.name)) {
-                    return null;
-                  }
-                  
-                  return (
-                    <div key={card.name}>
-                      {renderCardWithStatus(card.name, card.description || '', 'Moyenne',
-                    <>
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-3 h-3 rounded-full" style={{ background: '#6b7280' }}></div>
-                        <span className="text-sm font-karla-bold" style={{ color: 'var(--text-primary)' }}>{card.name}</span>
-                        <div className="flex items-center gap-2 ml-auto">
-                          {userRole === 'admin' && (
-                            <button
-                              onClick={() => handleEditCard(card.name, 'infrastructure')}
-                              className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                              style={{ 
-                                background: categoryColors[category],
-                                color: 'black'
-                              }}
-                            >
-                              MODIFIER
-                            </button>
-                          )}
-                          {userRole === 'admin' && (
-                            <button
-                              onClick={() => handleDeleteCard(card.name)}
-                              className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                              style={{ 
-                                background: '#ef4444',
-                                color: 'white'
-                              }}
-                              title="Supprimer"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                          )}
-                          {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleAddToDashboard(card.name, card.description || '', 'Moyenne');
-                              }}
-                              className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                              style={{ 
-                                background: categoryColors[category],
-                                color: 'black'
-                              }}
-                            >
-                              A
-                            </button>
-                          )}
+                {getCardsByType('infrastructure').map((card) => (
+                  <div key={`${card.name}-${renderKey}-${JSON.stringify(savedCards[card.name])}`}>
+                    {renderCardWithStatus(card.name, card.description || '', 'Moyenne',
+                      <>
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="w-3 h-3 rounded-full" style={{ 
+                            background: card.status === 'Sécurisé' ? '#10b981' : 
+                                       card.status === 'À vérifier' ? '#f59e0b' : 
+                                       card.status === 'Critique' ? '#ef4444' : '#3b82f6' 
+                          }}></div>
+                          <span className="text-sm font-karla-bold" style={{ color: 'var(--text-primary)' }}>{card.name}</span>
+                          <div className="flex items-center gap-2 ml-auto">
+                            {userRole === 'admin' && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditCard(card.name, 'infrastructure');
+                                }}
+                                className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                                style={{ 
+                                  background: categoryColors[category],
+                                  color: 'black'
+                                }}
+                              >
+                                MODIFIER
+                              </button>
+                            )}
+                            {userRole === 'admin' && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteCard(card.name);
+                                }}
+                                className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                                style={{ 
+                                  background: '#ef4444',
+                                  color: 'white'
+                                }}
+                                title="Supprimer"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            )}
+                            {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleAddToDashboard(card.name, card.description || '', 'Moyenne');
+                                }}
+                                className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                                style={{ 
+                                  background: categoryColors[category],
+                                  color: 'black'
+                                }}
+                              >
+                                A
+                              </button>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>
-                        {card.equipmentCount || 0} équipements
-                      </div>
-                      <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                        État: {card.status || 'Normal'}
-                      </div>
-                    </>
-                  )}
-                    </div>
-                  );
-                })}
+                        <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>
+                          {card.equipmentCount || 0} équipements
+                        </div>
+                        <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                          État: {card.status || 'Normal'}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -947,205 +626,100 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
               background: 'var(--bg-secondary)', 
               borderColor: 'var(--border-primary)' 
             }}>
-                             <div className="flex items-center justify-between mb-6">
-                 <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>Standards de Conformité</h3>
-                 {userRole === 'admin' && (
-                   <button
-                     onClick={() => handleAddNewCard('compliance')}
-                     className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-karla-medium transition-all duration-300"
-                     style={{ 
-                       background: categoryColors[category],
-                       color: 'black'
-                     }}
-                     title="Ajouter une nouvelle carte"
-                   >
-                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                     </svg>
-                   </button>
-                 )}
-               </div>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>Standards de Conformité</h3>
+                {userRole === 'admin' && (
+                  <button
+                    onClick={() => handleAddNewCard('compliance')}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-karla-medium transition-all duration-300"
+                    style={{ 
+                      background: categoryColors[category],
+                      color: 'black'
+                    }}
+                    title="Ajouter une nouvelle carte"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                  </button>
+                )}
+              </div>
               
               <div className="space-y-4">
-                                 {renderCardWithStatus('Audit ISO 27001', 'Audit de conformité ISO 27001', 'Haute',
-                   <>
-                     <div className="flex items-center justify-between mb-3">
-                       <span className="text-sm font-karla-bold" style={{ color: 'var(--text-primary)' }}>ISO 27001</span>
-                       <div className="flex items-center gap-2">
-                         <span className="px-3 py-1 rounded-full text-xs font-karla-bold" style={{ background: '#10b981', color: 'black' }}>CONFORME</span>
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleEditCard('Audit ISO 27001', 'compliance');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             MODIFIER
-                           </button>
-                         )}
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleDeleteCard('Audit ISO 27001');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: '#ef4444',
-                               color: 'white'
-                             }}
-                             title="Supprimer"
-                           >
-                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                             </svg>
-                           </button>
-                         )}
-                         {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Audit ISO 27001') && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleAddToDashboard('Audit ISO 27001', 'Audit de conformité ISO 27001', 'Haute');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             A
-                           </button>
-                         )}
-                       </div>
-                     </div>
-                     <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Certification obtenue en 2023</div>
-                     <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Prochaine audit: Décembre 2024</div>
-                   </>
-                 )}
-
-                                 {renderCardWithStatus('Mise en conformité NIS2', 'Mise en conformité avec la directive NIS2', 'Critique',
-                   <>
-                     <div className="flex items-center justify-between mb-3">
-                       <span className="text-sm font-karla-bold" style={{ color: 'var(--text-primary)' }}>NIS2</span>
-                       <div className="flex items-center gap-2">
-                         <span className="px-3 py-1 rounded-full text-xs font-karla-bold" style={{ background: '#f59e0b', color: 'black' }}>EN COURS</span>
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleEditCard('Mise en conformité NIS2', 'compliance');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             MODIFIER
-                           </button>
-                         )}
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleDeleteCard('Mise en conformité NIS2');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: '#ef4444',
-                               color: 'white'
-                             }}
-                             title="Supprimer"
-                           >
-                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                             </svg>
-                           </button>
-                         )}
-                         {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Mise en conformité NIS2') && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleAddToDashboard('Mise en conformité NIS2', 'Mise en conformité avec la directive NIS2', 'Critique');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             A
-                           </button>
-                         )}
-                       </div>
-                     </div>
-                     <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Mise en conformité en cours</div>
-                     <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Échéance: Octobre 2024</div>
-                   </>
-                 )}
-
-                                 {renderCardWithStatus('Vérification RGPD', 'Vérification de la conformité RGPD', 'Moyenne',
-                   <>
-                     <div className="flex items-center justify-between mb-3">
-                       <span className="text-sm font-karla-bold" style={{ color: 'var(--text-primary)' }}>RGPD</span>
-                       <div className="flex items-center gap-2">
-                         <span className="px-3 py-1 rounded-full text-xs font-karla-bold" style={{ background: '#10b981', color: 'black' }}>CONFORME</span>
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleEditCard('Vérification RGPD', 'compliance');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             MODIFIER
-                           </button>
-                         )}
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleDeleteCard('Vérification RGPD');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: '#ef4444',
-                               color: 'white'
-                             }}
-                             title="Supprimer"
-                           >
-                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                             </svg>
-                           </button>
-                         )}
-                         {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Vérification RGPD') && (
-                           <button
-                             onClick={() => handleAddToDashboard('Vérification RGPD', 'Vérification de la conformité RGPD', 'Moyenne')}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             A
-                           </button>
-                         )}
-                       </div>
-                     </div>
-                     <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Conformité validée</div>
-                     <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Dernière vérification: Mars 2024</div>
-                   </>
-                 )}
+                {getCardsByType('compliance').map((card) => (
+                  <div key={`${card.name}-${renderKey}-${JSON.stringify(savedCards[card.name])}`}>
+                    {renderCardWithStatus(card.name, card.description || '', 'Moyenne',
+                      <>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm font-karla-bold" style={{ color: 'var(--text-primary)' }}>{card.name}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="px-3 py-1 rounded-full text-xs font-karla-bold" style={{ 
+                              background: card.status === 'CONFORME' ? '#10b981' : 
+                                         card.status === 'EN COURS' ? '#f59e0b' : '#ef4444', 
+                              color: 'black' 
+                            }}>
+                              {card.status}
+                            </span>
+                            {userRole === 'admin' && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditCard(card.name, 'compliance');
+                                }}
+                                className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                                style={{ 
+                                  background: categoryColors[category],
+                                  color: 'black'
+                                }}
+                              >
+                                MODIFIER
+                              </button>
+                            )}
+                            {userRole === 'admin' && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteCard(card.name);
+                                }}
+                                className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                                style={{ 
+                                  background: '#ef4444',
+                                  color: 'white'
+                                }}
+                                title="Supprimer"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            )}
+                            {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleAddToDashboard(card.name, card.description || '', 'Moyenne');
+                                }}
+                                className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                                style={{ 
+                                  background: categoryColors[category],
+                                  color: 'black'
+                                }}
+                              >
+                                A
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>
+                          {card.certificationDate ? `Certification obtenue en ${card.certificationDate}` : 'Mise en conformité en cours'}
+                        </div>
+                        <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                          {card.nextAudit ? `Prochaine audit: ${card.nextAudit}` : 'Échéance: Octobre 2024'}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -1158,211 +732,98 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
               background: 'var(--bg-secondary)', 
               borderColor: 'var(--border-primary)' 
             }}>
-                             <div className="flex items-center justify-between mb-6">
-                 <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>Recommandations d&apos;Amélioration</h3>
-                 {userRole === 'admin' && (
-                   <button
-                     onClick={() => handleAddNewCard('recommendation')}
-                     className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-karla-medium transition-all duration-300"
-                     style={{ 
-                       background: categoryColors[category],
-                       color: 'black'
-                     }}
-                     title="Ajouter une nouvelle carte"
-                   >
-                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                     </svg>
-                   </button>
-                 )}
-               </div>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>Recommandations d&apos;Amélioration</h3>
+                {userRole === 'admin' && (
+                  <button
+                    onClick={() => handleAddNewCard('recommendation')}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-karla-medium transition-all duration-300"
+                    style={{ 
+                      background: categoryColors[category],
+                      color: 'black'
+                    }}
+                    title="Ajouter une nouvelle carte"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                  </button>
+                )}
+              </div>
               
               <div className="space-y-4">
-                                 {renderCardWithStatus('Formation Cybersécurité Étendue', 'Étendre la formation cybersécurité aux 20 personnes restantes', 'Haute',
-                   <>
-                     <div className="flex items-start gap-3">
-                       <div className="w-2 h-2 rounded-full mt-2" style={{ background: '#ef4444' }}></div>
-                       <div className="flex-1">
-                         <h4 className="text-sm font-karla-bold mb-2" style={{ color: 'var(--text-primary)' }}>Priorité Haute</h4>
-                         <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>Étendre la formation cybersécurité aux 20 personnes restantes</p>
-                       </div>
-                       <div className="flex items-center gap-2">
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleEditCard('Formation Cybersécurité Étendue', 'recommendation');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             MODIFIER
-                           </button>
-                         )}
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleDeleteCard('Formation Cybersécurité Étendue');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: '#ef4444',
-                               color: 'white'
-                             }}
-                             title="Supprimer"
-                           >
-                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                             </svg>
-                           </button>
-                         )}
-                         {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Formation Cybersécurité Étendue') && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleAddToDashboard('Formation Cybersécurité Étendue', 'Étendre la formation cybersécurité aux 20 personnes restantes', 'Haute');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             A
-                           </button>
-                         )}
-                       </div>
-                     </div>
-                   </>
-                 )}
-
-                                 {renderCardWithStatus('Pentest Serveurs Restants', 'Effectuer des pentests sur les 4 serveurs restants', 'Moyenne',
-                   <>
-                     <div className="flex items-start gap-3">
-                       <div className="w-2 h-2 rounded-full mt-2" style={{ background: '#f59e0b' }}></div>
-                       <div className="flex-1">
-                         <h4 className="text-sm font-karla-bold mb-2" style={{ color: 'var(--text-primary)' }}>Priorité Moyenne</h4>
-                         <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>Effectuer des pentests sur les 4 serveurs restants</p>
-                       </div>
-                       <div className="flex items-center gap-2">
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleEditCard('Pentest Serveurs Restants', 'recommendation');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             MODIFIER
-                           </button>
-                         )}
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleDeleteCard('Pentest Serveurs Restants');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: '#ef4444',
-                               color: 'white'
-                             }}
-                             title="Supprimer"
-                           >
-                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                             </svg>
-                           </button>
-                         )}
-                         {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Pentest Serveurs Restants') && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleAddToDashboard('Pentest Serveurs Restants', 'Effectuer des pentests sur les 4 serveurs restants', 'Moyenne');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             A
-                           </button>
-                         )}
-                       </div>
-                     </div>
-                   </>
-                 )}
-
-                                 {renderCardWithStatus('Mise à jour Documentation', 'Mettre à jour la documentation de sécurité', 'Basse',
-                   <>
-                     <div className="flex items-start gap-3">
-                       <div className="w-2 h-2 rounded-full mt-2" style={{ background: '#10b981' }}></div>
-                       <div className="flex-1">
-                         <h4 className="text-sm font-karla-bold mb-2" style={{ color: 'var(--text-primary)' }}>Priorité Basse</h4>
-                         <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>Mettre à jour la documentation de sécurité</p>
-                       </div>
-                       <div className="flex items-center gap-2">
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleEditCard('Mise à jour Documentation', 'recommendation');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             MODIFIER
-                           </button>
-                         )}
-                         {userRole === 'admin' && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleDeleteCard('Mise à jour Documentation');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: '#ef4444',
-                               color: 'white'
-                             }}
-                             title="Supprimer"
-                           >
-                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                             </svg>
-                           </button>
-                         )}
-                         {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === 'Mise à jour Documentation') && (
-                           <button
-                             onClick={(e) => {
-                               e.stopPropagation();
-                               handleAddToDashboard('Mise à jour Documentation', 'Mettre à jour la documentation de sécurité', 'Basse');
-                             }}
-                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                             style={{ 
-                               background: categoryColors[category],
-                               color: 'black'
-                             }}
-                           >
-                             A
-                           </button>
-                         )}
-                       </div>
-                     </div>
-                   </>
-                 )}
+                {getCardsByType('recommendation').map((card) => (
+                  <div key={`${card.name}-${renderKey}-${JSON.stringify(savedCards[card.name])}`}>
+                    {renderCardWithStatus(card.name, card.description || '', 'Moyenne',
+                      <>
+                        <div className="flex items-start gap-3">
+                          <div className="w-2 h-2 rounded-full mt-2" style={{ 
+                            background: card.priority === 'Haute' ? '#ef4444' : 
+                                       card.priority === 'Moyenne' ? '#f59e0b' : '#10b981' 
+                          }}></div>
+                          <div className="flex-1">
+                            <h4 className="text-sm font-karla-bold mb-2" style={{ color: 'var(--text-primary)' }}>
+                              Priorité {card.priority}
+                            </h4>
+                            <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                              {card.description}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {userRole === 'admin' && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditCard(card.name, 'recommendation');
+                                }}
+                                className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                                style={{ 
+                                  background: categoryColors[category],
+                                  color: 'black'
+                                }}
+                              >
+                                MODIFIER
+                              </button>
+                            )}
+                            {userRole === 'admin' && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteCard(card.name);
+                                }}
+                                className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                                style={{ 
+                                  background: '#ef4444',
+                                  color: 'white'
+                                }}
+                                title="Supprimer"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            )}
+                            {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleAddToDashboard(card.name, card.description || '', 'Moyenne');
+                                }}
+                                className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
+                                style={{ 
+                                  background: categoryColors[category],
+                                  color: 'black'
+                                }}
+                              >
+                                A
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
