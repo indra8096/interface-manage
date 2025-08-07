@@ -76,10 +76,23 @@ export default function Home() {
   // Charger les tâches depuis l'API
   const fetchTasks = async () => {
     try {
-      const response = await fetch('/api/tasks');
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('Pas de token trouvé');
+        return;
+      }
+
+      const response = await fetch('/api/tasks', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
       if (response.ok) {
         const data = await response.json();
         setTasks(data);
+      } else if (response.status === 401) {
+        router.push('/login');
       }
     } catch (error) {
       console.error('Erreur lors du chargement des tâches:', error);
@@ -219,10 +232,17 @@ export default function Home() {
 
   const handleStatusChange = async (id: number, newStatus: 'completed' | 'warning' | 'error') => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('Pas de token trouvé');
+        return;
+      }
+
       const response = await fetch(`/api/tasks/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ status: newStatus }),
       });
@@ -233,6 +253,8 @@ export default function Home() {
             task.id === id ? { ...task, status: newStatus } : task
           )
         );
+      } else if (response.status === 401) {
+        router.push('/login');
       }
     } catch (error) {
       console.error('Erreur lors de la mise à jour du statut:', error);
@@ -260,10 +282,17 @@ export default function Home() {
       setTasks(prevTasks => [tempTask, ...prevTasks]);
 
       // Ensuite, envoyer à l'API en arrière-plan
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('Pas de token trouvé');
+        return;
+      }
+
       const response = await fetch('/api/tasks', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           ...taskData,
@@ -401,15 +430,26 @@ export default function Home() {
   // Fonction pour supprimer une tâche régulière de l'historique
   const removeFromHistory = async (taskId: number) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('Pas de token trouvé');
+        return;
+      }
+
       // Supprimer de la base de données
       const response = await fetch(`/api/tasks/${taskId}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
 
       if (response.ok) {
         // Mettre à jour l'état local
         setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
         console.log('Tâche supprimée de l\'historique:', taskId);
+      } else if (response.status === 401) {
+        router.push('/login');
       } else {
         console.error('Erreur lors de la suppression de la tâche');
       }

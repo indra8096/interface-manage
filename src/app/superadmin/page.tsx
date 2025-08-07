@@ -12,6 +12,10 @@ interface Company {
     users: number;
     tasks: number;
   };
+  admin?: {
+    email: string;
+    role: string;
+  };
 }
 
 export default function SuperAdminDashboard() {
@@ -82,6 +86,11 @@ export default function SuperAdminDashboard() {
 
       const data = await response.json();
       console.log('✅ Companies data received:', data);
+      console.log('🔍 Companies with admin info:', data.companies.map((c: Company) => ({
+        name: c.name,
+        admin: c.admin,
+        users: c._count.users
+      })));
       setCompanies(data.companies);
     } catch (err) {
       console.error('❌ Fetch error:', err);
@@ -256,6 +265,12 @@ export default function SuperAdminDashboard() {
                 </div>
                 
                 <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Administrateur:</span>
+                    <span className="text-white font-semibold text-sm">
+                      {company.admin ? company.admin.email : 'Non assigné'}
+                    </span>
+                  </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-400">Utilisateurs:</span>
                     <span className="text-white font-semibold">{company._count.users}</span>

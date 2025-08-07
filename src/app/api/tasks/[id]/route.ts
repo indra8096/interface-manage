@@ -1,13 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { verifyToken } from '@/lib/auth'
 
 export async function PATCH(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Vérifier l'authentification
+    const user = await verifyToken(request);
+    if (!user) {
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+    }
+
     const { id } = await context.params
     const body = await request.json()
+    
+    // Vérifier que la tâche existe et appartient à la bonne société
+    const existingTask = await prisma.task.findUnique({
+      where: { id: parseInt(id) },
+      select: { id: true, companyId: true }
+    });
+
+    if (!existingTask) {
+      return NextResponse.json({ error: 'Tâche non trouvée' }, { status: 404 });
+    }
+
+    // Règles de sécurité
+    if (user.role === 'SUPER_ADMIN') {
+      // Le Super Admin peut modifier n'importe quelle tâche
+    } else if (user.role === 'COMPANY_ADMIN' || user.role === 'COMPANY_USER') {
+      // Les autres ne peuvent modifier que les tâches de leur société
+      if (existingTask.companyId !== user.companyId) {
+        return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+      }
+    } else {
+      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+    }
     
     // Préparer les données à mettre à jour
     const updateData: {
@@ -53,7 +82,37 @@ export async function DELETE(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Vérifier l'authentification
+    const user = await verifyToken(request);
+    if (!user) {
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+    }
+
     const { id } = await context.params;
+
+    // Vérifier que la tâche existe et appartient à la bonne société
+    const existingTask = await prisma.task.findUnique({
+      where: { id: parseInt(id) },
+      select: { id: true, companyId: true }
+    });
+
+    if (!existingTask) {
+      return NextResponse.json({ error: 'Tâche non trouvée' }, { status: 404 });
+    }
+
+    // Règles de sécurité
+    if (user.role === 'SUPER_ADMIN') {
+      // Le Super Admin peut supprimer n'importe quelle tâche
+    } else if (user.role === 'COMPANY_ADMIN') {
+      // L'admin de société ne peut supprimer que les tâches de sa société
+      if (existingTask.companyId !== user.companyId) {
+        return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+      }
+    } else {
+      // Les utilisateurs normaux ne peuvent supprimer aucune tâche
+      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+    }
+
     await prisma.task.delete({ where: { id: parseInt(id) } });
     return NextResponse.json({ success: true });
   } catch (error) {

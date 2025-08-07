@@ -84,7 +84,7 @@ async function fixDatabase() {
     
     // Tester l'accès aux tables
     try {
-      const companies = await prisma.$queryRaw`SELECT COUNT(*) as count FROM companies`;
+      await prisma.$queryRaw`SELECT COUNT(*) as count FROM companies`;
       console.log('✅ Table companies accessible');
     } catch (error) {
       console.log('❌ Table companies non accessible:', error);

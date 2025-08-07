@@ -53,27 +53,77 @@ export default function AdminUsersPage() {
   }, [router]);
 
   const fetchUsers = async () => {
-    const res = await fetch('/api/users');
-    if (res.ok) {
-      setUsers(await res.json());
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+
+      const res = await fetch('/api/users', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (res.status === 401) {
+        console.log('❌ 401 Unauthorized, redirection vers login');
+        router.push('/login');
+        return;
+      }
+
+      if (res.ok) {
+        const usersData = await res.json();
+        console.log('✅ Users data received:', usersData);
+        setUsers(usersData);
+      } else {
+        console.error('❌ Error fetching users:', res.status);
+      }
+    } catch (error) {
+      console.error('❌ Fetch error:', error);
     }
   };
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(''); setSuccess(''); setLoading(true);
-    const res = await fetch('/api/users', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, role }),
-    });
-    setLoading(false);
-    if (res.ok) {
-      setSuccess('Utilisateur créé avec succès !');
-      setEmail(''); setPassword(''); setRole('user');
-      fetchUsers();
-    } else {
+    
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+
+      // Convertir les rôles pour l'API
+      const apiRole = role === 'admin' ? 'COMPANY_ADMIN' : 'COMPANY_USER';
+
+      const res = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ email, password, role: apiRole }),
+      });
+
+      if (res.status === 401) {
+        router.push('/login');
+        return;
+      }
+
+      if (res.ok) {
+        setSuccess('Utilisateur créé avec succès !');
+        setEmail(''); setPassword(''); setRole('user');
+        fetchUsers();
+      } else {
+        const errorData = await res.json();
+        setError(errorData.error || 'Erreur lors de la création de l\'utilisateur');
+      }
+    } catch (error) {
       setError('Erreur lors de la création de l\'utilisateur');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -88,10 +138,34 @@ export default function AdminUsersPage() {
 
   const confirmDelete = async () => {
     if (deleteConfirmation.userId) {
-      const res = await fetch(`/api/users/${deleteConfirmation.userId}`, { method: 'DELETE' });
-      if (res.ok) {
-        setSuccess('Utilisateur supprimé avec succès !');
-        fetchUsers();
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          router.push('/login');
+          return;
+        }
+
+        const res = await fetch(`/api/users/${deleteConfirmation.userId}`, { 
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (res.status === 401) {
+          router.push('/login');
+          return;
+        }
+
+        if (res.ok) {
+          setSuccess('Utilisateur supprimé avec succès !');
+          fetchUsers();
+        } else {
+          const errorData = await res.json();
+          setError(errorData.error || 'Erreur lors de la suppression');
+        }
+      } catch (error) {
+        setError('Erreur lors de la suppression');
       }
     }
     setDeleteConfirmation({ show: false });
@@ -111,21 +185,50 @@ export default function AdminUsersPage() {
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(''); setSuccess(''); setLoading(true);
-    const res = await fetch(`/api/users/${editId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: editEmail, password: editPassword, role: editRole }),
-    });
-    setLoading(false);
-    if (res.ok) {
-      setSuccess('Utilisateur modifié avec succès !');
-      setEditId(null);
-      setEditEmail('');
-      setEditPassword('');
-      setEditRole('user');
-      fetchUsers();
-    } else {
+    
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+
+      // Convertir les rôles pour l'API
+      const apiRole = editRole === 'admin' ? 'COMPANY_ADMIN' : 'COMPANY_USER';
+
+      const res = await fetch(`/api/users/${editId}`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ 
+          email: editEmail, 
+          password: editPassword, 
+          role: apiRole 
+        }),
+      });
+
+      if (res.status === 401) {
+        router.push('/login');
+        return;
+      }
+
+      if (res.ok) {
+        setSuccess('Utilisateur modifié avec succès !');
+        setEditId(null);
+        setEditEmail('');
+        setEditPassword('');
+        setEditRole('user');
+        fetchUsers();
+      } else {
+        const errorData = await res.json();
+        setError(errorData.error || 'Erreur lors de la modification de l\'utilisateur');
+      }
+    } catch (error) {
       setError('Erreur lors de la modification de l\'utilisateur');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -197,7 +300,7 @@ export default function AdminUsersPage() {
                   <div>
                     <div className="font-karla-medium text-sm mb-2 transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>ADMINISTRATEURS</div>
                     <div className="text-6xl font-karla-bold" style={{ color: 'var(--theme-secondary)' }}>
-                      {users.filter(u => u.role === 'admin').length}
+                      {users.filter(u => u.role === 'COMPANY_ADMIN').length}
                     </div>
                   </div>
                   <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
@@ -220,7 +323,7 @@ export default function AdminUsersPage() {
                   <div>
                     <div className="font-karla-medium text-sm mb-2 transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>UTILISATEURS</div>
                     <div className="text-6xl font-karla-bold" style={{ color: 'var(--theme-primary)' }}>
-                      {users.filter(u => u.role === 'user').length}
+                      {users.filter(u => u.role === 'COMPANY_USER').length}
                     </div>
                   </div>
                   <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
@@ -457,13 +560,13 @@ export default function AdminUsersPage() {
                           </td>
                           <td className="p-4">
                             <span className={`px-3 py-1 rounded-full text-xs font-karla-semibold ${
-                              user.role === 'admin' 
+                              user.role === 'COMPANY_ADMIN' 
                                 ? 'text-white' 
                                 : 'text-black'
                             }`} style={{
-                              backgroundColor: user.role === 'admin' ? '#9933FF' : '#CCFF00'
+                              backgroundColor: user.role === 'COMPANY_ADMIN' ? '#9933FF' : '#CCFF00'
                             }}>
-                              {user.role.toUpperCase()}
+                              {user.role === 'COMPANY_ADMIN' ? 'ADMIN' : 'UTILISATEUR'}
                             </span>
                           </td>
                           <td className="p-4 text-center">

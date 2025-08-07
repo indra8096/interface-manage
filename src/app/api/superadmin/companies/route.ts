@@ -18,11 +18,27 @@ export async function GET(req: NextRequest) {
             users: true,
             tasks: true
           }
+        },
+        users: {
+          where: {
+            role: 'COMPANY_ADMIN'
+          },
+          select: {
+            email: true,
+            role: true
+          },
+          take: 1
         }
       }
     });
 
-    return NextResponse.json({ companies });
+    // Transformer les données pour inclure l'admin
+    const companiesWithAdmin = companies.map(company => ({
+      ...company,
+      admin: company.users[0] || null
+    }));
+
+    return NextResponse.json({ companies: companiesWithAdmin });
   } catch (error) {
     console.error('Erreur lors de la récupération des entreprises:', error);
     return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 });
