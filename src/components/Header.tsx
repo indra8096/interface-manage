@@ -13,7 +13,14 @@ export default function Header() {
     // Récupérer le rôle de l'utilisateur depuis le localStorage
     if (typeof window !== 'undefined') {
       const role = localStorage.getItem('role');
-      setUserRole(role || 'user');
+      // Conversion des rôles pour l'affichage
+      if (role === 'COMPANY_ADMIN') {
+        setUserRole('admin');
+      } else if (role === 'COMPANY_USER') {
+        setUserRole('user');
+      } else {
+        setUserRole(role || 'user');
+      }
     }
   }, []);
 
@@ -25,7 +32,11 @@ export default function Header() {
 
   const handleAdminClick = () => {
     if (userRole === 'admin') {
-      window.location.href = '/admin/users';
+      // Vérification de sécurité : seulement les COMPANY_ADMIN peuvent accéder
+      const role = localStorage.getItem('role');
+      if (role === 'COMPANY_ADMIN') {
+        window.location.href = '/admin/users';
+      }
     }
   };
 
@@ -85,7 +96,7 @@ export default function Header() {
               title={userRole === 'admin' ? "Gérer les utilisateurs" : "Accès réservé aux administrateurs"}
               disabled={userRole !== 'admin'}
             >
-              {userRole === 'admin' ? 'ADMIN' : 'USER'}
+              {userRole === 'admin' ? 'GÉRER LES UTILISATEURS' : 'USER'}
             </button>
            </div>
           

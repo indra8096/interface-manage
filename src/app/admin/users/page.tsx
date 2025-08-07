@@ -27,11 +27,26 @@ export default function AdminUsersPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Protection : seulement admin
+    // Protection : seulement COMPANY_ADMIN
     if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
       const role = localStorage.getItem('role');
-      if (role !== 'admin') {
-        router.push('/');
+      const companyId = localStorage.getItem('companyId');
+      
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+      
+      if (role !== 'COMPANY_ADMIN') {
+        router.push('/dashboard');
+        return;
+      }
+      
+      // Vérification de sécurité : l'admin ne peut gérer que les utilisateurs de son entreprise
+      if (!companyId) {
+        router.push('/dashboard');
+        return;
       }
     }
     fetchUsers();
@@ -62,13 +77,28 @@ export default function AdminUsersPage() {
     }
   };
 
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{ show: boolean; userId?: number; userEmail?: string }>({ show: false });
+
   const handleDelete = async (id: number) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) return;
-    const res = await fetch(`/api/users/${id}`, { method: 'DELETE' });
-    if (res.ok) {
-      setSuccess('Utilisateur supprimé avec succès !');
-      fetchUsers();
+    const user = users.find(u => u.id === id);
+    if (user) {
+      setDeleteConfirmation({ show: true, userId: id, userEmail: user.email });
     }
+  };
+
+  const confirmDelete = async () => {
+    if (deleteConfirmation.userId) {
+      const res = await fetch(`/api/users/${deleteConfirmation.userId}`, { method: 'DELETE' });
+      if (res.ok) {
+        setSuccess('Utilisateur supprimé avec succès !');
+        fetchUsers();
+      }
+    }
+    setDeleteConfirmation({ show: false });
+  };
+
+  const cancelDelete = () => {
+    setDeleteConfirmation({ show: false });
   };
 
   const handleEdit = (user: User) => {
@@ -469,7 +499,91 @@ export default function AdminUsersPage() {
         </div>
       </main>
       
-      <Footer />
-    </div>
-  );
+             <Footer />
+
+       {/* Popup de confirmation de suppression - Style Drelto */}
+       {deleteConfirmation.show && (
+         <>
+           <motion.div
+             initial={{ opacity: 0 }}
+             animate={{ opacity: 1 }}
+             exit={{ opacity: 0 }}
+             onClick={cancelDelete}
+             className="fixed inset-0 bg-black bg-opacity-50 z-[100] backdrop-blur-sm"
+           />
+           
+           <div className="fixed inset-0 flex items-center justify-center z-[110] p-4">
+             <motion.div
+               initial={{ opacity: 0, scale: 0.9, y: 20 }}
+               animate={{ opacity: 1, scale: 1, y: 0 }}
+               exit={{ opacity: 0, scale: 0.9, y: 20 }}
+               className="w-full max-w-md bg-black border rounded-xl p-8 max-h-[90vh] overflow-y-auto"
+               style={{ borderColor: 'var(--border-primary)' }}
+             >
+               <div className="text-center">
+                 {/* Icône d'avertissement */}
+                 <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center">
+                   <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                   </svg>
+                 </div>
+
+                 {/* Titre */}
+                 <h3 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--text-primary)' }}>
+                   Confirmer la suppression
+                 </h3>
+
+                 {/* Message */}
+                 <div className="mb-8">
+                   <p className="text-lg font-karla-medium mb-2" style={{ color: 'var(--text-primary)' }}>
+                     Êtes-vous sûr de vouloir supprimer cet utilisateur ?
+                   </p>
+                   <p className="text-sm font-karla-semibold px-4 py-2 rounded-lg" style={{ 
+                     background: 'rgba(239, 68, 68, 0.1)',
+                     color: '#ef4444',
+                     border: '1px solid rgba(239, 68, 68, 0.3)'
+                   }}>
+                     {deleteConfirmation.userEmail}
+                   </p>
+                   <p className="text-sm mt-3" style={{ color: 'var(--text-muted)' }}>
+                     Cette action est irréversible et supprimera définitivement l&apos;utilisateur du système.
+                   </p>
+                 </div>
+
+                 {/* Boutons d'action */}
+                 <div className="flex gap-4">
+                   <motion.button
+                     onClick={cancelDelete}
+                     whileHover={{ scale: 1.05 }}
+                     whileTap={{ scale: 0.95 }}
+                     className="flex-1 px-6 py-3 rounded-xl font-karla-bold transition-all duration-300 border"
+                     style={{ 
+                       borderColor: 'var(--border-primary)',
+                       color: 'var(--text-primary)',
+                       background: 'var(--bg-secondary)'
+                     }}
+                   >
+                     Annuler
+                   </motion.button>
+                   
+                   <motion.button
+                     onClick={confirmDelete}
+                     whileHover={{ scale: 1.05 }}
+                     whileTap={{ scale: 0.95 }}
+                     className="flex-1 px-6 py-3 rounded-xl font-karla-bold transition-all duration-300"
+                     style={{ 
+                       background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                       color: 'white'
+                     }}
+                   >
+                     Supprimer
+                   </motion.button>
+                 </div>
+               </div>
+             </motion.div>
+           </div>
+         </>
+       )}
+     </div>
+   );
 } 

@@ -25,7 +25,18 @@ export default function LoginPage() {
       const data = await res.json();
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', data.role);
-      router.push('/');
+      localStorage.setItem('companyId', data.companyId?.toString() || '');
+      localStorage.setItem('userCompanyId', data.companyId?.toString() || ''); // Pour la vérification de sécurité
+      localStorage.setItem('companyName', data.companyName || '');
+      
+      // Redirection selon le rôle
+      if (data.role === 'SUPER_ADMIN') {
+        router.push('/superadmin');
+      } else if (data.role === 'COMPANY_ADMIN' || data.role === 'COMPANY_USER') {
+        router.push('/dashboard');
+      } else {
+        setError('Rôle non reconnu');
+      }
     } else {
       setError('Identifiants invalides');
     }

@@ -10,6 +10,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Company {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  users     User[]
+  tasks     Task[]
+
+  @@map("companies")
+}
+
 model Task {
   id        Int      @id @default(autoincrement())
   name      String
@@ -22,6 +34,9 @@ model Task {
   category  String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  
+  companyId Int?     @map("company_id")
+  company   Company? @relation(fields: [companyId], references: [id])
 
   @@map("tasks")
 }
@@ -30,9 +45,25 @@ model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   password  String
-  role      String   @default("user") // 'admin' ou 'user'
+  role      String   @default("COMPANY_USER") // SUPER_ADMIN, COMPANY_ADMIN, COMPANY_USER
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  
+  companyId Int?     @map("company_id")
+  company   Company? @relation(fields: [companyId], references: [id])
 
   @@map("users")
+}
+
+model GlobalCard {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  category    String   // 'service', 'suivi', etc.
+  content     Json     // Contenu de la carte (flexible)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("global_cards")
 } 

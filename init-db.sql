@@ -5,45 +5,87 @@ WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'taskmanager')\gexec
 -- Connexion à la base de données
 \c taskmanager;
 
--- Création de la table des tâches (seulement si elle n'existe pas)
-CREATE TABLE IF NOT EXISTS tasks (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    status VARCHAR(50) NOT NULL DEFAULT 'warning',
-    score INTEGER NOT NULL DEFAULT 5,
-    importance VARCHAR(50) DEFAULT 'Moyenne',
-    due_date TIMESTAMP,
-    assigned_to VARCHAR(255),
-    category VARCHAR(50) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- Création des tables
+CREATE TABLE IF NOT EXISTS "companies" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    CONSTRAINT "companies_pkey" PRIMARY KEY ("id")
 );
 
--- Création de la table des utilisateurs (seulement si elle n'existe pas)
-CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    role VARCHAR(50) DEFAULT 'user',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS "users" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "role" TEXT NOT NULL DEFAULT 'COMPANY_USER',
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "company_id" INTEGER,
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "users_email_key" UNIQUE ("email")
 );
 
--- Insertion de données de test (seulement si la table est vide)
-INSERT INTO tasks (name, description, status, score, importance, category) 
-SELECT * FROM (VALUES
-    ('Sécuriser les accès réseau', 'Mise en place de la sécurité réseau', 'warning', 8, 'Élevée', 'defensive'),
-    ('Configurer le pare-feu', 'Configuration du pare-feu d''entreprise', 'error', 9, 'Élevée', 'defensive'),
-    ('Mettre à jour les antivirus', 'Mise à jour des logiciels antivirus', 'completed', 6, 'Moyenne', 'defensive'),
-    ('Optimiser les performances', 'Optimisation des performances système', 'warning', 7, 'Moyenne', 'general'),
-    ('Gérer les sauvegardes', 'Gestion des sauvegardes automatiques', 'completed', 5, 'Faible', 'general'),
-    ('Maintenir les systèmes', 'Maintenance préventive des systèmes', 'warning', 6, 'Moyenne', 'general'),
-    ('Analyser les vulnérabilités', 'Analyse des vulnérabilités système', 'error', 9, 'Élevée', 'offensive'),
-    ('Tester la pénétration', 'Tests de pénétration réseau', 'warning', 8, 'Élevée', 'offensive'),
-    ('Auditer la sécurité', 'Audit de sécurité complet', 'completed', 7, 'Moyenne', 'offensive')
-) AS v(name, description, status, score, importance, category)
-WHERE NOT EXISTS (SELECT 1 FROM tasks LIMIT 1);
+CREATE TABLE IF NOT EXISTS "tasks" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
+    "status" TEXT NOT NULL DEFAULT 'warning',
+    "score" INTEGER NOT NULL DEFAULT 5,
+    "importance" TEXT NOT NULL DEFAULT 'Moyenne',
+    "dueDate" TIMESTAMP(3),
+    "assignedTo" TEXT,
+    "category" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "company_id" INTEGER,
+    CONSTRAINT "tasks_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE IF NOT EXISTS "global_cards" (
+    "id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "category" TEXT NOT NULL,
+    "content" JSONB NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    CONSTRAINT "global_cards_pkey" PRIMARY KEY ("id")
+);
+
+-- Ajout des contraintes de clé étrangère
+ALTER TABLE "users" ADD CONSTRAINT "users_company_id_fkey" 
+    FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE "tasks" ADD CONSTRAINT "tasks_company_id_fkey" 
+    FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- Insertion des données initiales
+INSERT INTO "companies" ("name") VALUES ('Société 1') ON CONFLICT DO NOTHING;
+
+-- Récupération de l'ID de la société
+DO $$
+DECLARE
+    company_id INTEGER;
+BEGIN
+    SELECT id INTO company_id FROM companies WHERE name = 'Société 1' LIMIT 1;
+    
+    -- Création du Super Admin
+    INSERT INTO "users" ("email", "password", "role") 
+    VALUES ('superadmin@example.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'SUPER_ADMIN')
+    ON CONFLICT (email) DO NOTHING;
+    
+    -- Création de l'admin de l'entreprise
+    INSERT INTO "users" ("email", "password", "role", "company_id") 
+    VALUES ('admin@societe1.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'COMPANY_ADMIN', company_id)
+    ON CONFLICT (email) DO NOTHING;
+    
+    -- Création de l'utilisateur de l'entreprise
+    INSERT INTO "users" ("email", "password", "role", "company_id") 
+    VALUES ('user@societe1.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'COMPANY_USER', company_id)
+    ON CONFLICT (email) DO NOTHING;
+END $$;
 
 -- Création d'un index pour améliorer les performances (seulement s'il n'existe pas)
 CREATE INDEX IF NOT EXISTS idx_tasks_category ON tasks(category);
