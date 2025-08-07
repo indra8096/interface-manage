@@ -62,9 +62,12 @@ export async function GET(
       return NextResponse.json({ error: 'Entreprise non trouvée' }, { status: 404 });
     }
 
-    // Récupérer les cartes globales
+    // Récupérer les cartes globales de cette société spécifique
     const globalCards = await prisma.globalCard.findMany({
-      where: { isActive: true },
+      where: { 
+        companyId: companyId,
+        isActive: true 
+      },
       orderBy: {
         createdAt: 'desc'
       }

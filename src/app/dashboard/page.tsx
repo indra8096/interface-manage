@@ -107,8 +107,8 @@ export default function Home() {
       const role = localStorage.getItem('role');
       const companyId = localStorage.getItem('companyId');
       const userCompanyId = localStorage.getItem('userCompanyId');
-      const savedTasksFromPanel = localStorage.getItem('tasksAddedFromPanel');
-      const savedPanelCards = localStorage.getItem('panelCards');
+      const savedTasksFromPanel = localStorage.getItem(`tasksAddedFromPanel_${companyId}`);
+      const savedPanelCards = localStorage.getItem(`panelCards_${companyId}`);
       
       if (!token) {
         router.push('/login');
@@ -168,8 +168,10 @@ export default function Home() {
 
     const syncPanelData = () => {
       if (typeof window !== 'undefined') {
+        const companyId = localStorage.getItem('companyId');
+        
         // Vérifier les changements dans panelCards
-        const savedPanelCards = localStorage.getItem('panelCards') || '';
+        const savedPanelCards = localStorage.getItem(`panelCards_${companyId}`) || '';
         if (savedPanelCards !== lastPanelCards) {
           console.log('Changement détecté dans panelCards');
           lastPanelCards = savedPanelCards;
@@ -184,7 +186,7 @@ export default function Home() {
         }
 
         // Vérifier les changements dans tasksAddedFromPanel
-        const savedTasksFromPanel = localStorage.getItem('tasksAddedFromPanel') || '';
+        const savedTasksFromPanel = localStorage.getItem(`tasksAddedFromPanel_${companyId}`) || '';
         if (savedTasksFromPanel !== lastTasksFromPanel) {
           console.log('Changement détecté dans tasksAddedFromPanel');
           lastTasksFromPanel = savedTasksFromPanel;
@@ -216,18 +218,20 @@ export default function Home() {
   };
 
   const handleAddTaskFromPanel = (taskData: { name: string; score: number; category: string; description: string; importance: string; dueDate: string; assignedTo: string }) => {
+    const companyId = localStorage.getItem('companyId');
     // Ne pas appeler handleCreateTask pour éviter l'ajout dans les TaskColumns
     // Marquer cette tâche comme ajoutée depuis le panneau
     const updatedTasks = [...tasksAddedFromPanel, taskData];
     setTasksAddedFromPanel(updatedTasks);
     // Sauvegarder dans localStorage
-    localStorage.setItem('tasksAddedFromPanel', JSON.stringify(updatedTasks));
+    localStorage.setItem(`tasksAddedFromPanel_${companyId}`, JSON.stringify(updatedTasks));
   };
 
   const removeTaskFromPanel = (taskName: string) => {
+    const companyId = localStorage.getItem('companyId');
     const updatedTasks = tasksAddedFromPanel.filter(task => task.name !== taskName);
     setTasksAddedFromPanel(updatedTasks);
-    localStorage.setItem('tasksAddedFromPanel', JSON.stringify(updatedTasks));
+    localStorage.setItem(`tasksAddedFromPanel_${companyId}`, JSON.stringify(updatedTasks));
   };
 
   const handleStatusChange = async (id: number, newStatus: 'completed' | 'warning' | 'error') => {
@@ -374,9 +378,10 @@ export default function Home() {
   const forceSyncPanelData = () => {
     console.log('ForceSyncPanelData appelé - Synchronisation immédiate');
     if (typeof window !== 'undefined') {
+      const companyId = localStorage.getItem('companyId');
       // Forcer la récupération immédiate des données
-      const savedPanelCards = localStorage.getItem('panelCards');
-      const savedTasksFromPanel = localStorage.getItem('tasksAddedFromPanel');
+      const savedPanelCards = localStorage.getItem(`panelCards_${companyId}`);
+      const savedTasksFromPanel = localStorage.getItem(`tasksAddedFromPanel_${companyId}`);
       
       console.log('Données actuelles - panelCards:', savedPanelCards);
       console.log('Données actuelles - tasksAddedFromPanel:', savedTasksFromPanel);
@@ -460,16 +465,17 @@ export default function Home() {
 
   // Fonction pour supprimer une tâche du panel de l'historique
   const removePanelTaskFromHistory = (taskName: string) => {
+    const companyId = localStorage.getItem('companyId');
     // Supprimer de tasksAddedFromPanel
     const updatedTasks = tasksAddedFromPanel.filter(task => task.name !== taskName);
     setTasksAddedFromPanel(updatedTasks);
-    localStorage.setItem('tasksAddedFromPanel', JSON.stringify(updatedTasks));
+    localStorage.setItem(`tasksAddedFromPanel_${companyId}`, JSON.stringify(updatedTasks));
     
     // Supprimer des données du panel si elle existe
-    const currentPanelCards = JSON.parse(localStorage.getItem('panelCards') || '{}');
+    const currentPanelCards = JSON.parse(localStorage.getItem(`panelCards_${companyId}`) || '{}');
     if (currentPanelCards[taskName]) {
       delete currentPanelCards[taskName];
-      localStorage.setItem('panelCards', JSON.stringify(currentPanelCards));
+      localStorage.setItem(`panelCards_${companyId}`, JSON.stringify(currentPanelCards));
       setPanelCards(currentPanelCards);
     }
     

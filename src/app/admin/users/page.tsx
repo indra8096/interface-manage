@@ -251,18 +251,25 @@ export default function AdminUsersPage() {
                   Gestion des utilisateurs et des accès système
                 </p>
               </div>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => window.location.href = '/'}
-                className="flex items-center gap-3 px-6 py-3 text-white rounded-xl font-karla-bold hover:bg-[#7c3aed] transition-all duration-300 shadow-lg"
-                style={{ backgroundColor: '#9933FF' }}
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                RETOUR AU TABLEAU
-              </motion.button>
+                             <motion.button
+                 whileHover={{ scale: 1.05 }}
+                 whileTap={{ scale: 0.95 }}
+                 onClick={() => {
+                   const role = localStorage.getItem('role');
+                   if (role === 'SUPER_ADMIN') {
+                     window.location.href = '/superadmin';
+                   } else {
+                     window.location.href = '/dashboard';
+                   }
+                 }}
+                 className="flex items-center gap-3 px-6 py-3 text-white rounded-xl font-karla-bold hover:bg-[#7c3aed] transition-all duration-300 shadow-lg"
+                 style={{ backgroundColor: '#9933FF' }}
+               >
+                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                 </svg>
+                 RETOUR AU TABLEAU
+               </motion.button>
             </div>
 
             {/* Statistiques principales */}

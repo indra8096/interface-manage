@@ -155,7 +155,8 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
   useEffect(() => {
     const loadSavedCards = () => {
       try {
-        const saved = JSON.parse(localStorage.getItem('panelCards') || '{}');
+        const companyId = localStorage.getItem('companyId');
+        const saved = JSON.parse(localStorage.getItem(`panelCards_${companyId}`) || '{}');
         setSavedCards(saved);
       } catch (error) {
         console.error('Erreur lors du chargement des cartes:', error);
@@ -165,7 +166,8 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
 
     const loadDeletedCards = () => {
       try {
-        const deleted = JSON.parse(localStorage.getItem('deletedCards') || '[]');
+        const companyId = localStorage.getItem('companyId');
+        const deleted = JSON.parse(localStorage.getItem(`deletedCards_${companyId}`) || '[]');
         setDeletedCards(new Set(deleted));
       } catch (error) {
         console.error('Erreur lors du chargement des cartes supprimées:', error);
@@ -217,6 +219,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     console.log('Nouvelles données:', editFormData);
     console.log('Cartes sauvegardées avant:', savedCards);
     
+    const companyId = localStorage.getItem('companyId');
     // Sauvegarder les modifications dans localStorage
     const updatedCards = { ...savedCards };
     
@@ -224,9 +227,8 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     if (editingCard && editingCard !== editFormData.name) {
       console.log('Suppression de l\'ancienne entrée:', editingCard);
       delete updatedCards[editingCard];
-      
       // Mettre à jour le nom dans tasksAddedFromPanel si la carte y est présente
-      const currentTasksFromPanel = JSON.parse(localStorage.getItem('tasksAddedFromPanel') || '[]');
+      const currentTasksFromPanel = JSON.parse(localStorage.getItem(`tasksAddedFromPanel_${companyId}`) || '[]');
       const updatedTasksFromPanel = currentTasksFromPanel.map((task: { name: string; [key: string]: unknown }) => {
         if (task.name === editingCard) {
           console.log('Mise à jour du nom dans tasksAddedFromPanel:', editingCard, '->', editFormData.name);
@@ -234,12 +236,12 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
         }
         return task;
       });
-      localStorage.setItem('tasksAddedFromPanel', JSON.stringify(updatedTasksFromPanel));
+      localStorage.setItem(`tasksAddedFromPanel_${companyId}`, JSON.stringify(updatedTasksFromPanel));
     }
     
     // Ajouter/mettre à jour avec le nouveau nom
     updatedCards[editFormData.name] = editFormData;
-    localStorage.setItem('panelCards', JSON.stringify(updatedCards));
+    localStorage.setItem(`panelCards_${companyId}`, JSON.stringify(updatedCards));
     
     // Mettre à jour l'état local
     setSavedCards(updatedCards);
@@ -292,10 +294,11 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
       return;
     }
 
+    const companyId = localStorage.getItem('companyId');
     // Sauvegarder la nouvelle carte dans localStorage
     const updatedCards = { ...savedCards };
     updatedCards[addFormData.name] = addFormData;
-    localStorage.setItem('panelCards', JSON.stringify(updatedCards));
+    localStorage.setItem(`panelCards_${companyId}`, JSON.stringify(updatedCards));
     
     // Mettre à jour l'état local
     setSavedCards(updatedCards);
@@ -329,21 +332,22 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
 
   const confirmDelete = () => {
     const cardName = deleteConfirmation.cardName;
+    const companyId = localStorage.getItem('companyId');
     
     // Si c'est une carte sauvegardée, la supprimer du localStorage
     if (savedCards[cardName]) {
     const updatedCards = { ...savedCards };
       delete updatedCards[cardName];
-    localStorage.setItem('panelCards', JSON.stringify(updatedCards));
+    localStorage.setItem(`panelCards_${companyId}`, JSON.stringify(updatedCards));
     setSavedCards(updatedCards);
       setRenderKey(prev => prev + 1); // Forcer le re-rendu
       
       // Supprimer la carte de tasksAddedFromPanel si elle y est présente
-      const currentTasksFromPanel = JSON.parse(localStorage.getItem('tasksAddedFromPanel') || '[]');
+      const currentTasksFromPanel = JSON.parse(localStorage.getItem(`tasksAddedFromPanel_${companyId}`) || '[]');
       const updatedTasksFromPanel = currentTasksFromPanel.filter((task: { name: string; [key: string]: unknown }) => task.name !== cardName);
       if (updatedTasksFromPanel.length !== currentTasksFromPanel.length) {
         console.log('Suppression de la carte de tasksAddedFromPanel:', cardName);
-        localStorage.setItem('tasksAddedFromPanel', JSON.stringify(updatedTasksFromPanel));
+        localStorage.setItem(`tasksAddedFromPanel_${companyId}`, JSON.stringify(updatedTasksFromPanel));
       }
     }
     
@@ -351,16 +355,16 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     if (defaultCards[cardName]) {
       const updatedDeletedCards = new Set(deletedCards);
       updatedDeletedCards.add(cardName);
-      localStorage.setItem('deletedCards', JSON.stringify([...updatedDeletedCards]));
+      localStorage.setItem(`deletedCards_${companyId}`, JSON.stringify([...updatedDeletedCards]));
       setDeletedCards(updatedDeletedCards);
       setRenderKey(prev => prev + 1); // Forcer le re-rendu
       
       // Supprimer la carte de tasksAddedFromPanel si elle y est présente
-      const currentTasksFromPanel = JSON.parse(localStorage.getItem('tasksAddedFromPanel') || '[]');
+      const currentTasksFromPanel = JSON.parse(localStorage.getItem(`tasksAddedFromPanel_${companyId}`) || '[]');
       const updatedTasksFromPanel = currentTasksFromPanel.filter((task: { name: string; [key: string]: unknown }) => task.name !== cardName);
       if (updatedTasksFromPanel.length !== currentTasksFromPanel.length) {
         console.log('Suppression de la carte de base de tasksAddedFromPanel:', cardName);
-        localStorage.setItem('tasksAddedFromPanel', JSON.stringify(updatedTasksFromPanel));
+        localStorage.setItem(`tasksAddedFromPanel_${companyId}`, JSON.stringify(updatedTasksFromPanel));
       }
     }
     
