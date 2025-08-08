@@ -124,6 +124,16 @@ export default function LoginPage() {
             </button>
           </form>
 
+          {/* Bouton retour à la vitrine */}
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => router.push('/')}
+              className="px-6 py-2 text-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-300 border border-white/30"
+            >
+              ← Retour à la page vitrine
+            </button>
+          </div>
+
           {/* By Drelto */}
           <div className="mt-8 pt-6 border-t border-gray-700 text-center">
             <p className="text-sm text-gray-400">

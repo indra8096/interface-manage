@@ -38,6 +38,8 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    console.log('Données reçues:', body);
+    
     const { 
       name, 
       type, 
@@ -51,6 +53,16 @@ export async function POST(request: NextRequest) {
       nextAudit, 
       deadline 
     } = body;
+
+    console.log('Category extraite:', category);
+
+    // Validation des champs requis
+    if (!name || !type || !category) {
+      console.log('Validation échouée - name:', name, 'type:', type, 'category:', category);
+      return NextResponse.json({ 
+        error: 'Les champs name, type et category sont requis' 
+      }, { status: 400 });
+    }
 
     // Créer le template de panel de suivi
     const template = await prisma.panelCardTemplate.create({

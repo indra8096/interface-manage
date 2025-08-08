@@ -116,6 +116,7 @@ export default function PanelTemplatesPage() {
         setFormData({
           name: '',
           type: 'coverage',
+          category: 'defensive',
           description: '',
           total: 0,
           completed: 0,
@@ -669,7 +670,7 @@ export default function PanelTemplatesPage() {
                     <select
                       required
                       value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value as 'defensive' | 'general' | 'offensive' })}
                       className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                     >
                       <option value="defensive">Défensif</option>

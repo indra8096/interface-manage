@@ -461,76 +461,319 @@ export default function ServiceTemplatesPage() {
             </motion.div>
           )}
 
-          {/* Liste des templates avec le design des cartes */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {serviceTemplates.map((template) => (
-              <motion.div
-                key={template.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className="group cursor-pointer select-none"
-              >
-                <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover:shadow-lg hover:shadow-[#CCFF00]/10">
-                  <div className="relative">
-                    {/* Boutons d'action */}
-                    <div className="absolute top-0 right-0 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEdit(template);
-                        }}
-                        className="p-2 bg-[#CCFF00] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
-                      >
-                        <FontAwesomeIcon icon={faEdit} className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(template.id);
-                        }}
-                        className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300"
-                      >
-                        <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors pr-20">
-                      {template.name}
-                    </h3>
-                    <p className="text-sm text-gray-400 mb-3 font-karla-regular">
-                      {template.description}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className={`px-2 py-1 rounded-full text-xs font-karla-medium ${
-                        template.category === 'defensive' ? 'bg-blue-900 text-blue-300' :
-                        template.category === 'general' ? 'bg-gray-700 text-gray-300' :
-                        'bg-red-900 text-red-300'
-                      }`}>
-                        {getCategoryLabel(template.category)}
-                      </span>
-                      <div className="flex items-center gap-2 text-xs text-gray-500">
-                        <span>Score: {template.defaultScore}</span>
-                        <span>•</span>
-                        <span>{template.defaultImportance}</span>
-                      </div>
-                    </div>
-                  </div>
-                 
-                  {/* Indicateur de statut */}
-                  <div className="mt-3 pt-3 border-t border-gray-700">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-[#CCFF00] font-karla-medium">
-                        {template.isActive ? 'ACTIF' : 'INACTIF'}
-                      </span>
-                      <span className="text-gray-500 font-karla-medium">
-                        ID: {template.id}
-                      </span>
-                    </div>
-                  </div>
+          {/* Liste des templates triés par catégorie */}
+          <div className="space-y-12">
+            {/* Section Défensif */}
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-1 h-8 bg-blue-500 rounded-full"></div>
+                  <h2 className="text-2xl font-bold text-white">Défensif</h2>
+                  <span className="px-3 py-1 bg-blue-900/30 text-blue-300 rounded-full text-sm font-medium">
+                    {serviceTemplates.filter(t => t.category === 'defensive').length} template{serviceTemplates.filter(t => t.category === 'defensive').length > 1 ? 's' : ''}
+                  </span>
                 </div>
-              </motion.div>
-            ))}
+                <button
+                  onClick={() => {
+                    setFormData({
+                      name: '',
+                      description: '',
+                      category: 'defensive',
+                      icon: '🛡️',
+                      defaultScore: 5,
+                      defaultImportance: 'Moyenne'
+                    });
+                    setEditingTemplate(null);
+                    setShowAddForm(true);
+                  }}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 font-medium"
+                >
+                  + Ajouter Défensif
+                </button>
+              </div>
+              {serviceTemplates.filter(t => t.category === 'defensive').length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {serviceTemplates
+                    .filter(template => template.category === 'defensive')
+                    .map((template) => (
+                    <motion.div
+                      key={template.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="group cursor-pointer select-none"
+                    >
+                      <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover:shadow-lg hover:shadow-[#CCFF00]/10">
+                        <div className="relative">
+                          {/* Boutons d'action */}
+                          <div className="absolute top-0 right-0 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEdit(template);
+                              }}
+                              className="p-2 bg-[#CCFF00] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                            >
+                              <FontAwesomeIcon icon={faEdit} className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(template.id);
+                              }}
+                              className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300"
+                            >
+                              <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
+                            </button>
+                          </div>
+
+                          <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors pr-20">
+                            {template.name}
+                          </h3>
+                          <p className="text-sm text-gray-400 mb-3 font-karla-regular">
+                            {template.description}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="px-2 py-1 rounded-full text-xs font-karla-medium bg-blue-900 text-blue-300">
+                              {getCategoryLabel(template.category)}
+                            </span>
+                            <div className="flex items-center gap-2 text-xs text-gray-500">
+                              <span>Score: {template.defaultScore}</span>
+                              <span>•</span>
+                              <span>{template.defaultImportance}</span>
+                            </div>
+                          </div>
+                        </div>
+                       
+                        {/* Indicateur de statut */}
+                        <div className="mt-3 pt-3 border-t border-gray-700">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-[#CCFF00] font-karla-medium">
+                              {template.isActive ? 'ACTIF' : 'INACTIF'}
+                            </span>
+                            <span className="text-gray-500 font-karla-medium">
+                              ID: {template.id}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-400">
+                  Aucun template défensif. Cliquez sur "Ajouter Défensif" pour en créer un.
+                </div>
+              )}
+            </div>
+
+            {/* Section Général */}
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-1 h-8 bg-gray-500 rounded-full"></div>
+                  <h2 className="text-2xl font-bold text-white">Général</h2>
+                  <span className="px-3 py-1 bg-gray-700/30 text-gray-300 rounded-full text-sm font-medium">
+                    {serviceTemplates.filter(t => t.category === 'general').length} template{serviceTemplates.filter(t => t.category === 'general').length > 1 ? 's' : ''}
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    setFormData({
+                      name: '',
+                      description: '',
+                      category: 'general',
+                      icon: '⚙️',
+                      defaultScore: 5,
+                      defaultImportance: 'Moyenne'
+                    });
+                    setEditingTemplate(null);
+                    setShowAddForm(true);
+                  }}
+                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-all duration-300 font-medium"
+                >
+                  + Ajouter Général
+                </button>
+              </div>
+              {serviceTemplates.filter(t => t.category === 'general').length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {serviceTemplates
+                    .filter(template => template.category === 'general')
+                    .map((template) => (
+                    <motion.div
+                      key={template.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="group cursor-pointer select-none"
+                    >
+                      <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover:shadow-lg hover:shadow-[#CCFF00]/10">
+                        <div className="relative">
+                          {/* Boutons d'action */}
+                          <div className="absolute top-0 right-0 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEdit(template);
+                              }}
+                              className="p-2 bg-[#CCFF00] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                            >
+                              <FontAwesomeIcon icon={faEdit} className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(template.id);
+                              }}
+                              className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300"
+                            >
+                              <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
+                            </button>
+                          </div>
+
+                          <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors pr-20">
+                            {template.name}
+                          </h3>
+                          <p className="text-sm text-gray-400 mb-3 font-karla-regular">
+                            {template.description}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="px-2 py-1 rounded-full text-xs font-karla-medium bg-gray-700 text-gray-300">
+                              {getCategoryLabel(template.category)}
+                            </span>
+                            <div className="flex items-center gap-2 text-xs text-gray-500">
+                              <span>Score: {template.defaultScore}</span>
+                              <span>•</span>
+                              <span>{template.defaultImportance}</span>
+                            </div>
+                          </div>
+                        </div>
+                       
+                        {/* Indicateur de statut */}
+                        <div className="mt-3 pt-3 border-t border-gray-700">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-[#CCFF00] font-karla-medium">
+                              {template.isActive ? 'ACTIF' : 'INACTIF'}
+                            </span>
+                            <span className="text-gray-500 font-karla-medium">
+                              ID: {template.id}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-400">
+                  Aucun template général. Cliquez sur "Ajouter Général" pour en créer un.
+                </div>
+              )}
+            </div>
+
+            {/* Section Offensif */}
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-1 h-8 bg-red-500 rounded-full"></div>
+                  <h2 className="text-2xl font-bold text-white">Offensif</h2>
+                  <span className="px-3 py-1 bg-red-900/30 text-red-300 rounded-full text-sm font-medium">
+                    {serviceTemplates.filter(t => t.category === 'offensive').length} template{serviceTemplates.filter(t => t.category === 'offensive').length > 1 ? 's' : ''}
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    setFormData({
+                      name: '',
+                      description: '',
+                      category: 'offensive',
+                      icon: '⚔️',
+                      defaultScore: 5,
+                      defaultImportance: 'Moyenne'
+                    });
+                    setEditingTemplate(null);
+                    setShowAddForm(true);
+                  }}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300 font-medium"
+                >
+                  + Ajouter Offensif
+                </button>
+              </div>
+              {serviceTemplates.filter(t => t.category === 'offensive').length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {serviceTemplates
+                    .filter(template => template.category === 'offensive')
+                    .map((template) => (
+                    <motion.div
+                      key={template.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="group cursor-pointer select-none"
+                    >
+                      <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover:shadow-lg hover:shadow-[#CCFF00]/10">
+                        <div className="relative">
+                          {/* Boutons d'action */}
+                          <div className="absolute top-0 right-0 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEdit(template);
+                              }}
+                              className="p-2 bg-[#CCFF00] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                            >
+                              <FontAwesomeIcon icon={faEdit} className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(template.id);
+                              }}
+                              className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300"
+                            >
+                              <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
+                            </button>
+                          </div>
+
+                          <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors pr-20">
+                            {template.name}
+                          </h3>
+                          <p className="text-sm text-gray-400 mb-3 font-karla-regular">
+                            {template.description}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="px-2 py-1 rounded-full text-xs font-karla-medium bg-red-900 text-red-300">
+                              {getCategoryLabel(template.category)}
+                            </span>
+                            <div className="flex items-center gap-2 text-xs text-gray-500">
+                              <span>Score: {template.defaultScore}</span>
+                              <span>•</span>
+                              <span>{template.defaultImportance}</span>
+                            </div>
+                          </div>
+                        </div>
+                       
+                        {/* Indicateur de statut */}
+                        <div className="mt-3 pt-3 border-t border-gray-700">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-[#CCFF00] font-karla-medium">
+                              {template.isActive ? 'ACTIF' : 'INACTIF'}
+                            </span>
+                            <span className="text-gray-500 font-karla-medium">
+                              ID: {template.id}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-400">
+                  Aucun template offensif. Cliquez sur "Ajouter Offensif" pour en créer un.
+                </div>
+              )}
+            </div>
           </div>
 
           {serviceTemplates.length === 0 && (
