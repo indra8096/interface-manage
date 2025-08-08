@@ -19,6 +19,7 @@ model Company {
   users     User[]
   tasks     Task[]
   globalCards GlobalCard[]
+  panelCards PanelCard[]
 
   @@map("companies")
 }
@@ -57,17 +58,43 @@ model User {
 }
 
 model GlobalCard {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String?
-  category    String   // 'service', 'suivi', etc.
-  content     Json     // Contenu de la carte (flexible)
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id                Int      @id @default(autoincrement())
+  name              String
+  description       String?
+  category          String   // 'defensive', 'general', 'offensive'
+  icon              String   @default("🛡️")
+  defaultScore      Int      @default(5)
+  defaultImportance String   @default("Moyenne")
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
   
-  companyId   Int?     @map("company_id")
-  company     Company? @relation(fields: [companyId], references: [id])
+  companyId         Int?     @map("company_id")
+  company           Company? @relation(fields: [companyId], references: [id])
 
   @@map("global_cards")
+}
+
+model PanelCard {
+  id                Int      @id @default(autoincrement())
+  name              String
+  type              String   // 'coverage', 'infrastructure', 'compliance', 'recommendation'
+  total             Int?
+  completed         Int?
+  equipmentCount    Int?
+  status            String?
+  certificationDate DateTime?
+  nextAudit         DateTime?
+  priority          String?
+  description       String?
+  deadline          DateTime?
+  category          String?  // 'defensive', 'general', 'offensive'
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  
+  companyId         Int?     @map("company_id")
+  company           Company? @relation(fields: [companyId], references: [id])
+
+  @@map("panel_cards")
 } 

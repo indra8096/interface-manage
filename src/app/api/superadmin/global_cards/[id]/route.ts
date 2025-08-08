@@ -1,90 +1,103 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '../../../../../../lib/prisma';
-import jwt from 'jsonwebtoken';
+import { prisma } from '@/lib/prisma';
+import { verifyToken } from '@/lib/auth';
 
-// Middleware pour vérifier le token et le rôle
-async function verifySuperAdmin(req: NextRequest) {
-  const authHeader = req.headers.get('authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return null;
-  }
-  
-  const token = authHeader.substring(7);
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev-secret') as any;
-    if (decoded.role !== 'SUPER_ADMIN') {
-      return null;
-    }
-    return decoded;
-  } catch (error) {
-    return null;
-  }
-}
-
-// PUT - Mettre à jour une carte globale
 export async function PUT(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
-  const user = await verifySuperAdmin(req);
-  if (!user) {
-    return NextResponse.json({ error: 'Accès non autorisé' }, { status: 401 });
-  }
-
-  const { id } = await params;
-  const cardId = Number(id);
-
-  if (!cardId) {
-    return NextResponse.json({ error: 'ID de carte invalide' }, { status: 400 });
-  }
-
   try {
-    const { title, description, category, content, isActive } = await req.json();
+    // Vérifier l'authentification
+    const user = await verifyToken(request);
+    if (!user) {
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+    }
 
-    const updateData: any = {};
-    if (title !== undefined) updateData.title = title;
-    if (description !== undefined) updateData.description = description;
-    if (category !== undefined) updateData.category = category;
-    if (content !== undefined) updateData.content = content;
-    if (isActive !== undefined) updateData.isActive = isActive;
+    // Vérifier que l'utilisateur est SUPER_ADMIN
+    if (user.role !== 'SUPER_ADMIN') {
+      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+    }
 
-    const globalCard = await prisma.globalCard.update({
-      where: { id: cardId },
-      data: updateData
+    const { id } = await context.params;
+    const body = await request.json();
+    const { name, description, category, icon, defaultScore, defaultImportance, isActive } = body;
+
+    // Validation des données
+    if (!name || !category) {
+      return NextResponse.json({ error: 'Nom et catégorie requis' }, { status: 400 });
+    }
+
+    // Vérifier que la carte existe
+    const existingCard = await prisma.globalCard.findUnique({
+      where: { id: parseInt(id) }
     });
 
-    return NextResponse.json({ globalCard });
+    if (!existingCard) {
+      return NextResponse.json({ error: 'Carte non trouvée' }, { status: 404 });
+    }
+
+    // Mettre à jour la carte
+    const card = await prisma.globalCard.update({
+      where: { id: parseInt(id) },
+      data: {
+        name,
+        description: description || '',
+        category,
+        icon: icon || '🛡️',
+        defaultScore: defaultScore || 5,
+        defaultImportance: defaultImportance || 'Moyenne',
+        isActive: isActive !== undefined ? isActive : true,
+      }
+    });
+
+    return NextResponse.json({ card });
   } catch (error) {
     console.error('Erreur lors de la mise à jour de la carte globale:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Erreur lors de la mise à jour de la carte globale' },
+      { status: 500 }
+    );
   }
 }
 
-// DELETE - Supprimer une carte globale
 export async function DELETE(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
-  const user = await verifySuperAdmin(req);
-  if (!user) {
-    return NextResponse.json({ error: 'Accès non autorisé' }, { status: 401 });
-  }
-
-  const { id } = await params;
-  const cardId = Number(id);
-
-  if (!cardId) {
-    return NextResponse.json({ error: 'ID de carte invalide' }, { status: 400 });
-  }
-
   try {
+    // Vérifier l'authentification
+    const user = await verifyToken(request);
+    if (!user) {
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+    }
+
+    // Vérifier que l'utilisateur est SUPER_ADMIN
+    if (user.role !== 'SUPER_ADMIN') {
+      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+    }
+
+    const { id } = await context.params;
+
+    // Vérifier que la carte existe
+    const existingCard = await prisma.globalCard.findUnique({
+      where: { id: parseInt(id) }
+    });
+
+    if (!existingCard) {
+      return NextResponse.json({ error: 'Carte non trouvée' }, { status: 404 });
+    }
+
+    // Supprimer la carte
     await prisma.globalCard.delete({
-      where: { id: cardId }
+      where: { id: parseInt(id) }
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Erreur lors de la suppression de la carte globale:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Erreur lors de la suppression de la carte globale' },
+      { status: 500 }
+    );
   }
 } 
