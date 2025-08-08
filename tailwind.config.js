@@ -9,6 +9,11 @@ module.exports = {
     extend: {
       fontFamily: {
         'karla': ['var(--font-karla)', 'Arial', 'Helvetica', 'sans-serif'],
+        'karla-light': ['var(--font-karla)', 'Arial', 'Helvetica', 'sans-serif'],
+        'karla-regular': ['var(--font-karla)', 'Arial', 'Helvetica', 'sans-serif'],
+        'karla-medium': ['var(--font-karla)', 'Arial', 'Helvetica', 'sans-serif'],
+        'karla-semibold': ['var(--font-karla)', 'Arial', 'Helvetica', 'sans-serif'],
+        'karla-bold': ['var(--font-karla)', 'Arial', 'Helvetica', 'sans-serif'],
       },
       colors: {
         primary: '#000000',    // Noir pour le texte principal

@@ -131,7 +131,7 @@ export default function Home() {
 
       if (role) {
         // Conversion des rôles pour le dashboard
-        if (role === 'COMPANY_ADMIN') {
+        if (role === 'SUPER_ADMIN' || role === 'COMPANY_ADMIN') {
           setUserRole('admin'); // Accès complet : services, panel de suivi, etc.
         } else if (role === 'COMPANY_USER') {
           setUserRole('user'); // Accès limité : seulement les tâches

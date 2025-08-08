@@ -44,6 +44,26 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen transition-all duration-300" style={{ background: 'var(--bg-primary)' }}>
+      {/* Bouton Retour au site vitrine */}
+      <div className="absolute top-6 left-6 z-10">
+        <motion.a
+          href="/"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="px-4 py-2 rounded-lg font-karla-bold transition-all duration-300 border-2"
+          style={{ 
+            borderColor: '#CCFF00', 
+            color: '#CCFF00',
+            background: 'rgba(204, 255, 0, 0.1)'
+          }}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          ← Retour au site vitrine
+        </motion.a>
+      </div>
+      
       <div className="min-h-screen flex items-center justify-center p-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

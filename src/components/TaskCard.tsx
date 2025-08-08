@@ -59,12 +59,19 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
   const handleDelete = async () => {
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`/api/tasks/${id}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       });
 
       if (response.ok) {
         window.location.reload();
+      } else {
+        console.error('Erreur lors de la suppression:', response.status, response.statusText);
       }
     } catch (error) {
       console.error('Erreur lors de la suppression:', error);
@@ -73,9 +80,11 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
   const handleImportanceChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`/api/tasks/${id}`, {
         method: 'PATCH',
         headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ importance: e.target.value }),
@@ -83,6 +92,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
       if (response.ok) {
         window.location.reload();
+      } else {
+        console.error('Erreur lors de la mise à jour:', response.status, response.statusText);
       }
     } catch (error) {
       console.error('Erreur lors de la mise à jour:', error);
@@ -91,9 +102,11 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
   const handleSaveEdit = async (taskId: number, taskData: { name: string; description: string; score: number; importance: string; dueDate: string; assignedTo: string }) => {
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`/api/tasks/${taskId}`, {
         method: 'PATCH',
         headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(taskData),
@@ -101,6 +114,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
       if (response.ok) {
         window.location.reload();
+      } else {
+        console.error('Erreur lors de la mise à jour:', response.status, response.statusText);
       }
     } catch (error) {
       console.error('Erreur lors de la mise à jour:', error);
@@ -222,7 +237,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                  </svg>
                </button>
-                             {userRole === 'admin' && (
+                             {(userRole === 'admin' || userRole === 'SUPER_ADMIN' || userRole === 'COMPANY_ADMIN') && (
                                <button
                                  onClick={handleDelete}
                                  className="p-2 rounded-lg transition-all duration-200 group-hover:scale-105"
