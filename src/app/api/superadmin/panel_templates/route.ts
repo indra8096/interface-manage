@@ -1,21 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
-      return NextResponse.json({ error: 'Token manquant' }, { status: 401 });
-    }
-
-    const user = await verifyToken(token);
+    // Vérifier l'authentification et les permissions
+    const user = await verifyToken(request);
     if (!user || user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
+    // Récupérer tous les templates de panel de suivi avec leurs instances
     const templates = await prisma.panelCardTemplate.findMany({
-      where: { isActive: true },
       include: {
         instances: {
           include: {
@@ -29,70 +25,70 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ templates });
   } catch (error) {
     console.error('Erreur lors de la récupération des templates:', error);
-    return NextResponse.json(
-      { error: 'Erreur lors de la récupération des templates' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
-      return NextResponse.json({ error: 'Token manquant' }, { status: 401 });
-    }
-
-    const user = await verifyToken(token);
+    // Vérifier l'authentification et les permissions
+    const user = await verifyToken(request);
     if (!user || user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
     const body = await request.json();
-    const { name, type, category, description, priority } = body;
+    const { 
+      name, 
+      type, 
+      category,
+      description, 
+      total, 
+      completed, 
+      equipmentCount, 
+      status, 
+      certificationDate, 
+      nextAudit, 
+      deadline 
+    } = body;
 
-    // Créer le template
+    // Créer le template de panel de suivi
     const template = await prisma.panelCardTemplate.create({
       data: {
         name,
         type,
         category,
         description,
-        priority: priority || 'Moyenne'
+        isActive: true
       }
     });
 
-    // Récupérer toutes les entreprises
+    // Créer automatiquement des instances pour toutes les entreprises existantes
     const companies = await prisma.company.findMany();
-
-    // Créer une instance pour chaque entreprise
-    const instances = [];
     for (const company of companies) {
-      const instance = await prisma.panelCardInstance.create({
+      await prisma.panelCardInstance.create({
         data: {
           templateId: template.id,
           companyId: company.id,
-          total: 0,
-          completed: 0,
-          equipmentCount: 0,
-          status: 'En cours',
+          total: total || 0,
+          completed: completed || 0,
+          equipmentCount: equipmentCount || 0,
+          status: status || '',
+          certificationDate: certificationDate || '',
+          nextAudit: nextAudit || '',
+          deadline: deadline || '',
           isActive: true
         }
       });
-      instances.push(instance);
     }
 
     return NextResponse.json({ 
       message: 'Template créé avec succès',
-      template,
-      instancesCreated: instances.length
+      template 
     });
   } catch (error) {
     console.error('Erreur lors de la création du template:', error);
-    return NextResponse.json(
-      { error: 'Erreur lors de la création du template' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }
 

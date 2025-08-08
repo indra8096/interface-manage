@@ -33,8 +33,24 @@ interface CategoryDetailsPanelProps {
     dueDate: string;
     assignedTo: string;
   }>;
-  onRemoveTaskFromPanel?: (taskName: string) => void;
+
   forceSyncPanelData?: () => void;
+  panelCards?: Array<{
+    id: number;
+    name: string;
+    type: string;
+    category: string;
+    description: string;
+    priority: string;
+    total?: number;
+    completed?: number;
+    equipmentCount?: number;
+    status?: string;
+    certificationDate?: string;
+    nextAudit?: string;
+    deadline?: string;
+    isActive: boolean;
+  }>;
 }
 
 const categoryColors = {
@@ -49,106 +65,15 @@ const categoryDescriptions = {
   offensive: 'Tests de pénétration et évaluation',
 };
 
-// Cartes de base par défaut
-const defaultCards: Record<string, CardFormData> = {
-  'Formation Cybersécurité': {
-    name: 'Formation Cybersécurité',
-    type: 'coverage',
-    total: 30,
-    completed: 10,
-    description: 'Formation de sensibilisation à la cybersécurité pour les employés'
-  },
-  'Pentest Infrastructure': {
-    name: 'Pentest Infrastructure',
-    type: 'coverage',
-    total: 5,
-    completed: 1,
-    description: 'Test de pénétration sur l\'infrastructure réseau'
-  },
-  'Configuration Switches': {
-    name: 'Configuration Switches',
-    type: 'infrastructure',
-    equipmentCount: 15,
-    status: 'Sécurisé',
-    description: 'Configuration et sécurisation des switches réseau'
-  },
-  'Audit Serveurs': {
-    name: 'Audit Serveurs',
-    type: 'infrastructure',
-    equipmentCount: 8,
-    status: 'À vérifier',
-    description: 'Audit de sécurité des serveurs actifs'
-  },
-  'Maintenance Firewalls': {
-    name: 'Maintenance Firewalls',
-    type: 'infrastructure',
-    equipmentCount: 3,
-    status: 'Critique',
-    description: 'Maintenance et mise à jour des firewalls'
-  },
-  'Configuration Routers': {
-    name: 'Configuration Routers',
-    type: 'infrastructure',
-    equipmentCount: 5,
-    status: 'Normal',
-    description: 'Configuration et optimisation des routeurs'
-  },
-  'Audit ISO 27001': {
-    name: 'Audit ISO 27001',
-    type: 'compliance',
-    status: 'CONFORME',
-    certificationDate: '2023',
-    nextAudit: 'Décembre 2024',
-    description: 'Audit de conformité ISO 27001'
-  },
-  'Mise en conformité NIS2': {
-    name: 'Mise en conformité NIS2',
-    type: 'compliance',
-    status: 'EN COURS',
-    certificationDate: '',
-    nextAudit: 'Octobre 2024',
-    description: 'Mise en conformité avec la directive NIS2'
-  },
-  'Vérification RGPD': {
-    name: 'Vérification RGPD',
-    type: 'compliance',
-    status: 'CONFORME',
-    certificationDate: '',
-    nextAudit: 'Mars 2024',
-    description: 'Vérification de la conformité RGPD'
-  },
-  'Formation Cybersécurité Étendue': {
-    name: 'Formation Cybersécurité Étendue',
-    type: 'recommendation',
-    priority: 'Haute',
-    description: 'Étendre la formation cybersécurité aux 20 personnes restantes',
-    deadline: '2 mois'
-  },
-  'Pentest Serveurs Restants': {
-    name: 'Pentest Serveurs Restants',
-    type: 'recommendation',
-    priority: 'Moyenne',
-    description: 'Effectuer des pentests sur les 4 serveurs restants',
-    deadline: '3 mois'
-  },
-  'Mise à jour Documentation': {
-    name: 'Mise à jour Documentation',
-    type: 'recommendation',
-    priority: 'Basse',
-    description: 'Mettre à jour la documentation de sécurité',
-    deadline: '6 mois'
-  }
-};
 
-export default function CategoryDetailsPanel({ isOpen, onClose, category, categoryTitle, userRole = 'user', onAddTask, tasksAddedFromPanel = [], onRemoveTaskFromPanel, forceSyncPanelData }: CategoryDetailsPanelProps) {
+
+export default function CategoryDetailsPanel({ isOpen, onClose, category, categoryTitle, userRole = 'user', onAddTask, tasksAddedFromPanel = [], forceSyncPanelData, panelCards = [] }: CategoryDetailsPanelProps) {
   const [activeTab, setActiveTab] = useState<'coverage' | 'infrastructure' | 'compliance' | 'recommendations'>('coverage');
   const [editingCard, setEditingCard] = useState<string | null>(null);
   const [editFormData, setEditFormData] = useState<CardFormData>({} as CardFormData);
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [addFormData, setAddFormData] = useState<CardFormData>({} as CardFormData);
   const [savedCards, setSavedCards] = useState<Record<string, CardFormData>>({});
-  const [deletedCards, setDeletedCards] = useState<Set<string>>(new Set());
-  const [deleteConfirmation, setDeleteConfirmation] = useState<{ show: boolean; cardName: string }>({ show: false, cardName: '' });
   const [renderKey, setRenderKey] = useState(0); // Pour forcer le re-rendu
 
   // Charger les cartes sauvegardées et les cartes supprimées au montage du composant
@@ -164,19 +89,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
       }
     };
 
-    const loadDeletedCards = () => {
-      try {
-        const companyId = localStorage.getItem('companyId');
-        const deleted = JSON.parse(localStorage.getItem(`deletedCards_${companyId}`) || '[]');
-        setDeletedCards(new Set(deleted));
-      } catch (error) {
-        console.error('Erreur lors du chargement des cartes supprimées:', error);
-        setDeletedCards(new Set());
-      }
-    };
-
     loadSavedCards();
-    loadDeletedCards();
   }, []);
 
   const tabs = [
@@ -200,65 +113,86 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     }
   };
 
-  const handleEditCard = (cardName: string, cardType: 'coverage' | 'infrastructure' | 'compliance' | 'recommendation') => {
-    // Récupérer les données existantes de la carte (sauvegardées ou par défaut)
-    const existingCard = savedCards[cardName] || defaultCards[cardName];
+  const handleEditCard = (cardName: string) => {
+    // Récupérer les données existantes de la carte depuis l'API
+    const existingCard = panelCards.find(card => card.name === cardName);
     
-    setEditingCard(cardName);
-    setEditFormData({
-      ...existingCard,
-      name: cardName,
-      type: cardType
-    });
+    if (existingCard) {
+      setEditingCard(cardName);
+      setEditFormData({
+        name: existingCard.name,
+        type: existingCard.type as 'coverage' | 'infrastructure' | 'compliance' | 'recommendation',
+        total: existingCard.total,
+        completed: existingCard.completed,
+        equipmentCount: existingCard.equipmentCount,
+        status: existingCard.status,
+        certificationDate: existingCard.certificationDate,
+        nextAudit: existingCard.nextAudit,
+        priority: existingCard.priority,
+        description: existingCard.description,
+        deadline: existingCard.deadline
+      });
+    }
   };
 
-  const handleSaveEdit = () => {
-    // Debug: afficher les données avant sauvegarde
-    console.log('Sauvegarde de la modification:');
-    console.log('Carte en cours d\'édition:', editingCard);
-    console.log('Nouvelles données:', editFormData);
-    console.log('Cartes sauvegardées avant:', savedCards);
-    
-    const companyId = localStorage.getItem('companyId');
-    // Sauvegarder les modifications dans localStorage
-    const updatedCards = { ...savedCards };
-    
-    // Supprimer l'ancienne entrée si le nom a changé
-    if (editingCard && editingCard !== editFormData.name) {
-      console.log('Suppression de l\'ancienne entrée:', editingCard);
-      delete updatedCards[editingCard];
-      // Mettre à jour le nom dans tasksAddedFromPanel si la carte y est présente
-      const currentTasksFromPanel = JSON.parse(localStorage.getItem(`tasksAddedFromPanel_${companyId}`) || '[]');
-      const updatedTasksFromPanel = currentTasksFromPanel.map((task: { name: string; [key: string]: unknown }) => {
-        if (task.name === editingCard) {
-          console.log('Mise à jour du nom dans tasksAddedFromPanel:', editingCard, '->', editFormData.name);
-          return { ...task, name: editFormData.name };
-        }
-        return task;
+  const handleSaveEdit = async () => {
+    if (!editingCard) return;
+
+    try {
+      // Trouver l'instance de la carte dans panelCards
+      const cardInstance = panelCards.find(card => card.name === editingCard);
+      
+      if (!cardInstance) {
+        console.error('Carte non trouvée:', editingCard);
+        return;
+      }
+
+      // Préparer les données à envoyer à l'API
+      const updateData = {
+        total: editFormData.total,
+        completed: editFormData.completed,
+        equipmentCount: editFormData.equipmentCount,
+        status: editFormData.status,
+        certificationDate: editFormData.certificationDate,
+        nextAudit: editFormData.nextAudit,
+        deadline: editFormData.deadline
+      };
+
+      // Envoyer la mise à jour à l'API
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/panel_cards', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          id: cardInstance.id,
+          ...updateData
+        })
       });
-      localStorage.setItem(`tasksAddedFromPanel_${companyId}`, JSON.stringify(updatedTasksFromPanel));
+
+      if (response.ok) {
+        console.log('Carte mise à jour avec succès');
+        
+        // Réinitialiser l'état
+        setEditingCard(null);
+        setEditFormData({} as CardFormData);
+        setRenderKey(prev => prev + 1); // Forcer le re-rendu
+        
+        // Déclencher la synchronisation dans la page d'accueil
+        if (forceSyncPanelData) {
+          console.log('Appel de forceSyncPanelData depuis handleSaveEdit');
+          forceSyncPanelData();
+        }
+      } else {
+        console.error('Erreur lors de la mise à jour de la carte');
+        const errorData = await response.json();
+        console.error('Détails de l\'erreur:', errorData);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde:', error);
     }
-    
-    // Ajouter/mettre à jour avec le nouveau nom
-    updatedCards[editFormData.name] = editFormData;
-    localStorage.setItem(`panelCards_${companyId}`, JSON.stringify(updatedCards));
-    
-    // Mettre à jour l'état local
-    setSavedCards(updatedCards);
-    setEditingCard(null);
-    setEditFormData({} as CardFormData);
-    setRenderKey(prev => prev + 1); // Forcer le re-rendu
-    
-    // Déclencher la synchronisation dans la page d'accueil
-    if (forceSyncPanelData) {
-      console.log('Appel de forceSyncPanelData depuis handleSaveEdit');
-      forceSyncPanelData();
-    } else {
-      console.log('forceSyncPanelData n\'est pas défini');
-    }
-    
-    // Debug: afficher les données après sauvegarde
-    console.log('Cartes sauvegardées après:', updatedCards);
   };
 
   const handleAddNewCard = (cardType: 'coverage' | 'infrastructure' | 'compliance' | 'recommendation') => {
@@ -326,96 +260,32 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     setEditFormData({} as CardFormData);
   };
 
-  const handleDeleteCard = (cardName: string) => {
-    setDeleteConfirmation({ show: true, cardName });
-  };
+  // Les admins d'entreprise ne peuvent pas supprimer les templates du super admin
+  // Seul le super admin peut gérer les templates depuis /superadmin/panel-templates
 
-  const confirmDelete = () => {
-    const cardName = deleteConfirmation.cardName;
-    const companyId = localStorage.getItem('companyId');
-    
-    // Si c'est une carte sauvegardée, la supprimer du localStorage
-    if (savedCards[cardName]) {
-    const updatedCards = { ...savedCards };
-      delete updatedCards[cardName];
-    localStorage.setItem(`panelCards_${companyId}`, JSON.stringify(updatedCards));
-    setSavedCards(updatedCards);
-      setRenderKey(prev => prev + 1); // Forcer le re-rendu
-      
-      // Supprimer la carte de tasksAddedFromPanel si elle y est présente
-      const currentTasksFromPanel = JSON.parse(localStorage.getItem(`tasksAddedFromPanel_${companyId}`) || '[]');
-      const updatedTasksFromPanel = currentTasksFromPanel.filter((task: { name: string; [key: string]: unknown }) => task.name !== cardName);
-      if (updatedTasksFromPanel.length !== currentTasksFromPanel.length) {
-        console.log('Suppression de la carte de tasksAddedFromPanel:', cardName);
-        localStorage.setItem(`tasksAddedFromPanel_${companyId}`, JSON.stringify(updatedTasksFromPanel));
-      }
-    }
-    
-    // Si c'est une carte de base, l'ajouter à la liste des cartes supprimées
-    if (defaultCards[cardName]) {
-      const updatedDeletedCards = new Set(deletedCards);
-      updatedDeletedCards.add(cardName);
-      localStorage.setItem(`deletedCards_${companyId}`, JSON.stringify([...updatedDeletedCards]));
-      setDeletedCards(updatedDeletedCards);
-      setRenderKey(prev => prev + 1); // Forcer le re-rendu
-      
-      // Supprimer la carte de tasksAddedFromPanel si elle y est présente
-      const currentTasksFromPanel = JSON.parse(localStorage.getItem(`tasksAddedFromPanel_${companyId}`) || '[]');
-      const updatedTasksFromPanel = currentTasksFromPanel.filter((task: { name: string; [key: string]: unknown }) => task.name !== cardName);
-      if (updatedTasksFromPanel.length !== currentTasksFromPanel.length) {
-        console.log('Suppression de la carte de base de tasksAddedFromPanel:', cardName);
-        localStorage.setItem(`tasksAddedFromPanel_${companyId}`, JSON.stringify(updatedTasksFromPanel));
-      }
-    }
-    
-    // Déclencher la synchronisation dans la page d'accueil
-    if (forceSyncPanelData) {
-      forceSyncPanelData();
-    }
-    
-    // Appeler onRemoveTaskFromPanel si fourni
-    if (onRemoveTaskFromPanel) {
-      onRemoveTaskFromPanel(cardName);
-    }
-    
-    setDeleteConfirmation({ show: false, cardName: '' });
-  };
-
-  const cancelDelete = () => {
-    setDeleteConfirmation({ show: false, cardName: '' });
-  };
-
-  // Fonction pour obtenir toutes les cartes d'un type donné (base + ajoutées - supprimées)
+  // Fonction pour obtenir toutes les cartes d'un type donné depuis l'API
   const getCardsByType = (type: string) => {
-    const cards: CardFormData[] = [];
-    const processedNames = new Set<string>();
+    if (!panelCards || !Array.isArray(panelCards)) return [];
     
-    // Ajouter les cartes de base qui ne sont pas supprimées
-    Object.values(defaultCards).forEach(card => {
-      if (card.type === type && !deletedCards.has(card.name)) {
-        // Utiliser la version sauvegardée si elle existe, sinon la version par défaut
-        const savedCard = savedCards[card.name];
-        const cardToAdd = savedCard || card;
-        cards.push(cardToAdd);
-        processedNames.add(cardToAdd.name);
-      }
-    });
-    
-    // Ajouter les cartes ajoutées dynamiquement (qui ne sont pas dans defaultCards)
-    Object.values(savedCards).forEach(card => {
-      if (card.type === type && !processedNames.has(card.name)) {
-        cards.push(card);
-        processedNames.add(card.name);
-      }
-    });
-    
-    // Debug: afficher les cartes trouvées
-    console.log(`Cartes trouvées pour le type ${type}:`, cards);
-    console.log('Cartes sauvegardées:', savedCards);
-    console.log('Cartes supprimées:', deletedCards);
-    console.log('Noms traités:', processedNames);
-    
-    return cards;
+    // Filtrer les cartes par type et catégorie depuis l'API
+    return panelCards.filter(card => {
+      const isCorrectType = card.type === type;
+      const isCorrectCategory = card.category === category;
+      const isActive = card.isActive;
+      return isCorrectType && isCorrectCategory && isActive;
+    }).map(card => ({
+      name: card.name,
+      type: card.type as 'coverage' | 'infrastructure' | 'compliance' | 'recommendation',
+      total: card.total,
+      completed: card.completed,
+      equipmentCount: card.equipmentCount,
+      status: card.status,
+      certificationDate: card.certificationDate,
+      nextAudit: card.nextAudit,
+      priority: card.priority,
+      description: card.description,
+      deadline: card.deadline
+    }));
   };
 
 
@@ -460,7 +330,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                      handleEditCard(card.name, 'coverage');
+                      handleEditCard(card.name);
                             }}
                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
                             style={{ 
@@ -471,24 +341,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                             MODIFIER
                           </button>
                         )}
-                        {userRole === 'admin' && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                      handleDeleteCard(card.name);
-                            }}
-                            className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                            style={{ 
-                              background: '#ef4444',
-                              color: 'white'
-                            }}
-                            title="Supprimer"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
-                        )}
+                        {/* Bouton de suppression supprimé - Seul le super admin peut supprimer les templates */}
                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
                           <button
                             onClick={(e) => {
@@ -537,7 +390,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                      handleEditCard(card.name, 'infrastructure');
+                      handleEditCard(card.name);
                             }}
                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
                             style={{ 
@@ -548,24 +401,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                             MODIFIER
                           </button>
                         )}
-                        {userRole === 'admin' && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                      handleDeleteCard(card.name);
-                            }}
-                            className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                            style={{ 
-                              background: '#ef4444',
-                              color: 'white'
-                            }}
-                            title="Supprimer"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
-                        )}
+                        {/* Bouton de suppression supprimé - Seul le super admin peut supprimer les templates */}
                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
                           <button
                             onClick={(e) => {
@@ -609,7 +445,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                      handleEditCard(card.name, 'compliance');
+                      handleEditCard(card.name);
                               }}
                               className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
                               style={{ 
@@ -620,25 +456,8 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                               MODIFIER
                             </button>
                           )}
-                          {userRole === 'admin' && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteCard(card.name);
-                              }}
-                              className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                              style={{ 
-                                background: '#ef4444',
-                                color: 'white'
-                              }}
-                              title="Supprimer"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                          )}
-                          {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
+                          {/* Bouton de suppression supprimé - Seul le super admin peut supprimer les templates */}
+                {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -688,7 +507,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                      handleEditCard(card.name, 'recommendation');
+                      handleEditCard(card.name);
                           }}
                           className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
                           style={{ 
@@ -699,24 +518,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                           MODIFIER
                         </button>
                       )}
-                      {userRole === 'admin' && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                      handleDeleteCard(card.name);
-                          }}
-                          className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                          style={{ 
-                            background: '#ef4444',
-                            color: 'white'
-                          }}
-                          title="Supprimer"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                        </button>
-                      )}
+                        {/* Bouton de suppression supprimé - Seul le super admin peut supprimer les templates */}
                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
                         <button
                           onClick={(e) => {
@@ -1590,91 +1392,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
              )}
            </AnimatePresence>
 
-           {/* Popup de confirmation de suppression */}
-           <AnimatePresence>
-             {deleteConfirmation.show && (
-               <>
-                 <motion.div
-                   initial={{ opacity: 0 }}
-                   animate={{ opacity: 1 }}
-                   exit={{ opacity: 0 }}
-                   onClick={cancelDelete}
-                   className="fixed inset-0 bg-black bg-opacity-50 z-[120]"
-                 />
-                 
-                 <motion.div
-                   initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                   animate={{ opacity: 1, scale: 1, y: 0 }}
-                   exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                   className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-black border rounded-xl p-6 z-[130]"
-                   style={{ borderColor: 'var(--border-primary)' }}
-                 >
-                   <div className="flex items-center justify-between mb-6">
-                     <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>
-                       Confirmer la suppression
-                     </h3>
-                     <button
-                       onClick={cancelDelete}
-                       className="p-2 rounded-lg hover:bg-gray-800 transition-all duration-300"
-                       style={{ color: 'var(--text-muted)' }}
-                     >
-                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                       </svg>
-                     </button>
-                   </div>
 
-                   <div className="mb-6">
-                     <div className="flex items-center gap-3 mb-4">
-                       <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: '#ef4444' }}>
-                         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                         </svg>
-                       </div>
-                       <div>
-                         <h4 className="text-base font-karla-bold" style={{ color: 'var(--text-primary)' }}>
-                           Supprimer la carte
-                         </h4>
-                         <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                           Cette action est irréversible
-                         </p>
-                       </div>
-                     </div>
-                     
-                     <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-                       Êtes-vous sûr de vouloir supprimer la carte <span className="font-karla-bold" style={{ color: 'var(--text-primary)' }}>&ldquo;{deleteConfirmation.cardName}&rdquo;</span> ?
-                     </p>
-                     <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
-                       Cette action supprimera définitivement la carte et toutes ses données associées.
-                     </p>
-                   </div>
-
-                   <div className="flex gap-3">
-                     <button
-                       onClick={cancelDelete}
-                       className="flex-1 px-4 py-3 rounded-lg border transition-all duration-300 font-karla-medium"
-                       style={{ 
-                         borderColor: 'var(--border-secondary)',
-                         color: 'var(--text-muted)'
-                       }}
-                     >
-                       Annuler
-                     </button>
-                     <button
-                       onClick={confirmDelete}
-                       className="flex-1 px-4 py-3 rounded-lg font-karla-medium transition-all duration-300"
-                       style={{ 
-                         background: '#ef4444',
-                         color: 'white'
-                       }}
-                     >
-                       Supprimer
-                     </button>
-                   </div>
-                 </motion.div>
-               </>
-             )}
-           </AnimatePresence>
          </>
        )}
      </AnimatePresence>

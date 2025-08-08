@@ -40,20 +40,7 @@ interface ServiceCard {
   defaultImportance: string;
 }
 
-interface PanelCardData {
-  name: string;
-  type: 'coverage' | 'infrastructure' | 'compliance' | 'recommendation';
-  total?: number;
-  completed?: number;
-  equipmentCount?: number;
-  status?: string;
-  certificationDate?: string;
-  nextAudit?: string;
-  priority?: string;
-  description?: string;
-  deadline?: string;
-  category?: 'defensive' | 'general' | 'offensive';
-}
+
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -68,7 +55,22 @@ export default function Home() {
     dueDate: string;
     assignedTo: string;
   }>>([]);
-  const [panelCards, setPanelCards] = useState<Record<string, PanelCardData>>({});
+  const [panelCards, setPanelCards] = useState<Array<{
+    id: number;
+    name: string;
+    type: string;
+    category: string;
+    description: string;
+    priority: string;
+    total?: number;
+    completed?: number;
+    equipmentCount?: number;
+    status?: string;
+    certificationDate?: string;
+    nextAudit?: string;
+    deadline?: string;
+    isActive: boolean;
+  }>>([]);
   const [renderKey, setRenderKey] = useState(0); // Pour forcer le re-rendu des cartes
 
   const [isServicesSidebarOpen, setIsServicesSidebarOpen] = useState(false);
@@ -122,38 +124,7 @@ export default function Home() {
       
       if (response.ok) {
         const data = await response.json();
-        // Convertir les cartes de panel en format compatible avec le localStorage
-        const panelCardsData: Record<string, PanelCardData> = {};
-        data.panelCards.forEach((card: {
-          name: string;
-          type: string;
-          category: string;
-          total: number;
-          completed: number;
-          equipmentCount: number;
-          status: string;
-          certificationDate: string;
-          nextAudit: string;
-          priority: string;
-          description: string;
-          deadline: string;
-        }) => {
-          panelCardsData[card.name] = {
-            name: card.name,
-            type: card.type as 'coverage' | 'infrastructure' | 'compliance' | 'recommendation',
-            category: card.category as 'defensive' | 'general' | 'offensive',
-            total: card.total,
-            completed: card.completed,
-            equipmentCount: card.equipmentCount,
-            status: card.status,
-            certificationDate: card.certificationDate,
-            nextAudit: card.nextAudit,
-            priority: card.priority,
-            description: card.description,
-            deadline: card.deadline,
-          };
-        });
-        setPanelCards(panelCardsData);
+        setPanelCards(data.panelCards);
       } else if (response.status === 401) {
         router.push('/login');
       }
@@ -169,7 +140,6 @@ export default function Home() {
       const companyId = localStorage.getItem('companyId');
       const userCompanyId = localStorage.getItem('userCompanyId');
       const savedTasksFromPanel = localStorage.getItem(`tasksAddedFromPanel_${companyId}`);
-      const savedPanelCards = localStorage.getItem(`panelCards_${companyId}`);
       
       if (!token) {
         router.push('/login');
@@ -207,14 +177,7 @@ export default function Home() {
           console.error('Erreur lors du chargement des tâches du panneau:', error);
         }
       }
-      if (savedPanelCards) {
-        try {
-          const parsedCards = JSON.parse(savedPanelCards);
-          setPanelCards(parsedCards);
-        } catch (error) {
-          console.error('Erreur lors du chargement des cartes du panneau:', error);
-        }
-      }
+      // Les cartes de panel sont maintenant chargées depuis l'API via fetchPanelCards()
     }
   }, [router]);
 
@@ -226,27 +189,14 @@ export default function Home() {
 
   // Synchronisation avec les données du panel
   useEffect(() => {
-    let lastPanelCards = '';
     let lastTasksFromPanel = '';
 
     const syncPanelData = () => {
       if (typeof window !== 'undefined') {
         const companyId = localStorage.getItem('companyId');
         
-        // Vérifier les changements dans panelCards
-        const savedPanelCards = localStorage.getItem(`panelCards_${companyId}`);
-        if (savedPanelCards && savedPanelCards !== lastPanelCards) {
-          console.log('Changement détecté dans panelCards');
-          lastPanelCards = savedPanelCards;
-          try {
-            const parsedCards = JSON.parse(savedPanelCards);
-            console.log('Synchronisation - Cartes mises à jour:', parsedCards);
-            setPanelCards(parsedCards);
-            setRenderKey(prev => prev + 1);
-          } catch (error) {
-            console.error('Erreur lors de la synchronisation des cartes du panneau:', error);
-          }
-        }
+        // Les cartes de panel sont maintenant synchronisées via l'API
+        // Pas besoin de vérifier le localStorage pour les cartes de panel
 
         // Vérifier les changements dans tasksAddedFromPanel
         const savedTasksFromPanel = localStorage.getItem(`tasksAddedFromPanel_${companyId}`);
@@ -410,8 +360,9 @@ export default function Home() {
   };
 
   const getCardData = (taskName: string) => {
-    // Récupérer les données de la carte depuis le localStorage du panel
-    return panelCards[taskName] || null;
+    // Récupérer les données de la carte depuis l'API
+    if (!panelCards || !Array.isArray(panelCards)) return null;
+    return panelCards.find(card => card.name === taskName) || null;
   };
 
   const getCategoryFromTask = (taskName: string) => {
@@ -439,43 +390,17 @@ export default function Home() {
 
   // Fonction pour forcer la synchronisation des données du panel
   const forceSyncPanelData = () => {
-    console.log('ForceSyncPanelData appelé - Synchronisation immédiate');
-    if (typeof window !== 'undefined') {
-      const companyId = localStorage.getItem('companyId');
-      // Forcer la récupération immédiate des données
-      const savedPanelCards = localStorage.getItem(`panelCards_${companyId}`);
-      const savedTasksFromPanel = localStorage.getItem(`tasksAddedFromPanel_${companyId}`);
-      
-      console.log('Données actuelles - panelCards:', savedPanelCards);
-      console.log('Données actuelles - tasksAddedFromPanel:', savedTasksFromPanel);
-      
-      if (savedPanelCards && savedPanelCards !== 'null') {
-        try {
-          const parsedCards = JSON.parse(savedPanelCards);
-          console.log('Mise à jour immédiate des cartes:', parsedCards);
-          setPanelCards(parsedCards);
-        } catch (error) {
-          console.error('Erreur lors de la synchronisation des cartes:', error);
-        }
-      }
-
-      if (savedTasksFromPanel && savedTasksFromPanel !== 'null') {
-        try {
-          const parsedTasks = JSON.parse(savedTasksFromPanel);
-          console.log('Mise à jour immédiate des tâches:', parsedTasks);
-          setTasksAddedFromPanel(parsedTasks);
-        } catch (error) {
-          console.error('Erreur lors de la synchronisation des tâches:', error);
-        }
-      }
-      
-      // Forcer le re-rendu immédiat
-      setRenderKey(prev => {
-        const newKey = prev + 1;
-        console.log('Nouveau renderKey:', newKey);
-        return newKey;
-      });
-    }
+    console.log('ForceSyncPanelData appelé - Synchronisation immédiate depuis l\'API');
+    
+    // Rafraîchir les données depuis l'API au lieu du localStorage
+    fetchPanelCards();
+    
+    // Forcer le re-rendu immédiat
+    setRenderKey(prev => {
+      const newKey = prev + 1;
+      console.log('Nouveau renderKey:', newKey);
+      return newKey;
+    });
   };
 
   // Fonction pour récupérer les tâches terminées
@@ -746,9 +671,9 @@ export default function Home() {
                         nextAudit={cardData?.nextAudit}
                         priority={cardData?.priority}
                         deadline={cardData?.deadline}
-                        category={category}
+                        category={category as 'defensive' | 'general' | 'offensive'}
                         userRole={userRole}
-                        cardType={cardData?.type || 'coverage'}
+                        cardType={(cardData?.type as 'coverage' | 'infrastructure' | 'compliance' | 'recommendation') || 'coverage'}
                         tasksAddedFromPanel={tasksAddedFromPanel}
                         onDelete={removeTaskFromPanel}
                       />
@@ -853,6 +778,7 @@ export default function Home() {
         onAddTask={handleAddTaskFromPanel}
         tasksAddedFromPanel={tasksAddedFromPanel}
         forceSyncPanelData={forceSyncPanelData}
+        panelCards={panelCards || []}
       />
 
       {/* Popup d'historique des tâches terminées */}
