@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Récupérer toutes les cartes de services prédéfinis de toutes les entreprises
-    const cards = await prisma.globalCard.findMany({
+    const globalCards = await prisma.globalCard.findMany({
       include: {
         company: {
           select: {
@@ -28,45 +28,73 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: 'desc' }
     });
 
-    // Récupérer aussi les tâches qui servent de services prédéfinis pour chaque entreprise
-    const taskServices = await prisma.task.findMany({
-      where: {
-        category: {
-          in: ['defensive', 'general', 'offensive']
-        }
-      },
+    // Récupérer les vraies cartes de services prédéfinis des entreprises
+    const companies = await prisma.company.findMany({
       include: {
-        company: {
+        globalCards: {
           select: {
             id: true,
-            name: true
+            name: true,
+            description: true,
+            category: true,
+            icon: true,
+            defaultScore: true,
+            defaultImportance: true,
+            isActive: true,
+            createdAt: true,
+            updatedAt: true
+          }
+        },
+        tasks: {
+          where: {
+            category: {
+              in: ['defensive', 'general', 'offensive']
+            }
+          },
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            category: true,
+            score: true,
+            importance: true,
+            status: true,
+            createdAt: true,
+            updatedAt: true
           }
         }
-      },
-      orderBy: { createdAt: 'desc' }
+      }
     });
 
-    // Combiner les cartes globales avec les tâches-services
+    // Combiner toutes les vraies cartes des entreprises
     const allCards = [
-      ...cards,
-      ...taskServices.map(task => ({
-        id: task.id + 10000, // ID unique pour éviter les conflits
-        name: task.name,
-        description: task.description || '',
-        category: task.category as 'defensive' | 'general' | 'offensive',
-        icon: '🛡️',
-        defaultScore: task.score,
-        defaultImportance: task.importance,
-        isActive: task.status !== 'completed',
-        createdAt: task.createdAt,
-        updatedAt: task.updatedAt,
-        company: task.company,
-        isTaskService: true // Marqueur pour identifier les services basés sur des tâches
-      }))
+      ...globalCards,
+      ...companies.flatMap(company => [
+        ...company.globalCards.map(card => ({
+          ...card,
+          company: { id: company.id, name: company.name },
+          isRealCard: true
+        })),
+        ...company.tasks.map(task => ({
+          id: task.id + 10000,
+          name: task.name,
+          description: task.description || '',
+          category: task.category as 'defensive' | 'general' | 'offensive',
+          icon: '🛡️',
+          defaultScore: task.score,
+          defaultImportance: task.importance,
+          isActive: task.status !== 'completed',
+          createdAt: task.createdAt,
+          updatedAt: task.updatedAt,
+          company: { id: company.id, name: company.name },
+          isTaskService: true,
+          isRealCard: true
+        }))
+      ])
     ];
 
     // Récupérer aussi les statistiques globales de toutes les entreprises
-    const companies = await prisma.company.findMany({
+    const companiesStats = await prisma.company.findMany({
       include: {
         _count: {
           select: {
@@ -80,9 +108,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ 
       cards: allCards,
       globalStats: {
-        totalCompanies: companies.length,
-        totalUsers: companies.reduce((sum, company) => sum + company._count.users, 0),
-        totalTasks: companies.reduce((sum, company) => sum + company._count.tasks, 0)
+        totalCompanies: companiesStats.length,
+        totalUsers: companiesStats.reduce((sum, company) => sum + company._count.users, 0),
+        totalTasks: companiesStats.reduce((sum, company) => sum + company._count.tasks, 0)
       }
     });
   } catch (error) {

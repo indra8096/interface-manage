@@ -5,213 +5,144 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('superadmin@example.com');
+  const [password, setPassword] = useState('password123');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🔍 Tentative de connexion...');
     setError('');
     setLoading(true);
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-    setLoading(false);
-    if (res.ok) {
-      const data = await res.json();
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('role', data.role);
-      localStorage.setItem('companyId', data.companyId?.toString() || '');
-      localStorage.setItem('userCompanyId', data.companyId?.toString() || ''); // Pour la vérification de sécurité
-      localStorage.setItem('companyName', data.companyName || '');
+    
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
       
-      // Redirection selon le rôle
-      if (data.role === 'SUPER_ADMIN') {
-        router.push('/superadmin');
-      } else if (data.role === 'COMPANY_ADMIN' || data.role === 'COMPANY_USER') {
-        router.push('/dashboard');
+      console.log('📡 Réponse API:', res.status);
+      
+      if (res.ok) {
+        const data = await res.json();
+        console.log('✅ Connexion réussie:', data.role);
+        
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('role', data.role);
+        localStorage.setItem('companyId', data.companyId?.toString() || '');
+        localStorage.setItem('userCompanyId', data.companyId?.toString() || '');
+        localStorage.setItem('companyName', data.companyName || '');
+        
+        // Redirection selon le rôle
+        if (data.role === 'SUPER_ADMIN') {
+          console.log('🚀 Redirection vers /superadmin');
+          router.push('/superadmin');
+        } else if (data.role === 'COMPANY_ADMIN' || data.role === 'COMPANY_USER') {
+          console.log('🚀 Redirection vers /dashboard');
+          router.push('/dashboard');
+        } else {
+          setError('Rôle non reconnu');
+        }
       } else {
-        setError('Rôle non reconnu');
+        const errorData = await res.json();
+        console.log('❌ Erreur de connexion:', errorData);
+        setError(errorData.error || 'Identifiants invalides');
       }
-    } else {
-      setError('Identifiants invalides');
+    } catch (err) {
+      console.error('❌ Erreur lors de la connexion:', err);
+      setError('Erreur de connexion');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen transition-all duration-300" style={{ background: 'var(--bg-primary)' }}>
-      {/* Bouton Retour au site vitrine */}
-      <div className="absolute top-6 left-6 z-10">
-        <motion.a
-          href="/"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="px-4 py-2 rounded-lg font-karla-bold transition-all duration-300 border-2"
-          style={{ 
-            borderColor: '#CCFF00', 
-            color: '#CCFF00',
-            background: 'rgba(204, 255, 0, 0.1)'
-          }}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          ← Retour au site vitrine
-        </motion.a>
-      </div>
-      
-      <div className="min-h-screen flex items-center justify-center p-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="w-full max-w-md"
-        >
-          {/* Logo et titre */}
-          <div className="text-center mb-12">
-            <motion.div 
-              className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <div className="w-16 h-16 rounded-full bg-black"></div>
-            </motion.div>
-            <motion.h1 
-              className="text-4xl font-karla-bold mb-2 transition-colors duration-300"
-              style={{ color: 'var(--text-primary)' }}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <span style={{ color: 'var(--theme-primary)' }}>drelto</span>
-            </motion.h1>
-            <motion.p 
-              className="font-karla-regular text-lg transition-colors duration-300"
-              style={{ color: 'var(--text-muted)' }}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              Interface de contrôle des systèmes
-            </motion.p>
+    <div className="min-h-screen bg-black text-white flex items-center justify-center p-8">
+      <div className="w-full max-w-md">
+        {/* Logo et titre */}
+        <div className="text-center mb-12">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center">
+            <div className="w-16 h-16 rounded-full bg-black"></div>
           </div>
+          <h1 className="text-4xl font-bold mb-2">
+            <span className="text-[#CCFF00]">drelto</span>
+          </h1>
+          <p className="text-gray-400 text-lg">
+            Interface de contrôle des systèmes
+          </p>
+        </div>
 
-          {/* Formulaire de connexion */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="p-8 rounded-2xl hover:border-[#CCFF00] transition-all duration-500"
-            style={{
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border-primary)'
-            }}
-          >
-            <h2 className="text-2xl font-karla-bold mb-8 text-center" style={{ color: 'var(--text-primary)' }}>
-              Connexion
-            </h2>
+        {/* Formulaire de connexion */}
+        <div className="p-8 rounded-2xl bg-gray-900 border border-gray-700">
+          <h2 className="text-2xl font-bold text-white mb-6 text-center">
+            Connexion
+          </h2>
 
-            {/* Message d'erreur */}
-            {error && (
-              <motion.div 
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-6 p-4 rounded-xl border-l-4" 
-                style={{ 
-                  background: 'rgba(239, 68, 68, 0.1)',
-                  borderLeftColor: '#ef4444',
-                  color: '#ef4444'
-                }}
-              >
-                <div className="font-karla-semibold text-center">{error}</div>
-              </motion.div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-karla-semibold mb-2 transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
-                  Adresse email
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border transition-all duration-300 font-karla-regular focus:outline-none focus:ring-2 focus:ring-[#CCFF00] focus:border-transparent"
-                  style={{ 
-                    background: 'var(--bg-secondary)',
-                    borderColor: 'var(--border-primary)',
-                    color: 'var(--text-primary)'
-                  }}
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-karla-semibold mb-2 transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
-                  Mot de passe
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border transition-all duration-300 font-karla-regular focus:outline-none focus:ring-2 focus:ring-[#CCFF00] focus:border-transparent"
-                  style={{ 
-                    background: 'var(--bg-secondary)',
-                    borderColor: 'var(--border-primary)',
-                    color: 'var(--text-primary)'
-                  }}
-                  required
-                />
-              </div>
-
-              <motion.button 
-                type="submit" 
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full py-3 rounded-xl font-karla-bold transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ backgroundColor: '#CCFF00', color: '#000000' }}
-                disabled={loading}
-              >
-                {loading ? 'Connexion...' : 'SE CONNECTER'}
-              </motion.button>
-            </form>
-
-            {/* By Drelto */}
-            <motion.div 
-              className="mt-8 pt-6 border-t text-center"
-              style={{ borderColor: 'var(--border-primary)' }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 1.2 }}
-            >
-              <p className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
-                By <span style={{ color: 'var(--theme-primary)' }}>Drelto</span>
-              </p>
-            </motion.div>
-          </motion.div>
-
-          {/* Informations supplémentaires */}
-          <motion.div 
-            className="mt-8 text-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1.4 }}
-          >
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#CCFF00' }}></div>
-              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#9933FF' }}></div>
-              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#CCFF00' }}></div>
+          {/* Message d'erreur */}
+          {error && (
+            <div className="mb-6 p-4 rounded-xl bg-red-900/20 border border-red-500/30">
+              <div className="text-red-300 text-center font-semibold">{error}</div>
             </div>
-            <p className="font-karla-regular text-xs transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
-              Système de cybersécurité avancé
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-semibold mb-2 text-gray-300">
+                Adresse email
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-[#CCFF00] focus:border-transparent"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-2 text-gray-300">
+                Mot de passe
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-[#CCFF00] focus:border-transparent"
+                required
+              />
+            </div>
+
+            <button 
+              type="submit" 
+              className="w-full py-3 rounded-xl font-bold transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed bg-[#CCFF00] text-black hover:bg-[#B3E600]"
+              disabled={loading}
+            >
+              {loading ? 'Connexion...' : 'SE CONNECTER'}
+            </button>
+          </form>
+
+          {/* By Drelto */}
+          <div className="mt-8 pt-6 border-t border-gray-700 text-center">
+            <p className="text-sm text-gray-400">
+              By <span className="text-[#CCFF00]">Drelto</span>
             </p>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
+
+        {/* Informations supplémentaires */}
+        <div className="mt-8 text-center">
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="w-2 h-2 rounded-full bg-[#CCFF00]"></div>
+            <div className="w-2 h-2 rounded-full bg-[#9933FF]"></div>
+            <div className="w-2 h-2 rounded-full bg-[#CCFF00]"></div>
+          </div>
+          <p className="text-xs text-gray-400">
+            Système de cybersécurité avancé
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -10,91 +10,118 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Company {
-  id        Int      @id @default(autoincrement())
-  name      String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  
-  users     User[]
-  tasks     Task[]
-  globalCards GlobalCard[]
-  panelCards PanelCard[]
-
-  @@map("companies")
-}
-
-model Task {
-  id        Int      @id @default(autoincrement())
-  name      String
-  description String? // Description complète
-  status    String   @default("warning")
-  score     Int      @default(5)
-  importance String  @default("Moyenne") // Faible, Moyenne, Élevée
-  dueDate   DateTime? // Échéance
-  assignedTo String? // Personne assignée
-  category  String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  
-  companyId Int?     @map("company_id")
-  company   Company? @relation(fields: [companyId], references: [id])
-
-  @@map("tasks")
-}
-
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   password  String
-  role      String   @default("COMPANY_USER") // SUPER_ADMIN, COMPANY_ADMIN, COMPANY_USER
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  
-  companyId Int?     @map("company_id")
+  role      Role     @default(COMPANY_USER)
+  companyId Int?
   company   Company? @relation(fields: [companyId], references: [id])
-
-  @@map("users")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model GlobalCard {
-  id                Int      @id @default(autoincrement())
-  name              String
-  description       String?
-  category          String   // 'defensive', 'general', 'offensive'
-  icon              String   @default("🛡️")
-  defaultScore      Int      @default(5)
-  defaultImportance String   @default("Moyenne")
-  isActive          Boolean  @default(true)
-  createdAt         DateTime @default(now()) @map("created_at")
-  updatedAt         DateTime @updatedAt @map("updated_at")
-  
-  companyId         Int?     @map("company_id")
-  company           Company? @relation(fields: [companyId], references: [id])
-
-  @@map("global_cards")
+model Company {
+  id        Int      @id @default(autoincrement())
+  name      String
+  users     User[]
+  tasks     Task[]
+  panelCardInstances PanelCardInstance[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model PanelCard {
-  id                Int      @id @default(autoincrement())
-  name              String
-  type              String   // 'coverage', 'infrastructure', 'compliance', 'recommendation'
-  total             Int?
-  completed         Int?
-  equipmentCount    Int?
-  status            String?
-  certificationDate DateTime?
-  nextAudit         DateTime?
-  priority          String?
-  description       String?
-  deadline          DateTime?
-  category          String?  // 'defensive', 'general', 'offensive'
-  isActive          Boolean  @default(true)
-  createdAt         DateTime @default(now()) @map("created_at")
-  updatedAt         DateTime @updatedAt @map("updated_at")
-  
-  companyId         Int?     @map("company_id")
-  company           Company? @relation(fields: [companyId], references: [id])
+model Task {
+  id          Int      @id @default(autoincrement())
+  name        String
+  status      Status   @default(warning)
+  score       Int      @default(0)
+  category    Category @default(general)
+  description String?
+  importance  String?
+  dueDate     String?
+  assignedTo  String?
+  companyId   Int
+  company     Company  @relation(fields: [companyId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
 
-  @@map("panel_cards")
+// Templates de cartes gérés par le super admin
+model PanelCardTemplate {
+  id              Int      @id @default(autoincrement())
+  name            String
+  type            PanelCardType
+  category        Category
+  description     String?
+  priority        String   @default("Moyenne")
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Instances de cette carte dans chaque entreprise
+  instances       PanelCardInstance[]
+}
+
+// Instances de cartes dans chaque entreprise
+model PanelCardInstance {
+  id              Int      @id @default(autoincrement())
+  templateId      Int
+  template        PanelCardTemplate @relation(fields: [templateId], references: [id])
+  companyId       Int
+  company         Company  @relation(fields: [companyId], references: [id])
+  
+  // Données spécifiques à l'entreprise
+  total           Int?
+  completed       Int?
+  equipmentCount  Int?
+  status          String?
+  certificationDate String?
+  nextAudit       String?
+  deadline        String?
+  isActive        Boolean  @default(true)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@unique([templateId, companyId])
+}
+
+// Templates de services prédéfinis
+model ServiceTemplate {
+  id              Int      @id @default(autoincrement())
+  name            String
+  description     String
+  category        Category
+  icon            String?
+  defaultScore    Int      @default(0)
+  defaultImportance String @default("Moyenne")
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum Role {
+  SUPER_ADMIN
+  COMPANY_ADMIN
+  COMPANY_USER
+}
+
+enum Status {
+  completed
+  warning
+  error
+}
+
+enum Category {
+  defensive
+  general
+  offensive
+}
+
+enum PanelCardType {
+  coverage
+  infrastructure
+  compliance
+  recommendation
 } 

@@ -2,22 +2,35 @@ import { NextRequest } from 'next/server';
 import jwt from 'jsonwebtoken';
 
 export interface AuthUser {
-  userId: number;
+  id: number;
+  email: string;
   role: string;
   companyId?: number;
-  email: string;
 }
 
-export async function verifyToken(req: NextRequest): Promise<AuthUser | null> {
-  const authHeader = req.headers.get('authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return null;
-  }
+export async function verifyToken(reqOrToken: NextRequest | string): Promise<AuthUser | null> {
+  let token: string;
   
-  const token = authHeader.substring(7);
+  if (typeof reqOrToken === 'string') {
+    // Si c'est une chaîne, c'est directement le token
+    token = reqOrToken;
+  } else {
+    // Si c'est un NextRequest, extraire le token du header
+    const authHeader = reqOrToken.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return null;
+    }
+    token = authHeader.substring(7);
+  }
+
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev-secret') as AuthUser;
-    return decoded;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    return {
+      id: decoded.id,
+      email: decoded.email,
+      role: decoded.role,
+      companyId: decoded.companyId
+    };
   } catch (error) {
     return null;
   }

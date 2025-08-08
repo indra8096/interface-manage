@@ -1,4 +1,8 @@
 'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
@@ -101,6 +105,63 @@ export default function Home() {
     }
   };
 
+  // Charger les cartes de panel depuis l'API
+  const fetchPanelCards = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('Pas de token trouvé');
+        return;
+      }
+
+      const response = await fetch('/api/panel_cards', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        // Convertir les cartes de panel en format compatible avec le localStorage
+        const panelCardsData: Record<string, PanelCardData> = {};
+        data.panelCards.forEach((card: {
+          name: string;
+          type: string;
+          category: string;
+          total: number;
+          completed: number;
+          equipmentCount: number;
+          status: string;
+          certificationDate: string;
+          nextAudit: string;
+          priority: string;
+          description: string;
+          deadline: string;
+        }) => {
+          panelCardsData[card.name] = {
+            name: card.name,
+            type: card.type as 'coverage' | 'infrastructure' | 'compliance' | 'recommendation',
+            category: card.category as 'defensive' | 'general' | 'offensive',
+            total: card.total,
+            completed: card.completed,
+            equipmentCount: card.equipmentCount,
+            status: card.status,
+            certificationDate: card.certificationDate,
+            nextAudit: card.nextAudit,
+            priority: card.priority,
+            description: card.description,
+            deadline: card.deadline,
+          };
+        });
+        setPanelCards(panelCardsData);
+      } else if (response.status === 401) {
+        router.push('/login');
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des cartes de panel:', error);
+    }
+  };
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('token');
@@ -159,6 +220,8 @@ export default function Home() {
 
   useEffect(() => {
     fetchTasks();
+    fetchPanelCards();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Synchronisation avec les données du panel
@@ -171,8 +234,8 @@ export default function Home() {
         const companyId = localStorage.getItem('companyId');
         
         // Vérifier les changements dans panelCards
-        const savedPanelCards = localStorage.getItem(`panelCards_${companyId}`) || '';
-        if (savedPanelCards !== lastPanelCards) {
+        const savedPanelCards = localStorage.getItem(`panelCards_${companyId}`);
+        if (savedPanelCards && savedPanelCards !== lastPanelCards) {
           console.log('Changement détecté dans panelCards');
           lastPanelCards = savedPanelCards;
           try {
@@ -186,8 +249,8 @@ export default function Home() {
         }
 
         // Vérifier les changements dans tasksAddedFromPanel
-        const savedTasksFromPanel = localStorage.getItem(`tasksAddedFromPanel_${companyId}`) || '';
-        if (savedTasksFromPanel !== lastTasksFromPanel) {
+        const savedTasksFromPanel = localStorage.getItem(`tasksAddedFromPanel_${companyId}`);
+        if (savedTasksFromPanel && savedTasksFromPanel !== lastTasksFromPanel) {
           console.log('Changement détecté dans tasksAddedFromPanel');
           lastTasksFromPanel = savedTasksFromPanel;
           try {
@@ -386,7 +449,7 @@ export default function Home() {
       console.log('Données actuelles - panelCards:', savedPanelCards);
       console.log('Données actuelles - tasksAddedFromPanel:', savedTasksFromPanel);
       
-      if (savedPanelCards) {
+      if (savedPanelCards && savedPanelCards !== 'null') {
         try {
           const parsedCards = JSON.parse(savedPanelCards);
           console.log('Mise à jour immédiate des cartes:', parsedCards);
@@ -396,7 +459,7 @@ export default function Home() {
         }
       }
 
-      if (savedTasksFromPanel) {
+      if (savedTasksFromPanel && savedTasksFromPanel !== 'null') {
         try {
           const parsedTasks = JSON.parse(savedTasksFromPanel);
           console.log('Mise à jour immédiate des tâches:', parsedTasks);
@@ -540,11 +603,7 @@ export default function Home() {
             {/* Statistiques principales - Style futuriste */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
                              <motion.div 
-                 className="p-8 rounded-2xl hover:border-[#CCFF00] transition-all duration-500"
-                 style={{
-                   background: 'var(--bg-card)',
-                   border: '1px solid var(--border-primary)'
-                 }}
+                 className="p-8 rounded-2xl hover:border-[#CCFF00] transition-all duration-500 bg-black border border-gray-700"
                  whileHover={{ scale: 1.02 }}
                >
                 <div className="flex items-center justify-between">
@@ -561,11 +620,7 @@ export default function Home() {
               </motion.div>
 
                              <motion.div 
-                 className="p-8 rounded-2xl hover:border-[#9933FF] transition-all duration-500"
-                 style={{
-                   background: 'var(--bg-card)',
-                   border: '1px solid var(--border-primary)'
-                 }}
+                 className="p-8 rounded-2xl hover:border-[#9933FF] transition-all duration-500 bg-black border border-gray-700"
                  whileHover={{ scale: 1.02 }}
                >
                 <div className="flex items-center justify-between">
@@ -619,11 +674,7 @@ export default function Home() {
               </motion.div>
               
               <motion.div 
-                className="p-6 rounded-xl hover:border-[#9933FF] transition-all duration-300"
-                style={{
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border-primary)'
-                }}
+                className="p-6 rounded-xl hover:border-[#9933FF] transition-all duration-300 bg-black border border-gray-700"
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
@@ -639,11 +690,7 @@ export default function Home() {
                 whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsHistoryModalOpen(true)}
-                className="p-6 rounded-xl hover:border-[#9933FF] transition-all duration-300 cursor-pointer relative"
-                style={{
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border-primary)'
-                }}
+                className="p-6 rounded-xl hover:border-[#9933FF] transition-all duration-300 cursor-pointer relative bg-black border border-gray-700"
               >
                 <div className="text-center">
                                      <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
@@ -825,8 +872,7 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="w-full max-w-4xl bg-black border rounded-xl p-6 max-h-[90vh] overflow-y-auto"
-                style={{ borderColor: 'var(--border-primary)' }}
+                className="w-full max-w-4xl bg-black border border-gray-700 rounded-xl p-6 max-h-[90vh] overflow-y-auto"
               >
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-xl font-karla-bold" style={{ color: 'var(--text-primary)' }}>
@@ -857,11 +903,7 @@ export default function Home() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
-                            className="p-4 rounded-lg border relative group"
-                            style={{ 
-                              background: 'var(--bg-card)', 
-                              borderColor: 'var(--border-secondary)' 
-                            }}
+                            className="p-4 rounded-lg border border-gray-600 relative group bg-black"
                           >
                             {/* Bouton de suppression - Visible seulement pour les admins */}
                             {userRole === 'admin' && (
@@ -921,11 +963,7 @@ export default function Home() {
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ delay: index * 0.1 }}
-                              className="p-4 rounded-lg border relative group"
-                              style={{ 
-                                background: 'var(--bg-card)', 
-                                borderColor: 'var(--border-secondary)' 
-                              }}
+                              className="p-4 rounded-lg border border-gray-600 relative group bg-black"
                             >
                               {/* Bouton de suppression - Visible seulement pour les admins */}
                               {userRole === 'admin' && (
@@ -1010,8 +1048,7 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="w-full max-w-md bg-black border rounded-xl p-6"
-                style={{ borderColor: 'var(--border-primary)' }}
+                className="w-full max-w-md bg-black border border-gray-700 rounded-xl p-6"
               >
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>

@@ -15,101 +15,42 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
     }
 
-    // Récupérer toutes les cartes du panneau de toutes les entreprises
-    const panelCards = await prisma.panelCard.findMany({
-      include: {
-        company: {
-          select: {
-            id: true,
-            name: true
-          }
-        }
-      },
-      orderBy: { createdAt: 'desc' }
-    });
-
-    // Récupérer les vraies données de suivi des entreprises (tâches par catégorie)
+    // Récupérer UNIQUEMENT les vraies cartes de panel des entreprises
     const companies = await prisma.company.findMany({
       include: {
-        tasks: {
+        panelCards: {
           select: {
             id: true,
             name: true,
+            type: true,
+            total: true,
+            completed: true,
+            equipmentCount: true,
             status: true,
+            certificationDate: true,
+            nextAudit: true,
+            priority: true,
+            description: true,
+            deadline: true,
             category: true,
-            score: true,
-            importance: true,
-            createdAt: true
+            isActive: true,
+            createdAt: true,
+            updatedAt: true
           }
         }
       }
     });
 
-    // Créer des cartes de suivi intelligentes basées sur les vraies données
-    const intelligentCards = companies.flatMap(company => {
-      const tasks = company.tasks;
-      
-      // Cartes de couverture par catégorie
-      const coverageCards = ['defensive', 'general', 'offensive'].map(category => {
-        const categoryTasks = tasks.filter(task => task.category === category);
-        const completed = categoryTasks.filter(task => task.status === 'completed').length;
-        const total = categoryTasks.length;
-        
-        return {
-          id: company.id * 1000 + category.charCodeAt(0),
-          name: `Couverture ${category.charAt(0).toUpperCase() + category.slice(1)}`,
-          type: 'coverage' as const,
-          total,
-          completed,
-          category,
-          isActive: true,
-          company: { id: company.id, name: company.name },
-          isIntelligent: true
-        };
-      });
-
-      // Carte d'infrastructure basée sur les tâches d'équipement
-      const infrastructureTasks = tasks.filter(task => 
-        task.name.toLowerCase().includes('équipement') || 
-        task.name.toLowerCase().includes('infrastructure')
-      );
-      
-      const infrastructureCard = {
-        id: company.id * 1000 + 100,
-        name: 'Infrastructure & Équipements',
-        type: 'infrastructure' as const,
-        total: infrastructureTasks.length,
-        completed: infrastructureTasks.filter(task => task.status === 'completed').length,
-        category: 'general',
-        isActive: true,
+    // Récupérer UNIQUEMENT les vraies cartes de panel des entreprises
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const allCards = companies.flatMap((company: any) => 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      company.panelCards.map((card: any) => ({
+        ...card,
         company: { id: company.id, name: company.name },
-        isIntelligent: true
-      };
-
-      // Carte de conformité basée sur les tâches de certification
-      const complianceTasks = tasks.filter(task => 
-        task.name.toLowerCase().includes('audit') || 
-        task.name.toLowerCase().includes('certification') ||
-        task.name.toLowerCase().includes('conformité')
-      );
-      
-      const complianceCard = {
-        id: company.id * 1000 + 200,
-        name: 'Conformité & Certification',
-        type: 'compliance' as const,
-        total: complianceTasks.length,
-        completed: complianceTasks.filter(task => task.status === 'completed').length,
-        category: 'defensive',
-        isActive: true,
-        company: { id: company.id, name: company.name },
-        isIntelligent: true
-      };
-
-      return [...coverageCards, infrastructureCard, complianceCard];
-    });
-
-    // Combiner les cartes de panneau existantes avec les cartes intelligentes
-    const allCards = [...panelCards, ...intelligentCards];
+        isRealCard: true
+      }))
+    );
 
     // Récupérer aussi les statistiques globales de toutes les entreprises
     const companiesStats = await prisma.company.findMany({
@@ -127,14 +68,196 @@ export async function GET(request: NextRequest) {
       cards: allCards,
       globalStats: {
         totalCompanies: companiesStats.length,
-        totalUsers: companiesStats.reduce((sum, company) => sum + company._count.users, 0),
-        totalTasks: companiesStats.reduce((sum, company) => sum + company._count.tasks, 0)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        totalUsers: companiesStats.reduce((sum: any, company: any) => sum + company._count.users, 0),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        totalTasks: companiesStats.reduce((sum: any, company: any) => sum + company._count.tasks, 0)
       }
     });
   } catch (error) {
     console.error('Erreur lors de la récupération des cartes du panneau:', error);
     return NextResponse.json(
       { error: 'Erreur lors de la récupération des cartes du panneau' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    // Vérifier l'authentification
+    const user = await verifyToken(request);
+    if (!user) {
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+    }
+
+    // Vérifier que l'utilisateur est SUPER_ADMIN
+    if (user.role !== 'SUPER_ADMIN') {
+      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+    }
+
+    const body = await request.json();
+    const { 
+      name, 
+      type, 
+      category, 
+      total, 
+      completed, 
+      equipmentCount, 
+      status, 
+      certificationDate, 
+      nextAudit, 
+      priority, 
+      description, 
+      deadline 
+    } = body;
+
+    // Validation des données
+    if (!name || !type) {
+      return NextResponse.json({ error: 'Nom et type requis' }, { status: 400 });
+    }
+
+    // Récupérer toutes les entreprises pour propager la carte
+    const companies = await prisma.company.findMany();
+
+    // Créer la carte de panel pour chaque entreprise
+    const createdCards = await Promise.all(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      companies.map((company: any) => 
+        prisma.panelCard.create({
+          data: {
+            name,
+            type,
+            category: category || 'defensive',
+            total: total || 0,
+            completed: completed || 0,
+            equipmentCount: equipmentCount || 0,
+            status: status || 'Normal',
+            certificationDate: certificationDate ? new Date(certificationDate) : null,
+            nextAudit: nextAudit ? new Date(nextAudit) : null,
+            priority: priority || 'Moyenne',
+            description: description || '',
+            deadline: deadline ? new Date(deadline) : null,
+            isActive: true,
+            companyId: company.id
+          }
+        })
+      )
+    );
+
+    return NextResponse.json({ 
+      message: 'Carte de panel créée pour toutes les entreprises',
+      cards: createdCards
+    });
+  } catch (error) {
+    console.error('Erreur lors de la création de la carte de panel:', error);
+    return NextResponse.json(
+      { error: 'Erreur lors de la création de la carte de panel' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    // Vérifier l'authentification
+    const user = await verifyToken(request);
+    if (!user) {
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+    }
+
+    // Vérifier que l'utilisateur est SUPER_ADMIN
+    if (user.role !== 'SUPER_ADMIN') {
+      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+    }
+
+    const body = await request.json();
+    const { 
+      id, 
+      name, 
+      type, 
+      category, 
+      total, 
+      completed, 
+      equipmentCount, 
+      status, 
+      certificationDate, 
+      nextAudit, 
+      priority, 
+      description, 
+      deadline 
+    } = body;
+
+    // Validation des données
+    if (!id || !name || !type) {
+      return NextResponse.json({ error: 'ID, nom et type requis' }, { status: 400 });
+    }
+
+    // Mettre à jour la carte de panel
+    const updatedCard = await prisma.panelCard.update({
+      where: { id: parseInt(id) },
+      data: {
+        name,
+        type,
+        category: category || 'defensive',
+        total: total || 0,
+        completed: completed || 0,
+        equipmentCount: equipmentCount || 0,
+        status: status || 'Normal',
+        certificationDate: certificationDate ? new Date(certificationDate) : null,
+        nextAudit: nextAudit ? new Date(nextAudit) : null,
+        priority: priority || 'Moyenne',
+        description: description || '',
+        deadline: deadline ? new Date(deadline) : null,
+        isActive: true
+      }
+    });
+
+    return NextResponse.json({ 
+      message: 'Carte de panel mise à jour',
+      card: updatedCard
+    });
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour de la carte de panel:', error);
+    return NextResponse.json(
+      { error: 'Erreur lors de la mise à jour de la carte de panel' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    // Vérifier l'authentification
+    const user = await verifyToken(request);
+    if (!user) {
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+    }
+
+    // Vérifier que l'utilisateur est SUPER_ADMIN
+    if (user.role !== 'SUPER_ADMIN') {
+      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json({ error: 'ID requis' }, { status: 400 });
+    }
+
+    // Supprimer la carte de panel
+    await prisma.panelCard.delete({
+      where: { id: parseInt(id) }
+    });
+
+    return NextResponse.json({ 
+      message: 'Carte de panel supprimée'
+    });
+  } catch (error) {
+    console.error('Erreur lors de la suppression de la carte de panel:', error);
+    return NextResponse.json(
+      { error: 'Erreur lors de la suppression de la carte de panel' },
       { status: 500 }
     );
   }
