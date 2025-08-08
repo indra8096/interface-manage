@@ -17,9 +17,10 @@ interface ServiceTemplate {
   isActive: boolean;
 }
 
-export default function ServiceTemplatesPage() {
+export default function ServicesPage() {
   const [serviceTemplates, setServiceTemplates] = useState<ServiceTemplate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [userRole, setUserRole] = useState<string>('');
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   
@@ -46,17 +47,20 @@ export default function ServiceTemplatesPage() {
       return;
     }
 
-    if (role !== 'SUPER_ADMIN') {
+    setUserRole(role || '');
+    
+    // Seuls les COMPANY_ADMIN peuvent accéder à cette page
+    if (role !== 'COMPANY_ADMIN') {
       router.push('/dashboard');
       return;
     }
 
-    fetchTemplates(token);
+    fetchServiceTemplates(token);
   }, [router]);
 
-  const fetchTemplates = async (token: string) => {
+  const fetchServiceTemplates = async (token: string) => {
     try {
-      const response = await fetch('/api/superadmin/service_templates', {
+      const response = await fetch('/api/services', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -64,9 +68,9 @@ export default function ServiceTemplatesPage() {
 
       if (response.ok) {
         const data = await response.json();
-        setServiceTemplates(data.templates || []);
+        setServiceTemplates(data.services || []);
       } else {
-        setError('Erreur lors du chargement des templates');
+        setError('Erreur lors du chargement des services');
       }
     } catch (err) {
       setError('Erreur de connexion');
@@ -82,8 +86,8 @@ export default function ServiceTemplatesPage() {
 
     try {
       const url = editingTemplate 
-        ? `/api/superadmin/service_templates/${editingTemplate.id}`
-        : '/api/superadmin/service_templates';
+        ? `/api/services/${editingTemplate.id}`
+        : '/api/services';
       
       const method = editingTemplate ? 'PUT' : 'POST';
       
@@ -97,7 +101,7 @@ export default function ServiceTemplatesPage() {
       });
 
       if (response.ok) {
-        setSuccessMessage(editingTemplate ? 'Template modifié avec succès' : 'Template créé avec succès');
+        setSuccessMessage(editingTemplate ? 'Service modifié avec succès' : 'Service créé avec succès');
         setShowAddForm(false);
         setEditingTemplate(null);
         setFormData({
@@ -108,7 +112,7 @@ export default function ServiceTemplatesPage() {
           defaultScore: 5,
           defaultImportance: 'Moyenne'
         });
-        fetchTemplates(token);
+        fetchServiceTemplates(token);
       } else {
         const errorData = await response.json();
         setError(errorData.error || 'Erreur lors de la sauvegarde');
@@ -132,13 +136,13 @@ export default function ServiceTemplatesPage() {
   };
 
   const handleDelete = async (templateId: number) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer ce template ?')) return;
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce service ?')) return;
     
     const token = localStorage.getItem('token');
     if (!token) return;
 
     try {
-      const response = await fetch(`/api/superadmin/service_templates/${templateId}`, {
+      const response = await fetch(`/api/services/${templateId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -146,8 +150,8 @@ export default function ServiceTemplatesPage() {
       });
 
       if (response.ok) {
-        setSuccessMessage('Template supprimé avec succès');
-        fetchTemplates(token);
+        setSuccessMessage('Service supprimé avec succès');
+        fetchServiceTemplates(token);
       } else {
         const errorData = await response.json();
         setError(errorData.error || 'Erreur lors de la suppression');
@@ -166,6 +170,15 @@ export default function ServiceTemplatesPage() {
     return labels[category as keyof typeof labels] || category;
   };
 
+  const getCategoryColor = (category: string) => {
+    const colors = {
+      defensive: '#3b82f6',
+      general: '#10b981',
+      offensive: '#ef4444'
+    };
+    return colors[category as keyof typeof colors] || '#6b7280';
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black">
@@ -174,7 +187,7 @@ export default function ServiceTemplatesPage() {
             <div className="w-16 h-16 rounded-full bg-black"></div>
           </div>
           <div className="text-[#CCFF00] text-xl font-bold mb-2">Chargement...</div>
-          <div className="text-gray-400 text-sm">Récupération des templates</div>
+          <div className="text-gray-400 text-sm">Récupération des services</div>
         </div>
       </div>
     );
@@ -188,7 +201,7 @@ export default function ServiceTemplatesPage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
               <span className="text-xl font-bold text-[#CCFF00]">drelto</span>
-              <span className="text-sm text-gray-400">Gestionnaire de Templates</span>
+              <span className="text-sm text-gray-400">Gestionnaire de Services</span>
             </div>
             
             <div className="flex space-x-4">
@@ -196,10 +209,10 @@ export default function ServiceTemplatesPage() {
                 onClick={() => setShowAddForm(!showAddForm)}
                 className="px-4 py-2 bg-[#CCFF00] text-black font-semibold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
               >
-                {showAddForm ? 'Annuler' : 'Nouveau Template'}
+                {showAddForm ? 'Annuler' : 'Nouveau Service'}
               </button>
               <button 
-                onClick={() => router.push('/superadmin')}
+                onClick={() => router.push('/dashboard')}
                 className="px-4 py-2 text-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-300 border border-white/30"
               >
                 Retour Dashboard
@@ -226,7 +239,7 @@ export default function ServiceTemplatesPage() {
             <div className="flex items-center justify-between mb-12">
               <div>
                 <h1 className="text-5xl font-bold mb-4 text-white">
-                  Gestion des Templates de Services
+                  Gestion des Services Prédéfinis
                 </h1>
                 <p className="text-lg text-gray-400">
                   Interface de contrôle des templates de services de cybersécurité
@@ -242,7 +255,7 @@ export default function ServiceTemplatesPage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-sm mb-2 text-gray-400">TEMPLATES ACTIFS</div>
+                    <div className="font-medium text-sm mb-2 text-gray-400">SERVICES ACTIFS</div>
                     <div className="text-6xl font-bold text-[#CCFF00]">{serviceTemplates.filter(s => s.isActive).length}</div>
                   </div>
                   <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
@@ -259,7 +272,7 @@ export default function ServiceTemplatesPage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-sm mb-2 text-gray-400">TOTAL TEMPLATES</div>
+                    <div className="font-medium text-sm mb-2 text-gray-400">TOTAL SERVICES</div>
                     <div className="text-6xl font-bold text-[#9933FF]">{serviceTemplates.length}</div>
                   </div>
                   <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
@@ -320,7 +333,7 @@ export default function ServiceTemplatesPage() {
             >
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-white">
-                  {editingTemplate ? 'Modifier le template' : 'Nouveau template'}
+                  {editingTemplate ? 'Modifier le service' : 'Nouveau service'}
                 </h2>
                 <button
                   onClick={() => {
@@ -461,72 +474,59 @@ export default function ServiceTemplatesPage() {
             </motion.div>
           )}
 
-          {/* Liste des templates avec le design des cartes */}
+          {/* Liste des services */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {serviceTemplates.map((template) => (
               <motion.div
                 key={template.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className="group cursor-pointer select-none"
+                className="p-6 rounded-xl hover:border-[#CCFF00] transition-all duration-300 bg-black border border-gray-700"
+                whileHover={{ y: -5 }}
               >
-                <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover:shadow-lg hover:shadow-[#CCFF00]/10">
-                  <div className="relative">
-                    {/* Boutons d'action */}
-                    <div className="absolute top-0 right-0 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEdit(template);
-                        }}
-                        className="p-2 bg-[#CCFF00] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{template.icon}</span>
+                    <div>
+                      <h3 className="font-bold text-lg text-white">{template.name}</h3>
+                      <span 
+                        className="px-2 py-1 text-xs font-bold rounded-full text-white"
+                        style={{ backgroundColor: getCategoryColor(template.category) }}
                       >
-                        <FontAwesomeIcon icon={faEdit} className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(template.id);
-                        }}
-                        className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300"
-                      >
-                        <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors pr-20">
-                      {template.name}
-                    </h3>
-                    <p className="text-sm text-gray-400 mb-3 font-karla-regular">
-                      {template.description}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className={`px-2 py-1 rounded-full text-xs font-karla-medium ${
-                        template.category === 'defensive' ? 'bg-blue-900 text-blue-300' :
-                        template.category === 'general' ? 'bg-gray-700 text-gray-300' :
-                        'bg-red-900 text-red-300'
-                      }`}>
                         {getCategoryLabel(template.category)}
                       </span>
-                      <div className="flex items-center gap-2 text-xs text-gray-500">
-                        <span>Score: {template.defaultScore}</span>
-                        <span>•</span>
-                        <span>{template.defaultImportance}</span>
-                      </div>
                     </div>
                   </div>
-                 
-                  {/* Indicateur de statut */}
-                  <div className="mt-3 pt-3 border-t border-gray-700">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-[#CCFF00] font-karla-medium">
-                        {template.isActive ? 'ACTIF' : 'INACTIF'}
-                      </span>
-                      <span className="text-gray-500 font-karla-medium">
-                        ID: {template.id}
-                      </span>
-                    </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleEdit(template)}
+                      className="p-2 bg-[#CCFF00] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                    >
+                      <FontAwesomeIcon icon={faEdit} className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(template.id)}
+                      className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300"
+                    >
+                      <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                
+                <p className="text-gray-400 text-sm mb-4">{template.description}</p>
+                
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400 text-sm">Score:</span>
+                    <span className="text-white font-semibold">{template.defaultScore}/10</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400 text-sm">Importance:</span>
+                    <span className="text-white font-semibold">{template.defaultImportance}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400 text-sm">Statut:</span>
+                    <span className={`font-semibold text-sm ${template.isActive ? 'text-green-400' : 'text-red-400'}`}>
+                      {template.isActive ? 'Actif' : 'Inactif'}
+                    </span>
                   </div>
                 </div>
               </motion.div>
@@ -537,8 +537,8 @@ export default function ServiceTemplatesPage() {
             <div className="text-center py-16">
               <div className="bg-black/50 backdrop-blur-md rounded-xl p-12 border border-gray-800">
                 <div className="text-6xl mb-4 text-[#CCFF00]">🛡️</div>
-                <h3 className="text-xl font-bold text-white mb-2">Aucun template</h3>
-                <p className="text-gray-400">Créez votre premier template de service</p>
+                <h3 className="text-xl font-bold text-white mb-2">Aucun service</h3>
+                <p className="text-gray-400">Créez votre premier service prédéfini</p>
               </div>
             </div>
           )}

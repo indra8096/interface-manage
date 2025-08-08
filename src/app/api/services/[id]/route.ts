@@ -1,35 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyToken } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: serviceId } = await params;
-
-    // Vérifier que c'est un service personnalisé (commence par 'custom-')
-    if (!serviceId.startsWith('custom-')) {
-      return NextResponse.json(
-        { error: 'Impossible de supprimer un service prédéfini' },
-        { status: 403 }
-      );
+    // Vérifier l'authentification et les permissions
+    const user = await verifyToken(request);
+    if (!user || user.role !== 'SUPER_ADMIN') {
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
-    // Supprimer le service de la base de données
-    // Note: Pour l'instant, on utilise le localStorage, mais on pourrait ajouter une table services dans la DB
-    // await prisma.service.delete({
-    //   where: { id: serviceId }
-    // });
+    const { id } = await params;
+    const templateId = parseInt(id);
 
-    return NextResponse.json(
-      { message: 'Service supprimé avec succès' },
-      { status: 200 }
-    );
+    // Supprimer le template de service
+    await prisma.serviceTemplate.delete({
+      where: { id: templateId }
+    });
+
+    return NextResponse.json({ 
+      message: 'Template supprimé avec succès'
+    });
   } catch (error) {
-    console.error('Erreur lors de la suppression du service:', error);
-    return NextResponse.json(
-      { error: 'Erreur lors de la suppression du service' },
-      { status: 500 }
-    );
+    console.error('Erreur lors de la suppression du template:', error);
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 } 
