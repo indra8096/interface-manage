@@ -4,6 +4,70 @@ import { verifyToken } from '@/lib/auth';
 
 const prisma = new PrismaClient();
 
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    // Vérifier l'authentification et le rôle
+    const user = await verifyToken(request);
+    if (!user || user.role !== 'SUPER_ADMIN') {
+      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 401 });
+    }
+
+    // Attendre params dans Next.js 15
+    const { id } = await params;
+    const companyId = parseInt(id);
+    
+    if (isNaN(companyId)) {
+      return NextResponse.json({ error: 'ID de société invalide' }, { status: 400 });
+    }
+
+    // Récupérer la société avec ses utilisateurs
+    const company = await prisma.company.findUnique({
+      where: { id: companyId },
+      include: {
+        users: {
+          select: {
+            id: true,
+            email: true,
+            role: true,
+            createdAt: true,
+            updatedAt: true
+          }
+        },
+        _count: {
+          select: {
+            users: true,
+            tasks: true
+          }
+        }
+      }
+    });
+
+    if (!company) {
+      return NextResponse.json({ error: 'Société non trouvée' }, { status: 404 });
+    }
+
+    return NextResponse.json({ 
+      company: {
+        id: company.id,
+        name: company.name,
+        createdAt: company.createdAt,
+        users: company.users,
+        _count: company._count
+      }
+    });
+
+  } catch (error) {
+    console.error('Erreur lors de la récupération des détails de la société:', error);
+    return NextResponse.json(
+      { error: 'Erreur lors de la récupération des détails de la société' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

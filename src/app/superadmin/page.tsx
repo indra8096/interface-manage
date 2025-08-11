@@ -358,13 +358,10 @@ export default function SuperAdminDashboard() {
                   <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
                 </button>
 
-                <div className="flex items-center justify-between mb-4">
+                <div className="mb-4">
                   <h3 className="text-xl font-bold text-white group-hover:text-[#CCFF00] transition-colors">
                     {company.name}
                   </h3>
-                  <div className="w-8 h-8 rounded-full bg-[#CCFF00]/20 flex items-center justify-center">
-                    <span className="text-[#CCFF00] text-sm">🏢</span>
-                  </div>
                 </div>
                 
                 <div className="space-y-3">
