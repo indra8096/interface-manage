@@ -26,6 +26,7 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
   const [services, setServices] = useState<ServiceCard[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [activeFilter, setActiveFilter] = useState<'all' | 'defensive' | 'general' | 'offensive'>('all');
 
   // Charger les services depuis l'API
   useEffect(() => {
@@ -112,11 +113,17 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
     console.log('Drag ended for service');
   };
 
-  const filteredServices = services.filter(service =>
-    service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    service.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    service.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredServices = services.filter(service => {
+    // Filtre par recherche textuelle
+    const matchesSearch = service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         service.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         service.category.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Filtre par catégorie
+    const matchesCategory = activeFilter === 'all' || service.category === activeFilter;
+    
+    return matchesSearch && matchesCategory;
+  });
 
   if (isLoading) {
     return (
@@ -193,6 +200,72 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
+              </div>
+
+              {/* Onglets de filtrage */}
+              <div className="flex space-x-2 mb-4">
+                <button
+                  onClick={() => setActiveFilter('all')}
+                  className={`px-3 py-2 rounded-lg text-xs font-karla-medium transition-all duration-300 ${
+                    activeFilter === 'all'
+                      ? 'text-black font-karla-bold shadow-lg'
+                      : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                  }`}
+                  style={{
+                    background: activeFilter === 'all' ? '#CCFF00' : 'transparent'
+                  }}
+                >
+                  TOUS ({services.length})
+                </button>
+                <button
+                  onClick={() => setActiveFilter('defensive')}
+                  className={`px-3 py-2 rounded-lg text-xs font-karla-medium transition-all duration-300 ${
+                    activeFilter === 'defensive'
+                      ? 'text-black font-karla-bold shadow-lg'
+                      : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                  }`}
+                  style={{
+                    background: activeFilter === 'defensive' ? '#3B82F6' : 'transparent'
+                  }}
+                >
+                  DEFENSIVE ({services.filter(s => s.category === 'defensive').length})
+                </button>
+                <button
+                  onClick={() => setActiveFilter('general')}
+                  className={`px-3 py-2 rounded-lg text-xs font-karla-medium transition-all duration-300 ${
+                    activeFilter === 'general'
+                      ? 'text-black font-karla-bold shadow-lg'
+                      : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                  }`}
+                  style={{
+                    background: activeFilter === 'general' ? '#6B7280' : 'transparent'
+                  }}
+                >
+                  GENERALE ({services.filter(s => s.category === 'general').length})
+                </button>
+                <button
+                  onClick={() => setActiveFilter('offensive')}
+                  className={`px-3 py-2 rounded-lg text-xs font-karla-medium transition-all duration-300 ${
+                    activeFilter === 'offensive'
+                      ? 'text-black font-karla-bold shadow-lg'
+                      : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                  }`}
+                  style={{
+                    background: activeFilter === 'offensive' ? '#DC2626' : 'transparent'
+                  }}
+                >
+                  OFFENSIVE ({services.filter(s => s.category === 'offensive').length})
+                </button>
+              </div>
+
+              {/* Indicateur de filtrage */}
+              <div className="mb-3">
+                <p className="text-xs text-gray-400 font-karla-medium">
+                  {activeFilter === 'all' 
+                    ? `Affichage de tous les services (${filteredServices.length})`
+                    : `Services ${activeFilter.toUpperCase()} (${filteredServices.length})`
+                  }
+                </p>
               </div>
 
               {/* Barre de recherche */}

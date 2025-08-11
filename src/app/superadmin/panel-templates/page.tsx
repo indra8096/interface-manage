@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 interface PanelCardTemplate {
   id: number;
@@ -33,6 +33,11 @@ export default function PanelTemplatesPage() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<PanelCardTemplate | null>(null);
   const [activeTab, setActiveTab] = useState<'coverage' | 'infrastructure' | 'compliance' | 'recommendation'>('coverage');
+  
+  // États pour la modale de suppression
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [templateToDelete, setTemplateToDelete] = useState<PanelCardTemplate | null>(null);
+  const [deletingTemplate, setDeletingTemplate] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     type: 'coverage' as 'coverage' | 'infrastructure' | 'compliance' | 'recommendation',
@@ -157,12 +162,11 @@ export default function PanelTemplatesPage() {
   };
 
   const handleDelete = async (templateId: number) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer ce template ?')) return;
-    
     const token = localStorage.getItem('token');
     if (!token) return;
 
     try {
+      setDeletingTemplate(true);
       const response = await fetch(`/api/superadmin/panel_templates/${templateId}`, {
         method: 'DELETE',
         headers: {
@@ -173,13 +177,22 @@ export default function PanelTemplatesPage() {
       if (response.ok) {
         setSuccessMessage('Template supprimé avec succès');
         fetchTemplates(token);
+        setShowDeleteModal(false);
+        setTemplateToDelete(null);
       } else {
         const errorData = await response.json();
         setError(errorData.error || 'Erreur lors de la suppression');
       }
     } catch (err) {
       setError('Erreur de connexion');
+    } finally {
+      setDeletingTemplate(false);
     }
+  };
+
+  const openDeleteModal = (template: PanelCardTemplate) => {
+    setTemplateToDelete(template);
+    setShowDeleteModal(true);
   };
 
   const getTypeLabel = (type: string) => {
@@ -217,7 +230,7 @@ export default function PanelTemplatesPage() {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleDelete(template.id);
+                    openDeleteModal(template);
                   }}
                   className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300"
                 >
@@ -931,6 +944,56 @@ export default function PanelTemplatesPage() {
         <div className="fixed bottom-4 right-4 max-w-md">
           <div className="bg-green-900/50 border border-green-500 rounded-xl p-4">
             <p className="text-green-300">{successMessage}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de confirmation de suppression */}
+      {showDeleteModal && templateToDelete && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-black/90 backdrop-blur-md rounded-2xl p-8 border border-gray-800 max-w-md w-full">
+            <div className="text-center mb-6">
+              <div className="mb-6">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-red-600/20 rounded-full border-2 border-red-500/30 mb-4">
+                  <FontAwesomeIcon icon={faTrash} className="w-10 h-10 text-red-400" />
+                </div>
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-2">
+                Supprimer le template
+              </h2>
+              <p className="text-gray-400 mb-6">
+                Êtes-vous sûr de vouloir supprimer <span className="text-red-400 font-bold">{templateToDelete.name}</span> ?
+              </p>
+              <div className="p-4 bg-red-900/20 border border-red-500/30 rounded-xl backdrop-blur-sm">
+                <div className="flex items-center space-x-3">
+                  <div className="flex-shrink-0">
+                    <FontAwesomeIcon icon={faExclamationTriangle} className="w-5 h-5 text-red-400" />
+                  </div>
+                  <p className="text-red-300 text-sm font-medium">
+                    Cette action supprimera définitivement ce template et toutes ses données associées.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex space-x-4 pt-4">
+              <button
+                onClick={() => handleDelete(templateToDelete.id)}
+                disabled={deletingTemplate}
+                className="flex-1 px-6 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-all duration-300 disabled:opacity-50"
+              >
+                {deletingTemplate ? 'Suppression...' : 'Supprimer définitivement'}
+              </button>
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setTemplateToDelete(null);
+                }}
+                className="px-6 py-3 text-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-300 border border-white/30"
+              >
+                Annuler
+              </button>
+            </div>
           </div>
         </div>
       )}
