@@ -71,17 +71,10 @@ export default function Header() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-                     <div className="flex items-center space-x-4">
-             <div className="text-sm font-karla-regular transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
-               <span className="font-karla-semibold text-[#CCFF00]">STATUT:</span>
-                              <span className="ml-2 px-3 py-1 bg-[#CCFF00] text-black rounded-full text-xs font-karla-bold">
-                 SYSTÈME ACTIF
-               </span>
-             </div>
-             
-             <ThemeToggle />
-             
-                         <button
+                               <div className="flex items-center space-x-4">
+            <ThemeToggle />
+            
+            <button
               onClick={handleAdminClick}
               className={`px-4 py-2 rounded-lg transition-all duration-300 font-karla-medium ${
                 userRole === 'admin' 
@@ -98,7 +91,7 @@ export default function Header() {
             >
               {userRole === 'admin' ? 'GÉRER LES UTILISATEURS' : 'USER'}
             </button>
-           </div>
+          </div>
           
                      <button
              onClick={handleLogout}
