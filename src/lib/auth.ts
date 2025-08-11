@@ -24,14 +24,15 @@ export async function verifyToken(reqOrToken: NextRequest | string): Promise<Aut
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev-secret') as any;
     return {
-      id: decoded.id,
+      id: decoded.userId || decoded.id,
       email: decoded.email,
       role: decoded.role,
       companyId: decoded.companyId
     };
   } catch (error) {
+    console.error('Erreur de vérification du token:', error);
     return null;
   }
 }

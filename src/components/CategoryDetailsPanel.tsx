@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface CardFormData {
+  id: number;
   name: string;
   type: 'coverage' | 'infrastructure' | 'compliance' | 'recommendation';
+  category: 'defensive' | 'general' | 'offensive';
   total?: number;
   completed?: number;
   equipmentCount?: number;
@@ -25,6 +27,7 @@ interface CategoryDetailsPanelProps {
   userRole?: string;
   onAddTask?: (taskData: { name: string; score: number; category: string; description: string; importance: string; dueDate: string; assignedTo: string }) => void;
   tasksAddedFromPanel?: Array<{
+    id: number;
     name: string;
     description: string;
     importance: string;
@@ -99,8 +102,8 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     { id: 'recommendations', label: 'RECOMMANDATIONS' },
   ] as const;
 
-  const handleAddToDashboard = (taskName: string, description: string, importance: string = 'Moyenne') => {
-    if (onAddTask && !tasksAddedFromPanel.some(task => task.name === taskName)) {
+  const handleAddToDashboard = (cardId: number, taskName: string, description: string, importance: string = 'Moyenne') => {
+    if (onAddTask && !tasksAddedFromPanel.some(task => task.id === cardId)) {
       onAddTask({
         name: taskName,
         score: 5,
@@ -120,8 +123,10 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     if (existingCard) {
       setEditingCard(cardName);
       setEditFormData({
+        id: existingCard.id,
         name: existingCard.name,
         type: existingCard.type as 'coverage' | 'infrastructure' | 'compliance' | 'recommendation',
+        category: existingCard.category as 'defensive' | 'general' | 'offensive', // Type assertion
         total: existingCard.total,
         completed: existingCard.completed,
         equipmentCount: existingCard.equipmentCount,
@@ -149,13 +154,16 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
 
       // Préparer les données à envoyer à l'API
       const updateData = {
+        name: editFormData.name, // Inclure le nom pour permettre sa modification
         total: editFormData.total,
         completed: editFormData.completed,
         equipmentCount: editFormData.equipmentCount,
         status: editFormData.status,
         certificationDate: editFormData.certificationDate,
         nextAudit: editFormData.nextAudit,
-        deadline: editFormData.deadline
+        deadline: editFormData.deadline,
+        description: editFormData.description, // Inclure la description
+        priority: editFormData.priority // Inclure la priorité
       };
 
       // Envoyer la mise à jour à l'API
@@ -198,8 +206,10 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
   const handleAddNewCard = (cardType: 'coverage' | 'infrastructure' | 'compliance' | 'recommendation') => {
     setIsAddingCard(true);
     setAddFormData({
+      id: 0, // Nouvelle carte, ID 0
       name: '',
       type: cardType,
+      category: category, // Ajouter la catégorie actuelle
       // Valeurs par défaut selon le type
       ...(cardType === 'coverage' && {
         total: 0,
@@ -222,32 +232,66 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     });
   };
 
-  const handleSaveNewCard = () => {
+  const handleSaveNewCard = async () => {
     if (!addFormData.name.trim()) {
       alert('Le nom de la carte est requis');
       return;
     }
 
-    const companyId = localStorage.getItem('companyId');
-    // Sauvegarder la nouvelle carte dans localStorage
-    const updatedCards = { ...savedCards };
-    updatedCards[addFormData.name] = addFormData;
-    localStorage.setItem(`panelCards_${companyId}`, JSON.stringify(updatedCards));
-    
-    // Mettre à jour l'état local
-    setSavedCards(updatedCards);
-    setIsAddingCard(false);
-    setAddFormData({} as CardFormData);
-    setRenderKey(prev => prev + 1); // Forcer le re-rendu
-    
-    // Déclencher la synchronisation dans la page d'accueil
-    if (forceSyncPanelData) {
-      forceSyncPanelData();
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Token d\'authentification manquant');
+        return;
+      }
+
+      // Créer la nouvelle carte via l'API
+      const response = await fetch('/api/panel_cards', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          name: addFormData.name,
+          type: addFormData.type,
+          category: category,
+          total: addFormData.total,
+          completed: addFormData.completed,
+          equipmentCount: addFormData.equipmentCount,
+          status: addFormData.status,
+          certificationDate: addFormData.certificationDate,
+          nextAudit: addFormData.nextAudit,
+          priority: addFormData.priority,
+          description: addFormData.description,
+          deadline: addFormData.deadline
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Nouvelle carte créée avec succès:', data.panelCard);
+        
+        // Réinitialiser le formulaire
+        setIsAddingCard(false);
+        setAddFormData({} as CardFormData);
+        
+        // Déclencher la synchronisation dans la page d'accueil
+        if (forceSyncPanelData) {
+          forceSyncPanelData();
+        }
+        
+        // Forcer le re-rendu
+        setRenderKey(prev => prev + 1);
+      } else {
+        const errorData = await response.json();
+        console.error('Erreur lors de la création de la carte:', errorData);
+        alert(`Erreur lors de la création de la carte: ${errorData.error || 'Erreur inconnue'}`);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la création de la carte:', error);
+      alert('Erreur lors de la création de la carte');
     }
-    
-    // Debug: afficher les cartes pour vérifier
-    console.log('Nouvelle carte ajoutée:', addFormData);
-    console.log('Cartes sauvegardées mises à jour:', updatedCards);
   };
 
   const handleCancelAdd = () => {
@@ -267,15 +311,13 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
   const getCardsByType = (type: string) => {
     if (!panelCards || !Array.isArray(panelCards)) return [];
     
-    // Filtrer les cartes par type et catégorie depuis l'API
     return panelCards.filter(card => {
-      const isCorrectType = card.type === type;
-      const isCorrectCategory = card.category === category;
-      const isActive = card.isActive;
-      return isCorrectType && isCorrectCategory && isActive;
+      return card.type === type && card.isActive;
     }).map(card => ({
+      id: card.id, // Ajouter l'ID de la carte
       name: card.name,
       type: card.type as 'coverage' | 'infrastructure' | 'compliance' | 'recommendation',
+      category: card.category as 'defensive' | 'general' | 'offensive', // Type assertion
       total: card.total,
       completed: card.completed,
       equipmentCount: card.equipmentCount,
@@ -346,7 +388,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                      handleAddToDashboard(card.name, card.description || '', 'Moyenne');
+                      handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
                             }}
                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
                             style={{ 
@@ -406,7 +448,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                      handleAddToDashboard(card.name, card.description || '', 'Moyenne');
+                      handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
                             }}
                             className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
                             style={{ 
@@ -461,7 +503,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleAddToDashboard(card.name, card.description || '', 'Moyenne');
+                                handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
                               }}
                               className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
                               style={{ 
@@ -523,7 +565,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                      handleAddToDashboard(card.name, card.description || '', 'Moyenne');
+                      handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
                           }}
                           className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
                           style={{ 
@@ -820,7 +862,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                     initial={{ opacity: 0, scale: 0.9, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                    className="fixed top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-black border rounded-xl p-6 z-[110]"
+                    className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full max-w-md mx-4 bg-black border rounded-xl p-6 z-[110] max-h-[90vh] overflow-y-auto"
                     style={{ borderColor: 'var(--border-primary)' }}
                   >
                   <div className="flex items-center justify-between mb-6">
@@ -1114,7 +1156,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
                    animate={{ opacity: 1, scale: 1, y: 0 }}
                    exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                   className="fixed top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-black border rounded-xl p-6 z-[110]"
+                   className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full max-w-md mx-4 bg-black border rounded-xl p-6 z-[110] max-h-[90vh] overflow-y-auto"
                    style={{ borderColor: 'var(--border-primary)' }}
                  >
                    <div className="flex items-center justify-between mb-6">

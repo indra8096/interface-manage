@@ -109,13 +109,23 @@ export async function DELETE(
       where: { companyId: companyId }
     });
 
-    // Supprimer la société et toutes ses données associées
-    // D'abord supprimer les PanelCardInstances pour éviter la contrainte de clé étrangère
+    // Supprimer la société et toutes ses données associées dans l'ordre correct
+    // 1. D'abord supprimer les tâches (Task)
+    await prisma.task.deleteMany({
+      where: { companyId: companyId }
+    });
+
+    // 2. Ensuite supprimer les utilisateurs (User)
+    await prisma.user.deleteMany({
+      where: { companyId: companyId }
+    });
+
+    // 3. Puis supprimer les instances de cartes de panel (PanelCardInstance)
     await prisma.panelCardInstance.deleteMany({
       where: { companyId: companyId }
     });
 
-    // Ensuite supprimer la société (les autres relations seront supprimées automatiquement)
+    // 4. Enfin supprimer la société
     await prisma.company.delete({
       where: { id: companyId }
     });
