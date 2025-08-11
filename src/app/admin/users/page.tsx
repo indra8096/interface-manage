@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Header from '@/components/Header';
@@ -24,35 +24,10 @@ export default function AdminUsersPage() {
   const [editEmail, setEditEmail] = useState('');
   const [editPassword, setEditPassword] = useState('');
   const [editRole, setEditRole] = useState('user');
+  const [companyName, setCompanyName] = useState<string>('');
   const router = useRouter();
 
-  useEffect(() => {
-    // Protection : seulement COMPANY_ADMIN
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
-      const role = localStorage.getItem('role');
-      const companyId = localStorage.getItem('companyId');
-      
-      if (!token) {
-        router.push('/login');
-        return;
-      }
-      
-      if (role !== 'COMPANY_ADMIN') {
-        router.push('/dashboard');
-        return;
-      }
-      
-      // Vérification de sécurité : l'admin ne peut gérer que les utilisateurs de son entreprise
-      if (!companyId) {
-        router.push('/dashboard');
-        return;
-      }
-    }
-    fetchUsers();
-  }, [router]);
-
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -82,7 +57,39 @@ export default function AdminUsersPage() {
     } catch (error) {
       console.error('❌ Fetch error:', error);
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    // Protection : seulement COMPANY_ADMIN
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      const role = localStorage.getItem('role');
+      const companyId = localStorage.getItem('companyId');
+      const storedCompanyName = localStorage.getItem('companyName');
+      
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+      
+      if (role !== 'COMPANY_ADMIN') {
+        router.push('/dashboard');
+        return;
+      }
+      
+      // Vérification de sécurité : l'admin ne peut gérer que les utilisateurs de son entreprise
+      if (!companyId) {
+        router.push('/dashboard');
+        return;
+      }
+
+      // Récupérer le nom de la société
+      if (storedCompanyName) {
+        setCompanyName(storedCompanyName);
+      }
+    }
+    fetchUsers();
+  }, [router, fetchUsers]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,7 +127,7 @@ export default function AdminUsersPage() {
         const errorData = await res.json();
         setError(errorData.error || 'Erreur lors de la création de l\'utilisateur');
       }
-    } catch (error) {
+    } catch {
       setError('Erreur lors de la création de l\'utilisateur');
     } finally {
       setLoading(false);
@@ -164,7 +171,7 @@ export default function AdminUsersPage() {
           const errorData = await res.json();
           setError(errorData.error || 'Erreur lors de la suppression');
         }
-      } catch (error) {
+      } catch {
         setError('Erreur lors de la suppression');
       }
     }
@@ -225,7 +232,7 @@ export default function AdminUsersPage() {
         const errorData = await res.json();
         setError(errorData.error || 'Erreur lors de la modification de l\'utilisateur');
       }
-    } catch (error) {
+    } catch {
       setError('Erreur lors de la modification de l\'utilisateur');
     } finally {
       setLoading(false);
@@ -246,6 +253,11 @@ export default function AdminUsersPage() {
                   <span style={{ color: 'var(--text-primary)' }}>
                     Administration
                   </span>
+                  {companyName && (
+                    <span className="text-5xl font-karla-bold ml-4 transition-colors duration-300" style={{ color: 'var(--theme-secondary)' }}>
+                      - {companyName}
+                    </span>
+                  )}
                 </h1>
                 <p className="font-karla-regular text-lg transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
                   Gestion des utilisateurs et des accès système
