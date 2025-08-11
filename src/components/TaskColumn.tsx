@@ -29,6 +29,7 @@ interface TaskColumnProps {
   userRole?: string;
   onAddTaskFromPanel?: (taskData: { name: string; score: number; category: string; description: string; importance: string; dueDate: string; assignedTo: string }) => void;
   tasksAddedFromPanel?: Array<{
+    id: number;
     name: string;
     description: string;
     importance: string;
@@ -49,7 +50,7 @@ const categoryTitles = {
 const categoryColors = {
   defensive: 'var(--theme-primary)',
   general: 'var(--theme-primary)',
-  offensive: 'var(--theme-secondary)',
+  offensive: 'var(--theme-primary)',
 };
 
 const categoryDescriptions = {
@@ -257,14 +258,20 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
         </div>
       </div>
 
-      {/* Liste des tâches avec design futuriste */}
-      <div className="space-y-4 mb-6">
-        <div className="flex items-center justify-end">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--theme-primary)' }}></div>
-            <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>ONLINE</span>
+              {/* Liste des tâches avec design futuriste */}
+        <div className="space-y-4 mb-6">
+          {/* Header avec "SERVICES ACTIFS" et "ONLINE" comme sur la photo */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-left">
+              <span className="text-sm font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
+                SERVICES ACTIFS
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: '#00FF00' }}></div>
+              <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>ONLINE</span>
+            </div>
           </div>
-        </div>
 
         {/* Indicateur de zone de drop - juste après "SERVICES ACTIFS" */}
         {isDragOver && (
@@ -274,12 +281,19 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
             exit={{ opacity: 0, scale: 0.8, y: -10 }}
             className="space-y-3"
           >
-            <div className="p-4 rounded-xl border-2 border-dashed border-[#CCFF00] bg-[#CCFF00]/10 flex items-center justify-center">
+            {/* Zone de dépôt avec design exact de la photo */}
+            <div className="w-full p-6 rounded-xl border-2 border-dashed flex items-center justify-center transition-all duration-300"
+                 style={{
+                   borderColor: '#CCFF00',
+                   background: '#556B2F'
+                 }}>
               <div className="text-center">
-                <svg className="w-8 h-8 mx-auto mb-2 text-[#CCFF00]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {/* Icône avec deux flèches verticales (haut et bas) */}
+                <svg className="w-8 h-8 mx-auto mb-3 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                     style={{ color: '#CCFF00' }}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
                 </svg>
-                <p className="text-[#CCFF00] font-karla-bold text-sm">DÉPOSER ICI</p>
+                <p className="font-karla-bold text-base transition-colors duration-300" style={{ color: '#CCFF00' }}>DÉPOSER ICI</p>
               </div>
             </div>
             
@@ -335,8 +349,8 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
               }}>
                 <div className="w-8 h-8 rounded-full transition-colors duration-300" style={{ background: 'var(--text-muted)' }}></div>
               </div>
-              <p className="text-sm font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>AUCUN SERVICE ACTIF</p>
-              <p className="text-xs mt-1 transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>Initialisez votre premier service</p>
+              <p className="text-sm font-karla-medium transition-colors duration-300 empty-state-text">AUCUN SERVICE ACTIF</p>
+              <p className="text-xs mt-1 transition-colors duration-300 empty-state-text">Initialisez votre premier service</p>
             </motion.div>
           ) : (
             tasks.map((task) => (

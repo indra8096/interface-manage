@@ -22,9 +22,9 @@ interface PanelCardProps {
 }
 
 const categoryColors = {
-  defensive: '#3b82f6',
-  general: '#10b981', 
-  offensive: '#ef4444'
+  defensive: 'var(--theme-primary)',
+  general: 'var(--theme-primary)', 
+  offensive: 'var(--theme-primary)'
 };
 
 const PanelCard: React.FC<PanelCardProps> = ({ 

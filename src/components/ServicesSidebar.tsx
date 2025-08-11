@@ -212,7 +212,7 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
                       : 'text-gray-400 hover:text-white hover:bg-gray-800'
                   }`}
                   style={{
-                    background: activeFilter === 'all' ? '#CCFF00' : 'transparent'
+                    background: activeFilter === 'all' ? 'var(--theme-primary)' : 'transparent'
                   }}
                 >
                   TOUS ({services.length})
@@ -225,7 +225,7 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
                       : 'text-gray-400 hover:text-white hover:bg-gray-800'
                   }`}
                   style={{
-                    background: activeFilter === 'defensive' ? '#3B82F6' : 'transparent'
+                    background: activeFilter === 'defensive' ? 'var(--theme-primary)' : 'transparent'
                   }}
                 >
                   DEFENSIVE ({services.filter(s => s.category === 'defensive').length})
@@ -238,7 +238,7 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
                       : 'text-gray-400 hover:text-white hover:bg-gray-800'
                   }`}
                   style={{
-                    background: activeFilter === 'general' ? '#6B7280' : 'transparent'
+                    background: activeFilter === 'general' ? 'var(--theme-primary)' : 'transparent'
                   }}
                 >
                   GENERALE ({services.filter(s => s.category === 'general').length})
@@ -251,7 +251,7 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
                       : 'text-gray-400 hover:text-white hover:bg-gray-800'
                   }`}
                   style={{
-                    background: activeFilter === 'offensive' ? '#DC2626' : 'transparent'
+                    background: activeFilter === 'offensive' ? 'var(--theme-primary)' : 'transparent'
                   }}
                 >
                   OFFENSIVE ({services.filter(s => s.category === 'offensive').length})
@@ -275,7 +275,10 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Rechercher un service..."
-                  className="w-full px-4 py-3 pl-10 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
+                  className="w-full px-4 py-3 pl-10 rounded-xl border border-gray-700 bg-gray-800 text-white focus:outline-none transition-all font-karla-regular"
+                  style={{
+                    borderColor: 'var(--border-primary)'
+                  }}
                 />
                 <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />

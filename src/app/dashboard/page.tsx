@@ -672,12 +672,12 @@ export default function Home() {
           <div className="mb-16">
             <div className="flex items-center justify-between mb-12">
               <div>
-                                                  <h1 className="text-5xl font-karla-bold mb-4 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>
+                                                  <h1 className="text-5xl font-karla-bold mb-4 transition-colors duration-300 dashboard-title" style={{ color: 'var(--text-primary)' }}>
                    <span style={{ color: 'var(--text-primary)' }}>
                      Tableau de bord
                    </span>
                  </h1>
-                 <p className="font-karla-regular text-lg transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
+                 <p className="font-karla-regular text-lg transition-colors duration-300 dashboard-subtitle" style={{ color: 'var(--text-muted)' }}>
                    Interface de contrôle des systèmes de cybersécurité
                  </p>
               </div>
@@ -686,12 +686,13 @@ export default function Home() {
             {/* Statistiques principales - Style futuriste */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
                              <motion.div 
-                 className="p-8 rounded-2xl hover:border-[#CCFF00] transition-all duration-500 bg-black border border-gray-700"
+                 className="p-8 rounded-2xl hover:border-[#CCFF00] transition-all duration-500 border border-gray-700"
+                       style={{ background: 'var(--bg-card)' }}
                  whileHover={{ scale: 1.02 }}
                >
                 <div className="flex items-center justify-between">
                   <div>
-                                         <div className="font-karla-medium text-sm mb-2 transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>SERVICES ACTIFS</div>
+                                         <div className="font-karla-medium text-sm mb-2 transition-colors duration-300">SERVICES ACTIFS</div>
                                          <div className="text-6xl font-karla-bold" style={{ color: 'var(--theme-primary)' }}>{tasks.length}</div>
                   </div>
                                      <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
@@ -703,12 +704,13 @@ export default function Home() {
               </motion.div>
 
                              <motion.div 
-                 className="p-8 rounded-2xl hover:border-[#9933FF] transition-all duration-500 bg-black border border-gray-700"
+                 className="p-8 rounded-2xl hover:border-[#9933FF] transition-all duration-500 border border-gray-700"
+                       style={{ background: 'var(--bg-card)' }}
                  whileHover={{ scale: 1.02 }}
                >
                 <div className="flex items-center justify-between">
                   <div>
-                                         <div className="font-karla-medium text-sm mb-2 transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>TÂCHES TERMINÉES</div>
+                                         <div className="font-karla-medium text-sm mb-2 transition-colors duration-300">TÂCHES TERMINÉES</div>
                                          <div className="text-6xl font-karla-bold" style={{ color: 'var(--theme-secondary)' }}>
                        {Math.round((tasks.filter(t => t.status === 'completed').length / Math.max(tasks.length, 1)) * 100)}%
                      </div>
@@ -736,7 +738,7 @@ export default function Home() {
                                      <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
                      {tasks.filter(t => t.category === 'defensive').length}
                    </div>
-                  <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>DÉFENSIF</div>
+                                        <div className="font-karla-medium text-sm transition-colors duration-300">DÉFENSIF</div>
                 </div>
               </motion.div>
               
@@ -752,19 +754,20 @@ export default function Home() {
                                      <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
                      {tasks.filter(t => t.category === 'general').length}
                    </div>
-                  <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>GÉNÉRAL</div>
+                                        <div className="font-karla-medium text-sm transition-colors duration-300">GÉNÉRAL</div>
                 </div>
               </motion.div>
               
               <motion.div 
-                className="p-6 rounded-xl hover:border-[#9933FF] transition-all duration-300 bg-black border border-gray-700"
+                className="p-6 rounded-xl hover:border-[#9933FF] transition-all duration-300 border border-gray-700"
+                      style={{ background: 'var(--bg-card)' }}
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
                                      <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
                      {tasks.filter(t => t.category === 'offensive').length}
                    </div>
-                  <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>OFFENSIF</div>
+                                        <div className="font-karla-medium text-sm transition-colors duration-300">OFFENSIF</div>
                 </div>
               </motion.div>
               
@@ -773,13 +776,14 @@ export default function Home() {
                 whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsHistoryModalOpen(true)}
-                className="p-6 rounded-xl hover:border-[#9933FF] transition-all duration-300 cursor-pointer relative bg-black border border-gray-700"
+                className="p-6 rounded-xl hover:border-[#9933FF] transition-all duration-300 cursor-pointer relative border border-gray-700"
+                      style={{ background: 'var(--bg-card)' }}
               >
                 <div className="text-center">
                                      <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
                      {tasks.filter(t => t.status === 'completed').length}
                    </div>
-                  <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>TERMINÉS</div>
+                                        <div className="font-karla-medium text-sm transition-colors duration-300">TERMINÉS</div>
                 </div>
                 {/* Indicateur "voir plus" */}
                 <div className="absolute bottom-2 right-3 text-xs font-karla-medium" style={{ color: 'white' }}>
@@ -798,7 +802,7 @@ export default function Home() {
               className="mb-8"
             >
                               <div className="mb-6">
-                  <h2 className="text-2xl font-karla-bold mb-2 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>
+                  <h2 className="text-2xl font-karla-bold mb-2 transition-colors duration-300 dashboard-section-title" style={{ color: 'var(--text-primary)' }}>
                     Indicateurs & Suivi Sécurité
                   </h2>
                 </div>
@@ -956,7 +960,8 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="w-full max-w-4xl bg-black border border-gray-700 rounded-xl p-6 max-h-[90vh] overflow-y-auto"
+                className="w-full max-w-4xl border border-gray-700 rounded-xl p-6 max-h-[90vh] overflow-y-auto"
+                      style={{ background: 'var(--bg-card)' }}
               >
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-xl font-karla-bold" style={{ color: 'var(--text-primary)' }}>
@@ -965,7 +970,7 @@ export default function Home() {
                   <button
                     onClick={() => setIsHistoryModalOpen(false)}
                     className="p-2 rounded-lg hover:bg-gray-800 transition-all duration-300"
-                    style={{ color: 'var(--text-muted)' }}
+                    style={{ color: 'var(--text-primary)' }}
                   >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -987,7 +992,8 @@ export default function Home() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
-                            className="p-4 rounded-lg border border-gray-600 relative group bg-black"
+                            className="p-4 rounded-lg border border-gray-600 relative group"
+                            style={{ background: 'var(--bg-card)' }}
                           >
                             {/* Bouton de suppression - Visible seulement pour les admins */}
                             {userRole === 'admin' && (
@@ -1047,7 +1053,8 @@ export default function Home() {
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ delay: index * 0.1 }}
-                              className="p-4 rounded-lg border border-gray-600 relative group bg-black"
+                              className="p-4 rounded-lg border border-gray-600 relative group"
+                              style={{ background: 'var(--bg-card)' }}
                             >
                               {/* Bouton de suppression - Visible seulement pour les admins */}
                               {userRole === 'admin' && (
@@ -1132,7 +1139,8 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="w-full max-w-md bg-black border border-gray-700 rounded-xl p-6"
+                className="w-full max-w-md border border-gray-700 rounded-xl p-6"
+                      style={{ background: 'var(--bg-card)' }}
               >
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>
@@ -1141,7 +1149,7 @@ export default function Home() {
                   <button
                     onClick={cancelDeleteFromHistory}
                     className="p-2 rounded-lg hover:bg-gray-800 transition-all duration-300"
-                    style={{ color: 'var(--text-muted)' }}
+                    style={{ color: 'var(--text-primary)' }}
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

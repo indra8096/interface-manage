@@ -9,15 +9,15 @@ export default function Footer() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.4 }}
       className="py-6 mt-16"
-      style={{ background: '#9933FF' }}
+      style={{ background: 'var(--theme-primary)' }}
     >
       <div className="max-w-7xl mx-auto px-8">
         <div className="flex items-center justify-center">
           <div className="text-center">
-            <p className="font-karla-bold text-sm" style={{ color: '#FFFFFF' }}>
+            <p className="font-karla-bold text-sm" style={{ color: 'var(--bg-primary)' }}>
               © 2025 drelto. Tous droits réservés.
             </p>
-            <p className="font-karla-regular text-xs mt-1" style={{ color: '#FFFFFF' }}>
+            <p className="font-karla-regular text-xs mt-1" style={{ color: 'var(--bg-primary)' }}>
               Système de gestion des services de cybersécurité
             </p>
           </div>

@@ -24,26 +24,92 @@
   --theme-secondary: #9933FF;
 }
 
-/* Thème clair */
+/* Thème clair - Adapté avec les 3 couleurs demandées */
 [data-theme="light"] {
   --bg-primary: #FFFFFF;
-  --bg-secondary: #F8F9FA;
+  --bg-secondary: #FFFFFF;
   --bg-card: #FFFFFF;
   --text-primary: #000000;
-  --text-secondary: #333333;
-  --text-muted: #666666;
-  --border-primary: #E5E7EB;
-  --border-secondary: #D1D5DB;
+  --text-secondary: #000000;
+  --text-muted: #000000;
+  --border-primary: #9933FF;
+  --border-secondary: #9933FF;
   --theme-primary: #9933FF;
-  --theme-secondary: #CCFF00;
+  --theme-secondary: #9933FF;
 }
+
+/* Règles spécifiques pour le thème clair */
+[data-theme="light"] .font-karla-medium.text-sm.mb-2.transition-colors.duration-300,
+[data-theme="light"] .font-karla-medium.text-sm.transition-colors.duration-300 {
+  color: #000000 !important;
+}
+
+/* Règles pour les titres en thème clair */
+[data-theme="light"] .mb-16 h2,
+[data-theme="light"] .mb-16 h3,
+[data-theme="light"] .mb-16 h4,
+[data-theme="light"] .mb-16 h5,
+[data-theme="light"] .mb-16 h6 {
+  color: #000000 !important;
+}
+
+/* Règles générales pour les titres en thème clair */
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6 {
+  color: #000000 !important;
+}
+
+/* Règles spécifiques pour les éléments avec mb-16 en thème clair */
+[data-theme="light"] .mb-16 {
+  color: #000000 !important;
+}
+
+[data-theme="light"] .mb-16 h1,
+[data-theme="light"] .mb-16 h2,
+[data-theme="light"] .mb-16 h3,
+[data-theme="light"] .mb-16 h4,
+[data-theme="light"] .mb-16 h5,
+[data-theme="light"] .mb-16 h6,
+[data-theme="light"] .mb-16 p,
+[data-theme="light"] .mb-16 span,
+[data-theme="light"] .mb-16 div {
+  color: #000000 !important;
+}
+
+/* Règles très spécifiques pour forcer la couleur noire en thème clair */
+[data-theme="light"] .mb-16 * {
+  color: #000000 !important;
+}
+
+/* Règles pour les éléments spécifiques du dashboard */
+[data-theme="light"] .dashboard-title,
+[data-theme="light"] .dashboard-subtitle,
+[data-theme="light"] .dashboard-section-title {
+  color: #000000 !important;
+}
+
+/* Règles pour les zones de dépôt et états vides en thème clair */
+[data-theme="light"] .drop-zone-text {
+  color: #000000 !important;
+}
+
+[data-theme="light"] .empty-state-text {
+  color: #000000 !important;
+}
+
+
 
 :root {
   --background: #ffffff;
   --foreground: #000000;
 }
 
-@theme inline {
+/* Variables CSS personnalisées */
+:root {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-karla);

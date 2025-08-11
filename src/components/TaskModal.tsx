@@ -97,16 +97,16 @@ export default function TaskModal({
   };
 
   const scoreColors = {
-    1: '#ef4444',
-    2: '#f59e0b',
-    3: '#f59e0b',
-    4: '#eab308',
-    5: '#84cc16',
-    6: '#22c55e',
-    7: '#10b981',
-    8: '#06b6d4',
-    9: '#3b82f6',
-    10: '#8b5cf6',
+    1: 'var(--theme-primary)',
+    2: 'var(--theme-primary)',
+    3: 'var(--theme-primary)',
+    4: 'var(--theme-primary)',
+    5: 'var(--theme-primary)',
+    6: 'var(--theme-primary)',
+    7: 'var(--theme-primary)',
+    8: 'var(--theme-primary)',
+    9: 'var(--theme-primary)',
+    10: 'var(--theme-primary)',
   };
 
   return (
@@ -128,13 +128,13 @@ export default function TaskModal({
           >
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-karla-bold text-white">
-                <span className="bg-gradient-to-r from-[#CCFF00] to-[#9933FF] bg-clip-text text-transparent">
+                <span style={{ color: 'var(--theme-primary)' }}>
                   {mode === 'add' ? 'NOUVEAU SERVICE' : 'MODIFICATION'}
                 </span>
               </h2>
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-[#CCFF00] transition-colors p-2 rounded-lg hover:bg-gray-800"
+                className="text-gray-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-800"
               >
                 <div className="w-6 h-6 rounded-full bg-current"></div>
               </button>
@@ -143,7 +143,7 @@ export default function TaskModal({
             {mode === 'add' && category && (
               <div className="mb-6 p-4 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl border border-gray-700">
                 <span className="text-sm text-gray-400 font-karla-regular">CATÉGORIE: </span>
-                <span className="font-karla-semibold text-[#CCFF00]">{categoryNames[category as keyof typeof categoryNames]}</span>
+                <span className="font-karla-semibold" style={{ color: 'var(--theme-primary)' }}>{categoryNames[category as keyof typeof categoryNames]}</span>
               </div>
             )}
 
@@ -156,7 +156,7 @@ export default function TaskModal({
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:outline-none transition-all font-karla-regular"
                   placeholder={mode === 'add' ? "Entrez le nom du service..." : ""}
                   required
                 />

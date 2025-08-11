@@ -36,7 +36,7 @@ interface CategoryDetailsPanelProps {
     dueDate: string;
     assignedTo: string;
   }>;
-
+  onRemoveTaskFromPanel?: (taskName: string) => void;
   forceSyncPanelData?: () => void;
   panelCards?: Array<{
     id: number;
@@ -57,9 +57,9 @@ interface CategoryDetailsPanelProps {
 }
 
 const categoryColors = {
-  defensive: '#CCFF00',
-  general: '#CCFF00',
-  offensive: '#9933FF',
+  defensive: 'var(--theme-primary)',
+  general: 'var(--theme-primary)',
+  offensive: 'var(--theme-primary)',
 };
 
 const categoryDescriptions = {
@@ -70,7 +70,7 @@ const categoryDescriptions = {
 
 
 
-export default function CategoryDetailsPanel({ isOpen, onClose, category, categoryTitle, userRole = 'user', onAddTask, tasksAddedFromPanel = [], forceSyncPanelData, panelCards = [] }: CategoryDetailsPanelProps) {
+export default function CategoryDetailsPanel({ isOpen, onClose, category, categoryTitle, userRole = 'user', onAddTask, tasksAddedFromPanel = [], onRemoveTaskFromPanel, forceSyncPanelData, panelCards = [] }: CategoryDetailsPanelProps) {
   const [activeTab, setActiveTab] = useState<'coverage' | 'infrastructure' | 'compliance' | 'recommendations'>('coverage');
   const [editingCard, setEditingCard] = useState<string | null>(null);
   const [editFormData, setEditFormData] = useState<CardFormData>({} as CardFormData);

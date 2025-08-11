@@ -15,8 +15,8 @@ export default function ThemeToggle() {
              style={{
          background: theme === 'dark' 
            ? 'linear-gradient(135deg, #CCFF00, #9933FF)' 
-           : 'linear-gradient(135deg, #9933FF, #CCFF00)',
-         color: theme === 'dark' ? '#000000' : '#FFFFFF'
+           : 'linear-gradient(135deg, #9933FF, #FFFFFF)',
+         color: theme === 'dark' ? '#000000' : '#000000'
        }}
       title={theme === 'dark' ? 'Passer au mode clair' : 'Passer au mode sombre'}
     >
@@ -39,8 +39,8 @@ export default function ThemeToggle() {
           </div>
         ) : (
           // Icône lune pour le mode sombre
-          <div className="w-4 h-4 rounded-full border-2 border-white relative">
-            <div className="absolute top-0 right-0 w-2 h-2 rounded-full bg-white transform translate-x-1 -translate-y-1"></div>
+          <div className="w-4 h-4 rounded-full border-2 border-black relative">
+            <div className="absolute top-0 right-0 w-2 h-2 rounded-full bg-black transform translate-x-1 -translate-y-1"></div>
           </div>
         )}
       </motion.div>

@@ -24,14 +24,14 @@ interface TaskCardProps {
 }
 
 const statusColors = {
-  completed: '#10b981',     // Vert
-  warning: '#f59e0b',       // Orange
-  error: '#ef4444',         // Rouge
+  completed: '#9933FF',     // Violet pour terminé
+  warning: '#9933FF',       // Violet pour en cours
+  error: '#9933FF',         // Violet pour en attente
 };
 
 const categoryColors = {
-  defensive: '#CCFF00',
-  general: '#CCFF00',
+  defensive: '#9933FF',
+  general: '#9933FF',
   offensive: '#9933FF',
 };
 
@@ -139,12 +139,12 @@ const TaskCard: React.FC<TaskCardProps> = ({
           boxShadow: `0 10px 25px rgba(0,0,0,0.2), 0 0 0 1px ${category ? categoryColors[category as keyof typeof categoryColors] : statusColors[status]}20`
         }}
       >
-        {/* Filtre vert pour les tâches terminées */}
+        {/* Filtre violet pour les tâches terminées */}
         {status === 'completed' && (
           <div 
-            className="absolute inset-0 bg-[#10b981] bg-opacity-10 pointer-events-none z-10"
+            className="absolute inset-0 pointer-events-none z-10"
             style={{
-              background: `linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05))`
+              background: `linear-gradient(135deg, rgba(153, 51, 255, 0.15), rgba(153, 51, 255, 0.05))`
             }}
           />
         )}
@@ -214,7 +214,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                  className="p-2 rounded-lg transition-all duration-200 group-hover:scale-105"
                  style={{
                    background: 'var(--bg-secondary)',
-                   color: '#CCFF00',
+                   color: 'var(--theme-primary)',
                    border: '1px solid var(--border-primary)'
                  }}
                  title="Modifier"
@@ -228,7 +228,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                  className="p-2 rounded-lg transition-all duration-200 group-hover:scale-105"
                  style={{
                    background: 'var(--bg-secondary)',
-                   color: '#10b981',
+                   color: 'var(--theme-primary)',
                    border: '1px solid var(--border-primary)'
                  }}
                  title="Valider"
@@ -243,7 +243,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                                  className="p-2 rounded-lg transition-all duration-200 group-hover:scale-105"
                                  style={{
                                    background: 'var(--bg-secondary)',
-                                   color: '#ef4444',
+                                   color: 'var(--theme-primary)',
                                    border: '1px solid var(--border-primary)'
                                  }}
                                  title="Supprimer"

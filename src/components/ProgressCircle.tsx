@@ -91,8 +91,11 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({ percentage, color, cate
             <motion.div
               key={mark}
               className={`w-1.5 h-1.5 rounded-full transition-all duration-500 ${
-                percentage >= mark ? 'bg-[#CCFF00]' : 'bg-gray-600'
+                percentage >= mark ? 'bg-opacity-100' : 'bg-opacity-50'
               }`}
+              style={{
+                background: percentage >= mark ? 'var(--theme-primary)' : 'var(--text-muted)'
+              }}
               initial={{ scale: 0 }}
               animate={{ scale: percentage >= mark ? 1 : 0.5 }}
               transition={{ delay: mark / 100 * 0.5 }}

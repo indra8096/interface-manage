@@ -42,9 +42,10 @@ export default function Header() {
 
   return (
               <header 
-       className="border-b border-[#CCFF00] px-8 py-6 transition-all duration-300"
+       className="border-b px-8 py-6 transition-all duration-300"
        style={{ 
          background: 'var(--bg-primary)',
+         borderColor: 'var(--border-primary)',
          backdropFilter: 'blur(20px)'
        }}
      >
@@ -55,8 +56,11 @@ export default function Header() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center">
-            <div className="w-8 h-8 rounded-full bg-black"></div>
+          <div className="w-12 h-12 rounded-full flex items-center justify-center"
+               style={{
+                 background: 'var(--theme-primary)'
+               }}>
+            <div className="w-8 h-8 rounded-full" style={{ background: 'var(--text-primary)' }}></div>
           </div>
                      <h1 className="text-2xl font-karla-bold transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>
              <span style={{ color: 'var(--theme-primary)' }}>
@@ -78,12 +82,12 @@ export default function Header() {
               onClick={handleAdminClick}
               className={`px-4 py-2 rounded-lg transition-all duration-300 font-karla-medium ${
                 userRole === 'admin' 
-                  ? 'hover:from-[#CCFF00] hover:to-[#9933FF] hover:text-black hover:border-transparent cursor-pointer' 
+                  ? 'hover:opacity-80 cursor-pointer' 
                   : 'cursor-not-allowed opacity-50'
               }`}
               style={{
-                background: userRole === 'admin' ? 'var(--bg-secondary)' : 'var(--bg-card)',
-                color: 'var(--text-primary)',
+                background: userRole === 'admin' ? 'var(--theme-primary)' : 'var(--bg-card)',
+                color: userRole === 'admin' ? 'var(--bg-primary)' : 'var(--text-primary)',
                 border: '1px solid var(--border-primary)'
               }}
               title={userRole === 'admin' ? "Gérer les utilisateurs" : "Accès réservé aux administrateurs"}
@@ -97,9 +101,9 @@ export default function Header() {
              onClick={handleLogout}
              className="px-4 py-2 rounded-lg transition-all duration-300 font-karla-medium"
              style={{
-               background: 'linear-gradient(135deg, #dc2626, #b91c1c)',
-               color: '#FFFFFF',
-               border: '1px solid #dc2626'
+               background: 'var(--theme-primary)',
+               color: 'var(--bg-primary)',
+               border: '1px solid var(--theme-primary)'
              }}
              title="Déconnexion"
            >

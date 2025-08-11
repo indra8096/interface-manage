@@ -17,9 +17,9 @@ interface ModalInfoTacheProps {
 }
 
 const statusColors = {
-  completed: '#10b981',
-  warning: '#f59e0b',
-  error: '#ef4444',
+  completed: 'var(--theme-primary)',
+  warning: 'var(--theme-primary)',
+  error: 'var(--theme-primary)',
 };
 
 const statusLabels = {
@@ -59,13 +59,13 @@ export default function ModalInfoTache({
         >
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-karla-bold text-white">
-              <span className="bg-gradient-to-r from-[#CCFF00] to-[#9933FF] bg-clip-text text-transparent">
+              <span style={{ color: 'var(--theme-primary)' }}>
                 INFORMATIONS SERVICE
               </span>
             </h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-[#CCFF00] transition-colors p-2 rounded-lg hover:bg-gray-800"
+              className="text-gray-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-800"
             >
               <div className="w-6 h-6 rounded-full bg-current"></div>
             </button>
@@ -86,7 +86,7 @@ export default function ModalInfoTache({
                   <div 
                     className="px-3 py-1 rounded-full text-xs font-karla-bold text-black"
                     style={{ 
-                      background: `linear-gradient(135deg, #CCFF00, #9933FF)`
+                      background: 'var(--theme-primary)'
                     }}
                   >
                     SCORE: {score}
