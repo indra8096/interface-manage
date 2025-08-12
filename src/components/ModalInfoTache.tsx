@@ -54,11 +54,11 @@ export default function ModalInfoTache({
           initial={{ scale: 0.9, y: 20 }}
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.9, y: 20 }}
-          className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 w-full max-w-lg border border-gray-800 shadow-2xl"
+          className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 w-full max-w-lg border border-gray-800 shadow-2xl modal-info-tache"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-karla-bold text-white">
+            <h2 className="text-2xl font-karla-bold text-white modal-title">
               <span style={{ color: 'var(--theme-primary)' }}>
                 INFORMATIONS SERVICE
               </span>
@@ -100,24 +100,24 @@ export default function ModalInfoTache({
             {/* Informations détaillées */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl border border-gray-700">
-                <h4 className="text-sm font-karla-semibold text-[#CCFF00] mb-3">PRIORITÉ</h4>
+                <h4 className="text-sm font-karla-semibold text-[#CCFF00] mb-3 modal-field-title">PRIORITÉ</h4>
                 <p className="text-white font-karla-regular">{importance || 'Non définie'}</p>
               </div>
 
               <div className="p-4 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl border border-gray-700">
-                <h4 className="text-sm font-karla-semibold text-[#CCFF00] mb-3">ASSIGNÉ À</h4>
+                <h4 className="text-sm font-karla-semibold text-[#CCFF00] mb-3 modal-field-title">ASSIGNÉ À</h4>
                 <p className="text-white font-karla-regular">{assignedTo || 'Non assigné'}</p>
               </div>
 
               <div className="p-4 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl border border-gray-700">
-                <h4 className="text-sm font-karla-semibold text-[#CCFF00] mb-3">ÉCHÉANCE</h4>
+                <h4 className="text-sm font-karla-semibold text-[#CCFF00] mb-3 modal-field-title">ÉCHÉANCE</h4>
                 <p className="text-white font-karla-regular">
                   {dueDate ? new Date(dueDate).toLocaleDateString('fr-FR') : 'Non définie'}
                 </p>
               </div>
 
               <div className="p-4 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl border border-gray-700">
-                <h4 className="text-sm font-karla-semibold text-[#CCFF00] mb-3">ID SERVICE</h4>
+                <h4 className="text-sm font-karla-semibold text-[#CCFF00] mb-3 modal-field-title">ID SERVICE</h4>
                 <p className="text-white font-karla-regular">#{id}</p>
               </div>
             </div>
@@ -125,7 +125,7 @@ export default function ModalInfoTache({
             {/* Description */}
             {description && (
               <div className="p-4 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl border border-gray-700">
-                <h4 className="text-sm font-karla-semibold text-[#CCFF00] mb-3">DESCRIPTION</h4>
+                <h4 className="text-sm font-karla-semibold text-[#CCFF00] mb-3 modal-field-title">DESCRIPTION</h4>
                 <p className="text-white font-karla-regular">{description}</p>
               </div>
             )}
@@ -133,14 +133,14 @@ export default function ModalInfoTache({
             {/* Dates */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl border border-gray-700">
-                <h4 className="text-sm font-karla-semibold text-[#CCFF00] mb-3">CRÉÉ LE</h4>
+                <h4 className="text-sm font-karla-semibold text-[#CCFF00] mb-3 modal-field-title">CRÉÉ LE</h4>
                 <p className="text-white font-karla-regular">
                   {createdAt ? new Date(createdAt).toLocaleDateString('fr-FR') : 'Non disponible'}
                 </p>
               </div>
 
               <div className="p-4 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl border border-gray-700">
-                <h4 className="text-sm font-karla-semibold text-[#CCFF00] mb-3">MODIFIÉ LE</h4>
+                <h4 className="text-sm font-karla-semibold text-[#CCFF00] mb-3 modal-field-title">MODIFIÉ LE</h4>
                 <p className="text-white font-karla-regular">
                   {updatedAt ? new Date(updatedAt).toLocaleDateString('fr-FR') : 'Non disponible'}
                 </p>

@@ -101,6 +101,26 @@
   color: #000000 !important;
 }
 
+/* Règles pour permettre des titres blancs dans les modales en thème clair */
+[data-theme="light"] .modal-title,
+[data-theme="light"] .modal-label,
+[data-theme="light"] .modal-field-title,
+[data-theme="light"] .task-modal h2,
+[data-theme="light"] .task-modal label,
+[data-theme="light"] .modal-info-tache h2,
+[data-theme="light"] .modal-info-tache h4,
+[data-theme="light"] .modal-info-tache label {
+  color: #FFFFFF !important;
+}
+
+/* Règles spécifiques pour les titres de champs dans les modales */
+[data-theme="light"] .task-modal .font-karla-semibold,
+[data-theme="light"] .modal-info-tache .font-karla-semibold,
+[data-theme="light"] .task-modal .font-karla-medium,
+[data-theme="light"] .modal-info-tache .font-karla-medium {
+  color: #FFFFFF !important;
+}
+
 
 
 :root {

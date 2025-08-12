@@ -123,11 +123,11 @@ export default function TaskModal({
             initial={{ scale: 0.9, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.9, y: 20 }}
-            className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 w-full max-w-md border border-gray-800 shadow-2xl"
+            className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 w-full max-w-md border border-gray-800 shadow-2xl task-modal"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl font-karla-bold text-white">
+              <h2 className="text-2xl font-karla-bold text-white modal-title">
                 <span style={{ color: 'var(--theme-primary)' }}>
                   {mode === 'add' ? 'NOUVEAU SERVICE' : 'MODIFICATION'}
                 </span>
@@ -151,7 +151,7 @@ export default function TaskModal({
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-karla-semibold text-white mb-3">
+                <label className="block text-sm font-karla-semibold text-white mb-3 modal-label">
                   NOM DU SERVICE
                 </label>
                 <input
@@ -165,7 +165,7 @@ export default function TaskModal({
               </div>
 
               <div>
-                <label className="block text-sm font-karla-semibold text-white mb-3">
+                <label className="block text-sm font-karla-semibold text-white mb-3 modal-label">
                   NIVEAU DE PRIORITÉ (1-10)
                 </label>
                 <div className="flex items-center gap-4">
@@ -192,7 +192,7 @@ export default function TaskModal({
               </div>
 
               <div>
-                <label className="block text-sm font-karla-semibold text-white mb-3">
+                <label className="block text-sm font-karla-semibold text-white mb-3 modal-label">
                   DESCRIPTION
                 </label>
                 <textarea
@@ -205,7 +205,7 @@ export default function TaskModal({
               </div>
               
               <div>
-                <label className="block text-sm font-karla-semibold text-white mb-3">
+                <label className="block text-sm font-karla-semibold text-white mb-3 modal-label">
                   PRIORITÉ
                 </label>
                 <select
@@ -220,7 +220,7 @@ export default function TaskModal({
               </div>
               
               <div>
-                <label className="block text-sm font-karla-semibold text-white mb-3">
+                <label className="block text-sm font-karla-semibold text-white mb-3 modal-label">
                   ÉCHÉANCE
                 </label>
                 <input
@@ -232,7 +232,7 @@ export default function TaskModal({
               </div>
               
               <div>
-                <label className="block text-sm font-karla-semibold text-white mb-3">
+                <label className="block text-sm font-karla-semibold text-white mb-3 modal-label">
                   PERSONNE ASSIGNÉE
                 </label>
                 <input
