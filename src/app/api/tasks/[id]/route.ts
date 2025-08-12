@@ -45,7 +45,7 @@ export async function PATCH(
       description?: string;
       score?: number;
       importance?: string;
-      dueDate?: Date | null;
+      dueDate?: string | null;
       assignedTo?: string;
     } = {}
     
@@ -59,7 +59,7 @@ export async function PATCH(
     if (body.description !== undefined) updateData.description = body.description
     if (body.score !== undefined) updateData.score = body.score
     if (body.importance !== undefined) updateData.importance = body.importance
-    if (body.dueDate !== undefined) updateData.dueDate = body.dueDate ? new Date(body.dueDate) : null
+    if (body.dueDate !== undefined) updateData.dueDate = body.dueDate || null
     if (body.assignedTo !== undefined) updateData.assignedTo = body.assignedTo
 
     const task = await prisma.task.update({
