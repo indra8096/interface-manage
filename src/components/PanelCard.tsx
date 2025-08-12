@@ -147,7 +147,7 @@ const PanelCard: React.FC<PanelCardProps> = ({
 
   return (
     <div 
-      className={`p-4 rounded-lg border transition-all duration-300 hover:border-opacity-60 group relative ${
+      className={`p-4 rounded-lg border transition-all duration-300 hover:border-opacity-60 group relative panel-card ${
         userRole === 'admin' && onDelete ? 'pr-12' : ''
       }`}
       style={{ 
