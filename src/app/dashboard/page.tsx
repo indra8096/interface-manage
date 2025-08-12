@@ -127,6 +127,19 @@ export default function Home() {
       if (response.ok) {
         const data = await response.json();
         console.log('fetchPanelCards: Données reçues:', data);
+        console.log('fetchPanelCards: panelCards reçus:', data.panelCards);
+        
+        // Vérifier les données de progression
+        if (data.panelCards && Array.isArray(data.panelCards)) {
+          data.panelCards.forEach((card: any, index: number) => {
+            console.log(`fetchPanelCards: Carte ${index + 1}:`, {
+              name: card.name,
+              total: card.total,
+              completed: card.completed,
+              type: card.type
+            });
+          });
+        }
         
         // Mettre à jour l'état panelCards
         setPanelCards(data.panelCards);
@@ -193,7 +206,15 @@ export default function Home() {
   useEffect(() => {
     fetchTasks();
     fetchPanelCards();
+    
+    // Rafraîchir automatiquement les données du panel toutes les 5 secondes
+    // pour s'assurer que les modifications sont prises en compte
+    const interval = setInterval(() => {
+      fetchPanelCards();
+    }, 5000);
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => clearInterval(interval);
   }, []);
 
   // Log des changements de tasksAddedFromPanel pour le débogage
@@ -254,10 +275,20 @@ export default function Home() {
       return;
     }
     
-    // Créer la tâche avec l'ID de la carte
+    // Créer la tâche avec l'ID de la carte et toutes les données de progression
     const taskWithId = {
       id: cardData.id,
-      ...taskData
+      ...taskData,
+      // Copier les données de progression de la carte
+      total: cardData.total,
+      completed: cardData.completed,
+      equipmentCount: cardData.equipmentCount,
+      status: cardData.status,
+      certificationDate: cardData.certificationDate,
+      nextAudit: cardData.nextAudit,
+      deadline: cardData.deadline,
+      type: cardData.type,
+      category: cardData.category
     };
     
     // Ne pas appeler handleCreateTask pour éviter l'ajout dans les TaskColumns
@@ -389,17 +420,35 @@ export default function Home() {
 
   const getCardData = (taskName: string) => {
     // Récupérer les données de la carte depuis l'API
-    if (!panelCards || !Array.isArray(panelCards)) return null;
+    if (!panelCards || !Array.isArray(panelCards)) {
+      console.log('getCardData: panelCards est null ou pas un tableau');
+      return null;
+    }
+    
+    console.log('getCardData: panelCards disponibles:', panelCards);
     
     // D'abord essayer de trouver par nom (pour la compatibilité)
     let card = panelCards.find(card => card.name === taskName);
+    
+    if (card) {
+      console.log(`getCardData: Carte trouvée par nom "${taskName}":`, card);
+      console.log(`getCardData: total=${card.total}, completed=${card.completed}`);
+    }
     
     // Si pas trouvé par nom, essayer de trouver par ID dans tasksAddedFromPanel
     if (!card) {
       const task = tasksAddedFromPanel.find(task => task.name === taskName);
       if (task && task.id) {
         card = panelCards.find(card => card.id === task.id);
+        if (card) {
+          console.log(`getCardData: Carte trouvée par ID pour "${taskName}":`, card);
+          console.log(`getCardData: total=${card.total}, completed=${card.completed}`);
+        }
       }
+    }
+    
+    if (!card) {
+      console.log(`getCardData: Aucune carte trouvée pour "${taskName}"`);
     }
     
     return card || null;
@@ -435,13 +484,49 @@ export default function Home() {
     // Rafraîchir les données depuis l'API au lieu du localStorage
     await fetchPanelCards();
     
-    // La synchronisation est maintenant gérée directement dans fetchPanelCards
-    // Forcer le re-rendu immédiat
+    // Forcer le re-rendu immédiat pour mettre à jour l'affichage
     setRenderKey(prev => {
       const newKey = prev + 1;
       console.log('Nouveau renderKey:', newKey);
       return newKey;
     });
+    
+    // Forcer aussi la mise à jour des tâches ajoutées depuis le panel
+    // pour s'assurer que les barres de progression sont à jour
+    const companyId = localStorage.getItem('companyId');
+    if (companyId) {
+      const storedTasks = localStorage.getItem(`tasksAddedFromPanel_${companyId}`);
+      if (storedTasks) {
+        try {
+          const currentTasks = JSON.parse(storedTasks);
+          // Mettre à jour les tâches avec les nouvelles données des cartes
+          const updatedTasks = currentTasks.map((task: any) => {
+            const updatedCardData = panelCards.find(card => card.id === task.id);
+            if (updatedCardData) {
+              return {
+                ...task,
+                total: updatedCardData.total,
+                completed: updatedCardData.completed,
+                equipmentCount: updatedCardData.equipmentCount,
+                status: updatedCardData.status,
+                certificationDate: updatedCardData.certificationDate,
+                nextAudit: updatedCardData.nextAudit,
+                deadline: updatedCardData.deadline,
+                type: updatedCardData.type,
+                category: updatedCardData.category
+              };
+            }
+            return task;
+          });
+          
+          setTasksAddedFromPanel(updatedTasks);
+          localStorage.setItem(`tasksAddedFromPanel_${companyId}`, JSON.stringify(updatedTasks));
+          console.log('✅ Tâches du panel mises à jour avec les nouvelles données');
+        } catch (error) {
+          console.error('❌ Erreur lors de la mise à jour des tâches du panel:', error);
+        }
+      }
+    }
   };
 
   // Fonction pour synchroniser tasksAddedFromPanel avec les données mises à jour de panelCards
@@ -541,6 +626,14 @@ export default function Home() {
             ...task,
             name: updatedCardData.name, // Mettre à jour le nom
             description: updatedCardData.description || task.description,
+            // Mettre à jour les données de progression pour la barre de progression
+            total: updatedCardData.total,
+            completed: updatedCardData.completed,
+            equipmentCount: updatedCardData.equipmentCount,
+            status: updatedCardData.status,
+            certificationDate: updatedCardData.certificationDate,
+            nextAudit: updatedCardData.nextAudit,
+            deadline: updatedCardData.deadline,
             // Garder les autres propriétés spécifiques à la tâche (importance, score, etc.)
           };
         } else {
@@ -712,7 +805,7 @@ export default function Home() {
                   <div>
                                          <div className="font-karla-medium text-sm mb-2 transition-colors duration-300">TÂCHES TERMINÉES</div>
                                          <div className="text-6xl font-karla-bold" style={{ color: 'var(--theme-secondary)' }}>
-                       {Math.round((tasks.filter(t => t.status === 'completed').length / Math.max(tasks.length, 1)) * 100)}%
+                       {Math.min(Math.round((tasks.filter(t => t.status === 'completed').length / Math.max(tasks.length, 1)) * 100), 100)}%
                      </div>
                   </div>
                                      <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{

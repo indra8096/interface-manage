@@ -22,9 +22,9 @@ interface PanelCardProps {
 }
 
 const categoryColors = {
-  defensive: 'var(--theme-primary)',
-  general: 'var(--theme-primary)', 
-  offensive: 'var(--theme-primary)'
+  defensive: '#CCFF00', // Vert clair
+  general: '#9933FF',   // Violet
+  offensive: '#FF6B6B'  // Rouge
 };
 
 const PanelCard: React.FC<PanelCardProps> = ({ 
@@ -47,7 +47,11 @@ const PanelCard: React.FC<PanelCardProps> = ({
   cardType,
   tasksAddedFromPanel = []
 }) => {
-  const percentage = total && completed ? Math.round((completed / total) * 100) : 0;
+  // Vérifier que les données de progression sont valides
+  const hasValidProgressData = total !== undefined && total !== null && completed !== undefined && completed !== null;
+  const percentage = hasValidProgressData ? Math.min(Math.round((completed / total) * 100), 100) : 0;
+  
+  console.log(`PanelCard "${name}": total=${total}, completed=${completed}, percentage=${percentage}, hasValidProgressData=${hasValidProgressData}`);
   const isAddedToDashboard = tasksAddedFromPanel.some(task => task.name === name);
 
   // Fonction pour rendre le contenu spécifique selon le type
@@ -179,7 +183,7 @@ const PanelCard: React.FC<PanelCardProps> = ({
         <div className="flex items-center gap-2">
           {cardType === 'coverage' && (
             <span className="text-xs font-karla-bold" style={{ color: categoryColors[category] }}>
-              {percentage}%
+              {Math.min(percentage, 100)}%
             </span>
           )}
           {userRole === 'admin' && onEdit && (

@@ -10,7 +10,6 @@ interface PanelCardTemplate {
   id: number;
   name: string;
   type: 'coverage' | 'infrastructure' | 'compliance' | 'recommendation';
-  category: 'defensive' | 'general' | 'offensive';
   description: string;
   total?: number;
   completed?: number;
@@ -41,7 +40,6 @@ export default function PanelTemplatesPage() {
   const [formData, setFormData] = useState({
     name: '',
     type: 'coverage' as 'coverage' | 'infrastructure' | 'compliance' | 'recommendation',
-    category: 'defensive' as 'defensive' | 'general' | 'offensive',
     description: '',
     total: 0,
     completed: 0,
@@ -98,6 +96,9 @@ export default function PanelTemplatesPage() {
     const token = localStorage.getItem('token');
     if (!token) return;
 
+    // Debug: afficher les données du formulaire
+    console.log('Données du formulaire à envoyer:', formData);
+
     try {
       const url = editingTemplate 
         ? `/api/superadmin/panel_templates/${editingTemplate.id}`
@@ -121,7 +122,6 @@ export default function PanelTemplatesPage() {
         setFormData({
           name: '',
           type: 'coverage',
-          category: 'defensive',
           description: '',
           total: 0,
           completed: 0,
@@ -147,7 +147,6 @@ export default function PanelTemplatesPage() {
     setFormData({
       name: template.name,
       type: template.type,
-      category: template.category,
       description: template.description,
       total: template.total || 0,
       completed: template.completed || 0,
@@ -676,21 +675,7 @@ export default function PanelTemplatesPage() {
                     </select>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-semibold text-white mb-2">
-                      Catégorie *
-                    </label>
-                    <select
-                      required
-                      value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value as 'defensive' | 'general' | 'offensive' })}
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
-                    >
-                      <option value="defensive">Défensif</option>
-                      <option value="general">Général</option>
-                      <option value="offensive">Offensif</option>
-                    </select>
-                  </div>
+
                 </div>
 
                 <div>
@@ -767,7 +752,7 @@ export default function PanelTemplatesPage() {
                 )}
 
                 {formData.type === 'compliance' && (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-semibold text-white mb-2">
                         Statut
@@ -921,7 +906,6 @@ export default function PanelTemplatesPage() {
             {getTemplatesByType(activeTab).length === 0 && (
               <div className="text-center py-16">
                 <div className="bg-black/50 backdrop-blur-md rounded-xl p-12 border border-gray-800">
-                  <div className="text-6xl mb-4 text-[#CCFF00]">📊</div>
                   <h3 className="text-xl font-bold text-white mb-2">Aucun template</h3>
                   <p className="text-gray-400">Créez votre premier template de panel de suivi</p>
                 </div>
@@ -932,21 +916,19 @@ export default function PanelTemplatesPage() {
       </main>
 
       {/* Messages d'état */}
-      {error && (
-        <div className="fixed bottom-4 right-4 max-w-md">
+      <div className="fixed bottom-4 right-4 max-w-md space-y-3">
+        {error && (
           <div className="bg-red-900/50 border border-red-500 rounded-xl p-4">
             <p className="text-red-300">{error}</p>
           </div>
-        </div>
-      )}
+        )}
 
-      {successMessage && (
-        <div className="fixed bottom-4 right-4 max-w-md">
+        {successMessage && (
           <div className="bg-green-900/50 border border-green-500 rounded-xl p-4">
             <p className="text-green-300">{successMessage}</p>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Modal de confirmation de suppression */}
       {showDeleteModal && templateToDelete && (

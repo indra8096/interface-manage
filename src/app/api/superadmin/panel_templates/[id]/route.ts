@@ -19,7 +19,6 @@ export async function PUT(
     const { 
       name, 
       type, 
-      category,
       description, 
       total, 
       completed, 
@@ -36,7 +35,7 @@ export async function PUT(
       data: {
         name,
         type,
-        category,
+        category: 'defensive', // Valeur par défaut temporaire
         description
       }
     });

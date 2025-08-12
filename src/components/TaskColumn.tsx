@@ -73,7 +73,7 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
   const [isDragOver, setIsDragOver] = useState(false);
   const [isOverCancel, setIsOverCancel] = useState(false);
 
-  const percentage = Math.round((tasks.filter(t => t.status === 'completed').length / Math.max(tasks.length, 1)) * 100);
+  const percentage = Math.min(Math.round((tasks.filter(t => t.status === 'completed').length / Math.max(tasks.length, 1)) * 100), 100);
 
   const scoreColors = {
     1: '#ef4444',

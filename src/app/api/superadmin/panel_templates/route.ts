@@ -43,7 +43,6 @@ export async function POST(request: NextRequest) {
     const { 
       name, 
       type, 
-      category,
       description, 
       total, 
       completed, 
@@ -54,13 +53,11 @@ export async function POST(request: NextRequest) {
       deadline 
     } = body;
 
-    console.log('Category extraite:', category);
-
     // Validation des champs requis
-    if (!name || !type || !category) {
-      console.log('Validation échouée - name:', name, 'type:', type, 'category:', category);
+    if (!name || !type) {
+      console.log('Validation échouée - name:', name, 'type:', type);
       return NextResponse.json({ 
-        error: 'Les champs name, type et category sont requis' 
+        error: 'Les champs name et type sont requis' 
       }, { status: 400 });
     }
 
@@ -69,7 +66,7 @@ export async function POST(request: NextRequest) {
       data: {
         name,
         type,
-        category,
+        category: 'defensive', // Valeur par défaut temporaire
         description,
         isActive: true
       }
@@ -117,14 +114,14 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { id, name, type, category, description, priority } = body;
+    const { id, name, type, description, priority } = body;
 
     const template = await prisma.panelCardTemplate.update({
       where: { id: parseInt(id) },
       data: {
         name,
         type,
-        category,
+        category: 'defensive', // Valeur par défaut temporaire
         description,
         priority
       }

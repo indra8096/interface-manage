@@ -366,7 +366,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-karla-bold" style={{ color: categoryColors[category] }}>
                   {card.total && card.completed ? 
-                    Math.round((card.completed / card.total) * 100) : 0}%
+                    Math.min(Math.round((card.completed / card.total) * 100), 100) : 0}%
                         </span>
                         {userRole === 'admin' && (
                           <button
@@ -409,7 +409,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                         className="h-2 rounded-full transition-all duration-500" 
                         style={{ 
                   width: `${card.total && card.completed ? 
-                    Math.round((card.completed / card.total) * 100) : 0}%`, 
+                    Math.min(Math.round((card.completed / card.total) * 100), 100) : 0}%`, 
                           background: categoryColors[category] 
                         }}
                       ></div>
@@ -948,7 +948,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                              }}
                            >
                              {editFormData.total && editFormData.completed ? 
-                               Math.round((editFormData.completed / editFormData.total) * 100) : 0}%
+                               Math.min(Math.round((editFormData.completed / editFormData.total) * 100), 100) : 0}%
                            </div>
                          </div>
                        </>
@@ -1242,7 +1242,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                              }}
                            >
                              {addFormData.total && addFormData.completed ? 
-                               Math.round((addFormData.completed / addFormData.total) * 100) : 0}%
+                               Math.min(Math.round((addFormData.completed / addFormData.total) * 100), 100) : 0}%
                            </div>
                          </div>
                        </>

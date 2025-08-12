@@ -502,7 +502,7 @@ export default function Home() {
                   <div>
                                                                                    <div className="font-karla-medium text-sm mb-2 transition-colors duration-300">TÂCHES TERMINÉES</div>
                                          <div className="text-6xl font-karla-bold" style={{ color: 'var(--theme-secondary)' }}>
-                       {Math.round((tasks.filter(t => t.status === 'completed').length / Math.max(tasks.length, 1)) * 100)}%
+                       {Math.min(Math.round((tasks.filter(t => t.status === 'completed').length / Math.max(tasks.length, 1)) * 100), 100)}%
                      </div>
                   </div>
                                      <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{

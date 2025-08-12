@@ -52,7 +52,7 @@ model PanelCardTemplate {
   id              Int      @id @default(autoincrement())
   name            String
   type            PanelCardType
-  category        Category
+  category        Category?
   description     String?
   priority        String   @default("Moyenne")
   isActive        Boolean  @default(true)

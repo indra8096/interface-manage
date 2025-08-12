@@ -11,7 +11,8 @@ interface ProgressCircleProps {
 const ProgressCircle: React.FC<ProgressCircleProps> = ({ percentage, color, category }) => {
   const radius = 50;
   const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (percentage / 100) * circumference;
+  const clampedPercentage = Math.min(percentage, 100);
+  const strokeDashoffset = circumference - (clampedPercentage / 100) * circumference;
 
   return (
     <div className="relative w-32 h-32">
@@ -79,7 +80,7 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({ percentage, color, cate
             className="text-3xl font-karla-bold"
             style={{ color }}
           >
-            {percentage}%
+            {Math.min(percentage, 100)}%
           </div>
         </motion.div>
       </div>
@@ -91,13 +92,13 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({ percentage, color, cate
             <motion.div
               key={mark}
               className={`w-1.5 h-1.5 rounded-full transition-all duration-500 ${
-                percentage >= mark ? 'bg-opacity-100' : 'bg-opacity-50'
+                clampedPercentage >= mark ? 'bg-opacity-100' : 'bg-opacity-50'
               }`}
               style={{
-                background: percentage >= mark ? 'var(--theme-primary)' : 'var(--text-muted)'
+                background: clampedPercentage >= mark ? 'var(--theme-primary)' : 'var(--text-muted)'
               }}
               initial={{ scale: 0 }}
-              animate={{ scale: percentage >= mark ? 1 : 0.5 }}
+              animate={{ scale: clampedPercentage >= mark ? 1 : 0.5 }}
               transition={{ delay: mark / 100 * 0.5 }}
             />
           ))}
