@@ -10,22 +10,14 @@
   --color-white: #FFFFFF;
 }
 
-/* Thème sombre (par défaut) */
-[data-theme="dark"] {
-  --bg-primary: #000000;
-  --bg-secondary: #111111;
-  --bg-card: #1a1a1a;
-  --text-primary: #FFFFFF;
-  --text-secondary: #CCCCCC;
-  --text-muted: #888888;
-  --border-primary: #333333;
-  --border-secondary: #444444;
-  --theme-primary: #CCFF00;
-  --theme-secondary: #9933FF;
+/* Système d'isolation du thème par utilisateur */
+/* Chaque utilisateur a son propre contexte de thème isolé */
+[data-user-id] {
+  /* Le thème est maintenant isolé par utilisateur */
 }
 
-/* Thème clair - Adapté avec les 3 couleurs demandées */
-[data-theme="light"] {
+/* Règles pour le thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] {
   --bg-primary: #FFFFFF;
   --bg-secondary: #FFFFFF;
   --bg-card: #FFFFFF;
@@ -38,170 +30,213 @@
   --theme-secondary: #9933FF;
 }
 
-/* Règles spécifiques pour le thème clair */
-[data-theme="light"] .font-karla-medium.text-sm.mb-2.transition-colors.duration-300,
-[data-theme="light"] .font-karla-medium.text-sm.transition-colors.duration-300 {
+/* Règles pour le thème sombre avec isolation par utilisateur */
+[data-theme="dark"][data-user-id] {
+  --bg-primary: #000000;
+  --bg-secondary: #111111;
+  --bg-card: #1a1a1a;
+  --text-primary: #FFFFFF;
+  --text-secondary: #CCCCCC;
+  --text-muted: #888888;
+  --border-primary: #333333;
+  --border-secondary: #444444;
+  --theme-primary: #CCFF00;
+  --theme-secondary: #9933FF;
+}
+
+/* Thème sombre (par défaut) - Règles de fallback pour les pages publiques */
+[data-theme="dark"]:not([data-user-id]) {
+  --bg-primary: #000000;
+  --bg-secondary: #111111;
+  --bg-card: #1a1a1a;
+  --text-primary: #FFFFFF;
+  --text-secondary: #CCCCCC;
+  --text-muted: #888888;
+  --border-primary: #333333;
+  --border-secondary: #444444;
+  --theme-primary: #CCFF00;
+  --theme-secondary: #9933FF;
+}
+
+/* Thème clair - Règles de fallback pour les pages publiques */
+[data-theme="light"]:not([data-user-id]) {
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --text-primary: #000000;
+  --text-secondary: #000000;
+  --text-muted: #000000;
+  --border-primary: #9933FF;
+  --border-secondary: #9933FF;
+  --theme-primary: #9933FF;
+  --theme-secondary: #9933FF;
+}
+
+/* Règles spécifiques pour le thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .font-karla-medium.text-sm.mb-2.transition-colors.duration-300,
+[data-theme="light"][data-user-id] .font-karla-medium.text-sm.transition-colors.duration-300 {
   color: #000000 !important;
 }
 
-/* Règles pour les titres en thème clair */
-[data-theme="light"] .mb-16 h2,
-[data-theme="light"] .mb-16 h3,
-[data-theme="light"] .mb-16 h4,
-[data-theme="light"] .mb-16 h5,
-[data-theme="light"] .mb-16 h6 {
+/* Règles pour les titres en thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .mb-16 h2,
+[data-theme="light"][data-user-id] .mb-16 h3,
+[data-theme="light"][data-user-id] .mb-16 h4,
+[data-theme="light"][data-user-id] .mb-16 h5,
+[data-theme="light"][data-user-id] .mb-16 h6 {
   color: #000000 !important;
 }
 
-/* Règles générales pour les titres en thème clair */
-[data-theme="light"] h1,
-[data-theme="light"] h2,
-[data-theme="light"] h3,
-[data-theme="light"] h4,
-[data-theme="light"] h5,
-[data-theme="light"] h6 {
+/* Règles générales pour les titres en thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] h1,
+[data-theme="light"][data-user-id] h2,
+[data-theme="light"][data-user-id] h3,
+[data-theme="light"][data-user-id] h4,
+[data-theme="light"][data-user-id] h5,
+[data-theme="light"][data-user-id] h6 {
   color: #000000 !important;
 }
 
-/* Règles spécifiques pour les éléments avec mb-16 en thème clair */
-[data-theme="light"] .mb-16 {
+/* Règles spécifiques pour les éléments avec mb-16 en thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .mb-16 {
   color: #000000 !important;
 }
 
-[data-theme="light"] .mb-16 h1,
-[data-theme="light"] .mb-16 h2,
-[data-theme="light"] .mb-16 h3,
-[data-theme="light"] .mb-16 h4,
-[data-theme="light"] .mb-16 h5,
-[data-theme="light"] .mb-16 h6,
-[data-theme="light"] .mb-16 p,
-[data-theme="light"] .mb-16 span,
-[data-theme="light"] .mb-16 div {
+[data-theme="light"][data-user-id] .mb-16 h1,
+[data-theme="light"][data-user-id] .mb-16 h2,
+[data-theme="light"][data-user-id] .mb-16 h3,
+[data-theme="light"][data-user-id] .mb-16 h4,
+[data-theme="light"][data-user-id] .mb-16 h5,
+[data-theme="light"][data-user-id] .mb-16 h6,
+[data-theme="light"][data-user-id] .mb-16 p,
+[data-theme="light"][data-user-id] .mb-16 span,
+[data-theme="light"][data-user-id] .mb-16 h6,
+[data-theme="light"][data-user-id] .mb-16 div {
   color: #000000 !important;
 }
 
-/* Règles très spécifiques pour forcer la couleur noire en thème clair */
-[data-theme="light"] .mb-16 * {
+/* Règles très spécifiques pour forcer la couleur noire en thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .mb-16 * {
   color: #000000 !important;
 }
 
-/* Règles pour les éléments spécifiques du dashboard */
-[data-theme="light"] .dashboard-title,
-[data-theme="light"] .dashboard-subtitle,
-[data-theme="light"] .dashboard-section-title {
+/* Règles pour les éléments spécifiques du dashboard avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .dashboard-title,
+[data-theme="light"][data-user-id] .dashboard-subtitle,
+[data-theme="light"][data-user-id] .dashboard-section-title {
   color: #000000 !important;
 }
 
-/* Règles pour les zones de dépôt et états vides en thème clair */
-[data-theme="light"] .drop-zone-text {
+/* Règles pour les zones de dépôt et états vides en thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .drop-zone-text {
   color: #000000 !important;
 }
 
-[data-theme="light"] .empty-state-text {
+[data-theme="light"][data-user-id] .empty-state-text {
   color: #000000 !important;
 }
 
-/* Règles pour permettre des titres blancs dans les modales en thème clair */
-[data-theme="light"] .modal-title,
-[data-theme="light"] .modal-label,
-[data-theme="light"] .modal-field-title,
-[data-theme="light"] .task-modal h2,
-[data-theme="light"] .task-modal label,
-[data-theme="light"] .modal-info-tache h2,
-[data-theme="light"] .modal-info-tache h4,
-[data-theme="light"] .modal-info-tache label {
+/* Règles pour permettre des titres blancs dans les modales en thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .modal-title,
+[data-theme="light"][data-user-id] .modal-label,
+[data-theme="light"][data-user-id] .modal-field-title,
+[data-theme="light"][data-user-id] .task-modal h2,
+[data-theme="light"][data-user-id] .task-modal label,
+[data-theme="light"][data-user-id] .modal-info-tache h2,
+[data-theme="light"][data-user-id] .modal-info-tache h4,
+[data-theme="light"][data-user-id] .modal-info-tache label {
   color: #FFFFFF !important;
 }
 
-/* Règles spécifiques pour les titres de champs dans les modales */
-[data-theme="light"] .task-modal .font-karla-semibold,
-[data-theme="light"] .modal-info-tache .font-karla-semibold,
-[data-theme="light"] .task-modal .font-karla-medium,
-[data-theme="light"] .modal-info-tache .font-karla-medium {
+/* Règles spécifiques pour les titres de champs dans les modales avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .task-modal .font-karla-semibold,
+[data-theme="light"][data-user-id] .modal-info-tache .font-karla-semibold,
+[data-theme="light"][data-user-id] .task-modal .font-karla-medium,
+[data-theme="light"][data-user-id] .modal-info-tache .font-karla-medium {
   color: #FFFFFF !important;
 }
 
-/* Règles pour le Panel de Suivi en thème clair */
-[data-theme="light"] .panel-follow-up .panel-title,
-[data-theme="light"] .panel-follow-up .panel-description,
-[data-theme="light"] .panel-edit-modal h3,
-[data-theme="light"] .panel-edit-modal label,
-[data-theme="light"] .panel-edit-modal .font-karla-medium,
-[data-theme="light"] .panel-edit-modal .font-karla-semibold {
+/* Règles pour le Panel de Suivi en thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .panel-follow-up .panel-title,
+[data-theme="light"][data-user-id] .panel-follow-up .panel-description,
+[data-theme="light"][data-user-id] .panel-edit-modal h3,
+[data-theme="light"][data-user-id] .panel-edit-modal label,
+[data-theme="light"][data-user-id] .panel-edit-modal .font-karla-medium,
+[data-theme="light"][data-user-id] .panel-edit-modal .font-karla-semibold {
   color: #FFFFFF !important;
 }
 
-/* Règles spécifiques pour les titres du Panel de Suivi */
-[data-theme="light"] .panel-follow-up h2,
-[data-theme="light"] .panel-follow-up h3,
-[data-theme="light"] .panel-follow-up h4,
-[data-theme="light"] .panel-follow-up .font-karla-bold,
-[data-theme="light"] .panel-follow-up .font-karla-semibold {
+/* Règles spécifiques pour les titres du Panel de Suivi avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .panel-follow-up h2,
+[data-theme="light"][data-user-id] .panel-follow-up h3,
+[data-theme="light"][data-user-id] .panel-follow-up h4,
+[data-theme="light"][data-user-id] .panel-follow-up .font-karla-bold,
+[data-theme="light"][data-user-id] .panel-follow-up .font-karla-semibold {
   color: #FFFFFF !important;
 }
 
-/* Règles pour la popup d'ajout de carte en thème clair */
-[data-theme="light"] .panel-add-modal .panel-add-title,
-[data-theme="light"] .panel-add-modal .panel-add-label,
-[data-theme="light"] .panel-add-modal h3,
-[data-theme="light"] .panel-add-modal label,
-[data-theme="light"] .panel-add-modal .font-karla-medium,
-[data-theme="light"] .panel-add-modal .font-karla-semibold {
+/* Règles pour la popup d'ajout de carte en thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .panel-add-modal .panel-add-title,
+[data-theme="light"][data-user-id] .panel-add-modal .panel-add-label,
+[data-theme="light"][data-user-id] .panel-add-modal h3,
+[data-theme="light"][data-user-id] .panel-add-modal label,
+[data-theme="light"][data-user-id] .panel-add-modal .font-karla-medium,
+[data-theme="light"][data-user-id] .panel-add-modal .font-karla-semibold {
   color: #FFFFFF !important;
 }
 
-/* Règles pour les boutons Annuler en thème clair */
-[data-theme="light"] .panel-cancel-button {
+/* Règles pour les boutons Annuler en thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .panel-cancel-button {
   color: #FFFFFF !important;
   border-color: #FFFFFF !important;
 }
 
-/* Règles pour les titres des onglets en thème clair */
-[data-theme="light"] .panel-follow-up .tab-title,
-[data-theme="light"] .panel-follow-up h3.tab-title {
+/* Règles pour les titres des onglets en thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .panel-follow-up .tab-title,
+[data-theme="light"][data-user-id] .panel-follow-up h3.tab-title {
   color: #000000 !important;
 }
 
-/* Règles pour les pourcentages et barres de progression des cartes du Panel en thème clair */
-[data-theme="light"] .panel-card .text-xs.font-karla-bold,
-[data-theme="light"] .panel-card span[style*="color: var(--categoryColors"] {
+/* Règles pour les pourcentages et barres de progression des cartes du Panel en thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .panel-card .text-xs.font-karla-bold,
+[data-theme="light"][data-user-id] .panel-card span[style*="color: var(--categoryColors"] {
   color: #9933ff !important;
 }
 
-/* Règles spécifiques pour les barres de progression des cartes du Panel */
-[data-theme="light"] .panel-card .w-full.bg-gray-800 .h-2.rounded-full {
+/* Règles spécifiques pour les barres de progression des cartes du Panel avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .panel-card .w-full.bg-gray-800 .h-2.rounded-full {
   background: linear-gradient(90deg, #9933ff, rgba(153, 51, 255, 0.5)) !important;
 }
 
-/* Règles pour les barres de progression avec gradient */
-[data-theme="light"] .panel-card [style*="linear-gradient"] {
+/* Règles pour les barres de progression avec gradient avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .panel-card [style*="linear-gradient"] {
   background: linear-gradient(90deg, #9933ff, rgba(153, 51, 255, 0.5)) !important;
 }
 
-/* Règles pour les noms des cartes dans les onglets du Panel de Suivi en thème clair */
-[data-theme="light"] .panel-follow-up .text-sm.font-karla-bold,
-[data-theme="light"] .panel-follow-up h4.text-sm.font-karla-bold,
-[data-theme="light"] .panel-follow-up span.text-sm.font-karla-bold {
+/* Règles pour les noms des cartes dans les onglets du Panel de Suivi en thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .panel-follow-up .text-sm.font-karla-bold,
+[data-theme="light"][data-user-id] .panel-follow-up h4.text-sm.font-karla-bold,
+[data-theme="light"][data-user-id] .panel-follow-up span.text-sm.font-karla-bold {
   color: #000000 !important;
 }
 
-/* Règles spécifiques pour les noms des cartes dans chaque onglet */
-[data-theme="light"] .panel-follow-up .infrastructure-card-name,
-[data-theme="light"] .panel-follow-up .compliance-card-name,
-[data-theme="light"] .panel-follow-up .recommendation-card-name {
+/* Règles spécifiques pour les noms des cartes dans chaque onglet avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .panel-follow-up .infrastructure-card-name,
+[data-theme="light"][data-user-id] .panel-follow-up .compliance-card-name,
+[data-theme="light"][data-user-id] .panel-follow-up .recommendation-card-name {
   color: #000000 !important;
 }
 
-/* Règles pour les titres des cartes de services prédéfinis en thème clair */
-[data-theme="light"] .services-sidebar .font-karla-bold.text-white,
-[data-theme="light"] .services-sidebar h3.font-karla-bold,
-[data-theme="light"] .services-sidebar .service-card-title {
+/* Règles pour les titres des cartes de services prédéfinis en thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .services-sidebar .font-karla-bold.text-white,
+[data-theme="light"][data-user-id] .services-sidebar h3.font-karla-bold,
+[data-theme="light"][data-user-id] .services-sidebar .service-card-title {
   color: #FFFFFF !important;
 }
 
-/* Règles pour les descriptions des cartes de services en thème clair */
-[data-theme="light"] .services-sidebar .text-sm.text-gray-400,
-[data-theme="light"] .services-sidebar p.text-sm.text-gray-400 {
+/* Règles pour les descriptions des cartes de services en thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .services-sidebar .text-sm.text-gray-400,
+[data-theme="light"][data-user-id] .services-sidebar p.text-sm.text-gray-400 {
   color: #FFFFFF !important;
 }
 

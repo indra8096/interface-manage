@@ -10,7 +10,7 @@ interface ThemeWrapperProps {
 
 export default function ThemeWrapper({ children }: ThemeWrapperProps) {
   const pathname = usePathname();
-  const { theme } = useTheme();
+  const { theme, userId } = useTheme();
   const [isClient, setIsClient] = useState(false);
 
   // Pages qui ne doivent PAS être affectées par le thème (toujours en mode sombre)
@@ -26,16 +26,19 @@ export default function ThemeWrapper({ children }: ThemeWrapperProps) {
 
   // Utiliser useEffect pour accéder à document côté client uniquement
   useEffect(() => {
-    if (!isClient) return; // Ne rien faire si pas encore côté client
+    if (!isClient || !userId) return; // Ne rien faire si pas encore côté client ou pas d'userId
     
     if (shouldProtectFromTheme) {
       // Forcer le thème sombre pour ces pages
       document.documentElement.setAttribute('data-theme', 'dark');
+      // Supprimer l'ID utilisateur pour ces pages
+      document.documentElement.removeAttribute('data-user-id');
     } else {
-      // Pour les autres pages, appliquer le thème normal
+      // Pour les autres pages, appliquer le thème normal avec l'ID utilisateur
       document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.setAttribute('data-user-id', userId);
     }
-  }, [pathname, theme, shouldProtectFromTheme, isClient]);
+  }, [pathname, theme, userId, shouldProtectFromTheme, isClient]);
 
   return <>{children}</>;
 }
