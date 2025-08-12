@@ -180,7 +180,7 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 h-full w-96 bg-gradient-to-b from-gray-900 to-black border-l border-gray-800 shadow-2xl z-50 flex flex-col"
+            className="fixed right-0 top-0 h-full w-96 bg-gradient-to-b from-gray-900 to-black border-l border-gray-800 shadow-2xl z-50 flex flex-col services-sidebar"
           >
             {/* Header */}
             <div className="p-6 border-b border-gray-800">
@@ -319,7 +319,7 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
                     >
                       <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover:shadow-lg hover:shadow-[#CCFF00]/10">
                         <div className="relative">
-                          <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors">
+                          <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors service-card-title">
                             {service.name}
                           </h3>
                           <p className="text-sm text-gray-400 mb-3 font-karla-regular">

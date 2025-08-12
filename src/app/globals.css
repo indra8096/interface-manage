@@ -192,6 +192,19 @@
   color: #000000 !important;
 }
 
+/* Règles pour les titres des cartes de services prédéfinis en thème clair */
+[data-theme="light"] .services-sidebar .font-karla-bold.text-white,
+[data-theme="light"] .services-sidebar h3.font-karla-bold,
+[data-theme="light"] .services-sidebar .service-card-title {
+  color: #FFFFFF !important;
+}
+
+/* Règles pour les descriptions des cartes de services en thème clair */
+[data-theme="light"] .services-sidebar .text-sm.text-gray-400,
+[data-theme="light"] .services-sidebar p.text-sm.text-gray-400 {
+  color: #FFFFFF !important;
+}
+
 
 
 :root {
