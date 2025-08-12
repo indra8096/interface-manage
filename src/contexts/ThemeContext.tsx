@@ -23,9 +23,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // Sauvegarder le thème dans localStorage et appliquer à document
+    // Sauvegarder le thème dans localStorage
     localStorage.setItem('theme', theme);
-    document.documentElement.setAttribute('data-theme', theme);
+    // Ne plus forcer l'application du thème ici - c'est géré par ThemeWrapper
   }, [theme]);
 
   const toggleTheme = () => {

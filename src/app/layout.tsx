@@ -4,6 +4,7 @@ import "./globals.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import ThemeWrapper from "@/components/ThemeWrapper";
 
 config.autoAddCss = false;
 
@@ -28,7 +29,9 @@ export default function RootLayout({
     <html lang="fr">
       <body className={`${karla.variable} font-karla`}>
         <ThemeProvider>
-          {children}
+          <ThemeWrapper>
+            {children}
+          </ThemeWrapper>
         </ThemeProvider>
       </body>
     </html>
