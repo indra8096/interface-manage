@@ -121,6 +121,47 @@
   color: #FFFFFF !important;
 }
 
+/* Règles pour le Panel de Suivi en thème clair */
+[data-theme="light"] .panel-follow-up .panel-title,
+[data-theme="light"] .panel-follow-up .panel-description,
+[data-theme="light"] .panel-edit-modal h3,
+[data-theme="light"] .panel-edit-modal label,
+[data-theme="light"] .panel-edit-modal .font-karla-medium,
+[data-theme="light"] .panel-edit-modal .font-karla-semibold {
+  color: #FFFFFF !important;
+}
+
+/* Règles spécifiques pour les titres du Panel de Suivi */
+[data-theme="light"] .panel-follow-up h2,
+[data-theme="light"] .panel-follow-up h3,
+[data-theme="light"] .panel-follow-up h4,
+[data-theme="light"] .panel-follow-up .font-karla-bold,
+[data-theme="light"] .panel-follow-up .font-karla-semibold {
+  color: #FFFFFF !important;
+}
+
+/* Règles pour la popup d'ajout de carte en thème clair */
+[data-theme="light"] .panel-add-modal .panel-add-title,
+[data-theme="light"] .panel-add-modal .panel-add-label,
+[data-theme="light"] .panel-add-modal h3,
+[data-theme="light"] .panel-add-modal label,
+[data-theme="light"] .panel-add-modal .font-karla-medium,
+[data-theme="light"] .panel-add-modal .font-karla-semibold {
+  color: #FFFFFF !important;
+}
+
+/* Règles pour les boutons Annuler en thème clair */
+[data-theme="light"] .panel-cancel-button {
+  color: #FFFFFF !important;
+  border-color: #FFFFFF !important;
+}
+
+/* Règles pour les titres des onglets en thème clair */
+[data-theme="light"] .panel-follow-up .tab-title,
+[data-theme="light"] .panel-follow-up h3.tab-title {
+  color: #000000 !important;
+}
+
 
 
 :root {

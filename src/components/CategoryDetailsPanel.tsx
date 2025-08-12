@@ -609,7 +609,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
               borderColor: 'var(--border-primary)' 
             }}>
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>Indicateurs de Couverture</h3>
+                <h3 className="text-lg font-karla-bold tab-title" style={{ color: 'var(--text-primary)' }}>Indicateurs de Couverture</h3>
                          {userRole === 'admin' && (
                            <button
                     onClick={() => handleAddNewCard('coverage')}
@@ -668,7 +668,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
               borderColor: 'var(--border-primary)' 
             }}>
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>Équipements d&apos;Infrastructure</h3>
+                <h3 className="text-lg font-karla-bold tab-title" style={{ color: 'var(--text-primary)' }}>Équipements d&apos;Infrastructure</h3>
                           {userRole === 'admin' && (
                             <button
                     onClick={() => handleAddNewCard('infrastructure')}
@@ -709,7 +709,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
               borderColor: 'var(--border-primary)' 
             }}>
                              <div className="flex items-center justify-between mb-6">
-                 <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>Standards de Conformité</h3>
+                 <h3 className="text-lg font-karla-bold tab-title" style={{ color: 'var(--text-primary)' }}>Standards de Conformité</h3>
                  {userRole === 'admin' && (
                    <button
                      onClick={() => handleAddNewCard('compliance')}
@@ -750,7 +750,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
               borderColor: 'var(--border-primary)' 
             }}>
                              <div className="flex items-center justify-between mb-6">
-                 <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>Recommandations d&apos;Amélioration</h3>
+                 <h3 className="text-lg font-karla-bold tab-title" style={{ color: 'var(--text-primary)' }}>Recommandations d&apos;Amélioration</h3>
                  {userRole === 'admin' && (
                    <button
                      onClick={() => handleAddNewCard('recommendation')}
@@ -807,17 +807,17 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
              animate={{ x: 0 }}
              exit={{ x: '100%' }}
              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-             className="fixed right-0 top-0 h-full w-full max-w-md bg-black border-l z-50 flex flex-col"
+             className="fixed right-0 top-0 h-full w-full max-w-md bg-black border-l z-50 flex flex-col panel-follow-up"
              style={{ borderColor: 'var(--border-primary)' }}
            >
              {/* Header */}
              <div className="p-6 border-b flex-shrink-0" style={{ borderColor: 'var(--border-primary)' }}>
                <div className="flex items-center justify-between mb-6">
                  <div>
-                   <h2 className="text-xl font-karla-bold mb-1" style={{ color: categoryColors[category] }}>
+                   <h2 className="text-xl font-karla-bold mb-1 panel-title" style={{ color: categoryColors[category] }}>
                      {categoryTitle}
                    </h2>
-                   <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                   <p className="text-sm panel-description" style={{ color: 'var(--text-muted)' }}>
                      {categoryDescriptions[category]}
                    </p>
                  </div>
@@ -875,7 +875,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                     initial={{ opacity: 0, scale: 0.9, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                    className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full max-w-md mx-4 bg-black border rounded-xl p-6 z-[110] max-h-[90vh] overflow-y-auto"
+                    className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full max-w-md mx-4 bg-black border rounded-xl p-6 z-[110] max-h-[90vh] overflow-y-auto panel-edit-modal"
                     style={{ borderColor: 'var(--border-primary)' }}
                   >
                   <div className="flex items-center justify-between mb-6">
@@ -1180,7 +1180,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                   <div className="flex gap-3 mt-6">
                     <button
                       onClick={handleCancelEdit}
-                      className="flex-1 px-4 py-2 rounded-lg border transition-all duration-300"
+                      className="flex-1 px-4 py-2 rounded-lg border transition-all duration-300 panel-cancel-button"
                       style={{ 
                         borderColor: 'var(--border-secondary)',
                         color: 'var(--text-muted)'
@@ -1220,11 +1220,11 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
                    animate={{ opacity: 1, scale: 1, y: 0 }}
                    exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                   className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full max-w-md mx-4 bg-black border rounded-xl p-6 z-[110] max-h-[90vh] overflow-y-auto"
+                   className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full max-w-md mx-4 bg-black border rounded-xl p-6 z-[110] max-h-[90vh] overflow-y-auto panel-add-modal"
                    style={{ borderColor: 'var(--border-primary)' }}
                  >
                    <div className="flex items-center justify-between mb-6">
-                     <h3 className="text-lg font-karla-bold" style={{ color: 'var(--text-primary)' }}>
+                     <h3 className="text-lg font-karla-bold panel-add-title" style={{ color: 'var(--text-primary)' }}>
                        Ajouter une nouvelle carte
                      </h3>
                      <button
@@ -1525,7 +1525,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                    <div className="flex gap-3 mt-6">
                      <button
                        onClick={handleCancelAdd}
-                       className="flex-1 px-4 py-2 rounded-lg border transition-all duration-300"
+                       className="flex-1 px-4 py-2 rounded-lg border transition-all duration-300 panel-cancel-button"
                        style={{ 
                          borderColor: 'var(--border-secondary)',
                          color: 'var(--text-muted)'
