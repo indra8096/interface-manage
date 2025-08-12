@@ -439,7 +439,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            card.status === 'À vérifier' ? '#f59e0b' : 
                            card.status === 'Critique' ? '#ef4444' : '#3b82f6' 
               }}></div>
-              <span className="text-sm font-karla-bold" style={{ color: 'var(--text-primary)' }}>{card.name}</span>
+              <span className="text-sm font-karla-bold infrastructure-card-name" style={{ color: 'var(--text-primary)' }}>{card.name}</span>
               <div className="flex items-center gap-2 ml-auto">
                         {userRole === 'admin' && (
                           <button
@@ -487,7 +487,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                   return (
                     <>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-karla-bold" style={{ color: 'var(--text-primary)' }}>{card.name}</span>
+              <span className="text-sm font-karla-bold compliance-card-name" style={{ color: 'var(--text-primary)' }}>{card.name}</span>
                         <div className="flex items-center gap-2">
                 <span className="px-3 py-1 rounded-full text-xs font-karla-bold" style={{ 
                   background: card.status === 'CONFORME' ? '#10b981' : 
@@ -547,7 +547,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            card.priority === 'Moyenne' ? '#f59e0b' : '#10b981' 
               }}></div>
               <div className="flex-1">
-                <h4 className="text-sm font-karla-bold mb-2" style={{ color: 'var(--text-primary)' }}>
+                <h4 className="text-sm font-karla-bold mb-2 recommendation-card-name" style={{ color: 'var(--text-primary)' }}>
                   Priorité {card.priority}
                 </h4>
                 <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
