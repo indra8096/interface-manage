@@ -477,16 +477,16 @@ export default function PanelTemplatesPage() {
             
             <div className="flex space-x-4">
               <button 
-                onClick={() => setShowAddForm(!showAddForm)}
-                className="px-4 py-2 bg-[#CCFF00] text-black font-semibold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
-              >
-                {showAddForm ? 'Annuler' : 'Nouveau Template'}
-              </button>
-              <button 
                 onClick={() => router.push('/superadmin')}
                 className="px-4 py-2 text-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-300 border border-white/30"
               >
                 Retour Dashboard
+              </button>
+              <button 
+                onClick={() => setShowAddForm(!showAddForm)}
+                className="px-4 py-2 bg-[#CCFF00] text-black font-semibold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+              >
+                {showAddForm ? 'Annuler' : 'Nouveau Template'}
               </button>
               <button 
                 onClick={() => {
