@@ -182,14 +182,14 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Carte non trouvée' }, { status: 404 });
     }
 
-    // Si le nom a changé, mettre à jour le template
-    if (name && name !== instance.template.name) {
+    // Mettre à jour le template (nom, description, priorité)
+    if (name || description !== undefined || priority !== undefined) {
       await prisma.panelCardTemplate.update({
         where: { id: instance.templateId },
         data: {
-          name,
-          description: description || instance.template.description,
-          priority: priority || instance.template.priority
+          ...(name && { name }),
+          ...(description !== undefined && { description }),
+          ...(priority !== undefined && { priority })
         }
       });
     }

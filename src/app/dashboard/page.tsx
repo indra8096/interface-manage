@@ -207,14 +207,10 @@ export default function Home() {
     fetchTasks();
     fetchPanelCards();
     
-    // Rafraîchir automatiquement les données du panel toutes les 5 secondes
-    // pour s'assurer que les modifications sont prises en compte
-    const interval = setInterval(() => {
-      fetchPanelCards();
-    }, 5000);
+    // Suppression de l'intervalle automatique qui causait des boucles infinies
+    // Les données seront mises à jour manuellement quand nécessaire
     
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    return () => clearInterval(interval);
   }, []);
 
   // Log des changements de tasksAddedFromPanel pour le débogage
@@ -224,42 +220,24 @@ export default function Home() {
 
   // Synchronisation avec les données du panel
   useEffect(() => {
-    let lastTasksFromPanel = '';
-
-    const syncPanelData = () => {
-      if (typeof window !== 'undefined') {
-        const companyId = localStorage.getItem('companyId');
-        
-        // Les cartes de panel sont maintenant synchronisées via l'API
-        // Pas besoin de vérifier le localStorage pour les cartes de panel
-
-        // Vérifier les changements dans tasksAddedFromPanel
-        const savedTasksFromPanel = localStorage.getItem(`tasksAddedFromPanel_${companyId}`);
-        if (savedTasksFromPanel && savedTasksFromPanel !== lastTasksFromPanel) {
-          console.log('Changement détecté dans tasksAddedFromPanel');
-          lastTasksFromPanel = savedTasksFromPanel;
-          try {
-            const parsedTasks = JSON.parse(savedTasksFromPanel);
-            console.log('Synchronisation - Tâches mises à jour:', parsedTasks);
-            setTasksAddedFromPanel(parsedTasks);
-            setRenderKey(prev => prev + 1);
-          } catch (error) {
-            console.error('Erreur lors de la synchronisation des tâches du panneau:', error);
-          }
+    // Synchronisation immédiate seulement au montage du composant
+    // Pas d'intervalle pour éviter les boucles infinies
+    if (typeof window !== 'undefined') {
+      const companyId = localStorage.getItem('companyId');
+      
+      // Vérifier les tâches existantes dans localStorage
+      const savedTasksFromPanel = localStorage.getItem(`tasksAddedFromPanel_${companyId}`);
+      if (savedTasksFromPanel) {
+        try {
+          const parsedTasks = JSON.parse(savedTasksFromPanel);
+          console.log('Chargement initial des tâches du panneau:', parsedTasks);
+          setTasksAddedFromPanel(parsedTasks);
+        } catch (error) {
+          console.error('Erreur lors du chargement des tâches du panneau:', error);
         }
       }
-    };
-
-    // Synchroniser immédiatement
-    syncPanelData();
-
-    // Vérifier les changements toutes les 500ms pour une synchronisation plus rapide
-    const interval = setInterval(syncPanelData, 500);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+    }
+  }, []); // Dépendances vides - exécuté seulement au montage
 
   const handleAddTask = (taskData: { name: string; score: number; category: string; description: string; importance: string; dueDate: string; assignedTo: string }) => {
     handleCreateTask(taskData);
@@ -530,57 +508,6 @@ export default function Home() {
   };
 
   // Fonction pour synchroniser tasksAddedFromPanel avec les données mises à jour de panelCards
-  const syncTasksAddedFromPanel = () => {
-    const companyId = localStorage.getItem('companyId');
-    if (!companyId) {
-      console.log('syncTasksAddedFromPanel: Pas de companyId trouvé');
-      return;
-    }
-
-    // Récupérer les tâches actuelles depuis localStorage
-    const storedTasks = localStorage.getItem(`tasksAddedFromPanel_${companyId}`);
-    if (!storedTasks) {
-      console.log('syncTasksAddedFromPanel: Pas de tâches stockées dans localStorage');
-      return;
-    }
-
-    try {
-      const currentTasks = JSON.parse(storedTasks);
-      console.log('syncTasksAddedFromPanel: Tâches actuelles:', currentTasks);
-      console.log('syncTasksAddedFromPanel: PanelCards disponibles:', panelCards);
-      
-      // Mettre à jour chaque tâche avec les données les plus récentes de panelCards
-      const updatedTasks = currentTasks.map((task: any) => {
-        console.log(`syncTasksAddedFromPanel: Traitement de la tâche:`, task);
-        
-        const updatedCardData = panelCards.find(card => card.id === task.id);
-        if (updatedCardData) {
-          console.log(`syncTasksAddedFromPanel: Carte trouvée pour ID ${task.id}:`, updatedCardData);
-          return {
-            ...task,
-            name: updatedCardData.name, // Mettre à jour le nom
-            description: updatedCardData.description || task.description,
-            // Garder les autres propriétés spécifiques à la tâche (importance, score, etc.)
-          };
-        } else {
-          console.log(`syncTasksAddedFromPanel: Aucune carte trouvée pour ID ${task.id}`);
-        }
-        return task;
-      });
-
-      console.log('syncTasksAddedFromPanel: Tâches mises à jour:', updatedTasks);
-
-      // Mettre à jour l'état et le localStorage
-      setTasksAddedFromPanel(updatedTasks);
-      localStorage.setItem(`tasksAddedFromPanel_${companyId}`, JSON.stringify(updatedTasks));
-      
-      console.log('TasksAddedFromPanel synchronisé avec les données mises à jour');
-    } catch (error) {
-      console.error('Erreur lors de la synchronisation de tasksAddedFromPanel:', error);
-    }
-  };
-
-  // Fonction pour synchroniser tasksAddedFromPanel avec les données mises à jour de panelCards
   const syncTasksAddedFromPanelWithData = (newPanelCards: Array<{
     id: number;
     name: string;
@@ -615,6 +542,9 @@ export default function Home() {
       console.log('syncTasksAddedFromPanelWithData: Tâches actuelles:', currentTasks);
       console.log('syncTasksAddedFromPanelWithData: PanelCards disponibles:', newPanelCards);
       
+      // Vérifier si les données ont réellement changé pour éviter les re-rendus inutiles
+      let hasChanges = false;
+      
       // Mettre à jour chaque tâche avec les données les plus récentes de panelCards
       const updatedTasks = currentTasks.map((task: any) => {
         console.log(`syncTasksAddedFromPanelWithData: Traitement de la tâche:`, task);
@@ -622,6 +552,14 @@ export default function Home() {
         const updatedCardData = newPanelCards.find(card => card.id === task.id);
         if (updatedCardData) {
           console.log(`syncTasksAddedFromPanelWithData: Carte trouvée pour ID ${task.id}:`, updatedCardData);
+          
+          // Vérifier si les données de progression ont changé
+          if (task.total !== updatedCardData.total || 
+              task.completed !== updatedCardData.completed ||
+              task.description !== updatedCardData.description) {
+            hasChanges = true;
+          }
+          
           return {
             ...task,
             name: updatedCardData.name, // Mettre à jour le nom
@@ -644,11 +582,14 @@ export default function Home() {
 
       console.log('syncTasksAddedFromPanelWithData: Tâches mises à jour:', updatedTasks);
 
-      // Mettre à jour l'état et le localStorage
-      setTasksAddedFromPanel(updatedTasks);
-      localStorage.setItem(`tasksAddedFromPanel_${companyId}`, JSON.stringify(updatedTasks));
-      
-      console.log('TasksAddedFromPanel synchronisé avec les données mises à jour');
+      // Ne mettre à jour l'état que si des changements ont été détectés
+      if (hasChanges) {
+        setTasksAddedFromPanel(updatedTasks);
+        localStorage.setItem(`tasksAddedFromPanel_${companyId}`, JSON.stringify(updatedTasks));
+        console.log('TasksAddedFromPanel synchronisé avec les données mises à jour');
+      } else {
+        console.log('Aucun changement détecté, pas de mise à jour nécessaire');
+      }
     } catch (error) {
       console.error('Erreur lors de la synchronisation de tasksAddedFromPanel:', error);
     }

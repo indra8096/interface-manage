@@ -23,8 +23,8 @@ export default function ServiceTemplatesPage() {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   
-  // États pour la gestion des templates
-  const [showAddForm, setShowAddForm] = useState(false);
+  // États pour la gestion des templates - un par catégorie
+  const [showAddForm, setShowAddForm] = useState<'defensive' | 'general' | 'offensive' | null>(null);
   const [editingTemplate, setEditingTemplate] = useState<ServiceTemplate | null>(null);
   
   // États pour la modale de suppression
@@ -73,7 +73,7 @@ export default function ServiceTemplatesPage() {
       } else {
         setError('Erreur lors du chargement des templates');
       }
-    } catch (err) {
+    } catch {
       setError('Erreur de connexion');
     } finally {
       setIsLoading(false);
@@ -103,7 +103,7 @@ export default function ServiceTemplatesPage() {
 
       if (response.ok) {
         setSuccessMessage(editingTemplate ? 'Template modifié avec succès' : 'Template créé avec succès');
-        setShowAddForm(false);
+        setShowAddForm(null); // Close all forms
         setEditingTemplate(null);
         setFormData({
           name: '',
@@ -118,7 +118,7 @@ export default function ServiceTemplatesPage() {
         const errorData = await response.json();
         setError(errorData.error || 'Erreur lors de la sauvegarde');
       }
-    } catch (err) {
+    } catch {
       setError('Erreur de connexion');
     }
   };
@@ -133,7 +133,7 @@ export default function ServiceTemplatesPage() {
       defaultScore: template.defaultScore,
       defaultImportance: template.defaultImportance
     });
-    setShowAddForm(true);
+    setShowAddForm(template.category); // Show form for the specific category
   };
 
   const handleDelete = async (templateId: number) => {
@@ -158,7 +158,7 @@ export default function ServiceTemplatesPage() {
         const errorData = await response.json();
         setError(errorData.error || 'Erreur lors de la suppression');
       }
-    } catch (err) {
+    } catch {
       setError('Erreur de connexion');
     } finally {
       setDeletingTemplate(false);
@@ -212,7 +212,7 @@ export default function ServiceTemplatesPage() {
                 Retour Dashboard
               </button>
               <button 
-                onClick={() => setShowAddForm(!showAddForm)}
+                onClick={() => setShowAddForm(null)} // Close all forms
                 className="px-4 py-2 bg-[#CCFF00] text-black font-semibold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
               >
                 {showAddForm ? 'Annuler' : 'Nouveau Template'}
@@ -324,186 +324,175 @@ export default function ServiceTemplatesPage() {
             </div>
           </div>
 
-          {/* Formulaire d'ajout/modification */}
-          {showAddForm && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-8 p-8 rounded-2xl bg-black border border-gray-700"
-            >
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-white">
-                  {editingTemplate ? 'Modifier le template' : 'Nouveau template'}
-                </h2>
-                <button
-                  onClick={() => {
-                    setShowAddForm(false);
-                    setEditingTemplate(null);
-                    setFormData({
-                      name: '',
-                      description: '',
-                      category: 'defensive',
-                      icon: '🛡️',
-                      defaultScore: 5,
-                      defaultImportance: 'Moyenne'
-                    });
-                  }}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  <FontAwesomeIcon icon={faTrash} className="w-6 h-6" />
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-white mb-2">
-                      Nom du service *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
-                      placeholder="Nom du service"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-white mb-2">
-                      Catégorie *
-                    </label>
-                    <select
-                      required
-                      value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value as 'defensive' | 'general' | 'offensive' })}
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
-                    >
-                      <option value="defensive">Défensif</option>
-                      <option value="general">Général</option>
-                      <option value="offensive">Offensif</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-white mb-2">
-                    Description
-                  </label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
-                    rows={3}
-                    placeholder="Description du service"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-white mb-2">
-                      Icône
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.icon}
-                      onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
-                      placeholder="🛡️"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-white mb-2">
-                      Score par défaut (1-10)
-                    </label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="10"
-                      value={formData.defaultScore}
-                      onChange={(e) => setFormData({ ...formData, defaultScore: parseInt(e.target.value) })}
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-white mb-2">
-                      Importance par défaut
-                    </label>
-                    <select
-                      value={formData.defaultImportance}
-                      onChange={(e) => setFormData({ ...formData, defaultImportance: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
-                    >
-                      <option value="Faible">Faible</option>
-                      <option value="Moyenne">Moyenne</option>
-                      <option value="Élevée">Élevée</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="flex space-x-4 pt-4">
-                  <button
-                    type="submit"
-                    className="px-6 py-3 bg-[#CCFF00] text-black font-bold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
-                  >
-                    {editingTemplate ? 'Modifier' : 'Créer'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowAddForm(false);
-                      setEditingTemplate(null);
-                      setFormData({
-                        name: '',
-                        description: '',
-                        category: 'defensive',
-                        icon: '🛡️',
-                        defaultScore: 5,
-                        defaultImportance: 'Moyenne'
-                      });
-                    }}
-                    className="px-6 py-3 text-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-300 border border-white/30"
-                  >
-                    Annuler
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          )}
+                     {/* Formulaire d'ajout/modification - sera affiché au-dessus de chaque catégorie */}
 
           {/* Liste des templates triés par catégorie */}
           <div className="space-y-12">
-            {/* Section Défensif */}
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-1 h-8 bg-blue-500 rounded-full"></div>
-                  <h2 className="text-2xl font-bold text-white">Défensif</h2>
-                  <span className="px-3 py-1 bg-blue-900/30 text-blue-300 rounded-full text-sm font-medium">
-                    {serviceTemplates.filter(t => t.category === 'defensive').length} template{serviceTemplates.filter(t => t.category === 'defensive').length > 1 ? 's' : ''}
-                  </span>
-                </div>
-                <button
-                  onClick={() => {
-                    setFormData({
-                      name: '',
-                      description: '',
-                      category: 'defensive',
-                      icon: '🛡️',
-                      defaultScore: 5,
-                      defaultImportance: 'Moyenne'
-                    });
-                    setEditingTemplate(null);
-                    setShowAddForm(true);
-                  }}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 font-medium"
-                >
-                  + Ajouter Défensif
-                </button>
-              </div>
+                         {/* Section Défensif */}
+             <div>
+               {/* Formulaire pour la catégorie Défensif */}
+               {showAddForm === 'defensive' && (
+                 <motion.div
+                   initial={{ opacity: 0, y: 20 }}
+                   animate={{ opacity: 1, y: 0 }}
+                   className="mb-8 p-8 rounded-2xl bg-black border border-gray-700"
+                 >
+                   <div className="flex justify-between items-center mb-6">
+                     <h2 className="text-2xl font-bold text-white">
+                       {editingTemplate ? 'Modifier le template' : 'Nouveau template Défensif'}
+                     </h2>
+                     <button
+                       onClick={() => {
+                         setShowAddForm(null);
+                         setEditingTemplate(null);
+                         setFormData({
+                           name: '',
+                           description: '',
+                           category: 'defensive',
+                           icon: '🛡️',
+                           defaultScore: 5,
+                           defaultImportance: 'Moyenne'
+                         });
+                       }}
+                       className="text-gray-400 hover:text-white transition-colors"
+                     >
+                       ✕
+                     </button>
+                   </div>
+
+                   <form onSubmit={handleSubmit} className="space-y-6">
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                       <div>
+                         <label className="block text-sm font-semibold text-white mb-2">
+                           Nom du service *
+                         </label>
+                         <input
+                           type="text"
+                           required
+                           value={formData.name}
+                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                           placeholder="Nom du service"
+                         />
+                       </div>
+
+                       <div>
+                         <label className="block text-sm font-semibold text-white mb-2">
+                           Catégorie *
+                         </label>
+                         <select
+                           required
+                           value={formData.category}
+                           onChange={(e) => setFormData({ ...formData, category: e.target.value as 'defensive' | 'general' | 'offensive' })}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                         >
+                           <option value="defensive">Défensif</option>
+                           <option value="general">Général</option>
+                           <option value="offensive">Offensif</option>
+                         </select>
+                       </div>
+                     </div>
+
+                     <div>
+                       <label className="block text-sm font-semibold text-white mb-2">
+                         Description
+                       </label>
+                       <textarea
+                         value={formData.description}
+                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                         className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                         rows={3}
+                         placeholder="Description du service"
+                       />
+                     </div>
+
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                       <div>
+                         <label className="block text-sm font-semibold text-white mb-2">
+                           Score par défaut (1-10)
+                         </label>
+                         <input
+                           type="number"
+                           min="1"
+                           max="10"
+                           value={formData.defaultScore}
+                           onChange={(e) => setFormData({ ...formData, defaultScore: parseInt(e.target.value) })}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                         />
+                       </div>
+
+                       <div>
+                         <label className="block text-sm font-semibold text-white mb-2">
+                           Importance par défaut
+                         </label>
+                         <select
+                           value={formData.defaultImportance}
+                           onChange={(e) => setFormData({ ...formData, defaultImportance: e.target.value })}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                         >
+                           <option value="Faible">Faible</option>
+                           <option value="Moyenne">Moyenne</option>
+                           <option value="Élevée">Élevée</option>
+                         </select>
+                       </div>
+                     </div>
+
+                     <div className="flex space-x-4 pt-4">
+                       <button
+                         type="submit"
+                         className="px-6 py-3 bg-[#CCFF00] text-black font-bold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                       >
+                         {editingTemplate ? 'Modifier' : 'Créer'}
+                       </button>
+                       <button
+                         type="button"
+                         onClick={() => {
+                           setShowAddForm(null);
+                           setEditingTemplate(null);
+                           setFormData({
+                             name: '',
+                             description: '',
+                             category: 'defensive',
+                             icon: '🛡️',
+                             defaultScore: 5,
+                             defaultImportance: 'Moyenne'
+                           });
+                         }}
+                         className="px-6 py-3 text-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-300 border border-white/30"
+                       >
+                         Annuler
+                       </button>
+                     </div>
+                   </form>
+                 </motion.div>
+               )}
+
+               <div className="flex items-center justify-between mb-6">
+                 <div className="flex items-center gap-4">
+                   <div className="w-1 h-8 bg-blue-500 rounded-full"></div>
+                   <h2 className="text-2xl font-bold text-white">Défensif</h2>
+                   <span className="px-3 py-1 bg-blue-900/30 text-blue-300 rounded-full text-sm font-medium">
+                     {serviceTemplates.filter(t => t.category === 'defensive').length} template{serviceTemplates.filter(t => t.category === 'defensive').length > 1 ? 's' : ''}
+                   </span>
+                 </div>
+                 <button
+                   onClick={() => {
+                     setFormData({
+                       name: '',
+                       description: '',
+                       category: 'defensive',
+                       icon: '🛡️',
+                       defaultScore: 5,
+                       defaultImportance: 'Moyenne'
+                     });
+                     setEditingTemplate(null);
+                     setShowAddForm('defensive'); // Show form for defensive category
+                   }}
+                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 font-medium"
+                 >
+                   + Ajouter Défensif
+                 </button>
+               </div>
               {serviceTemplates.filter(t => t.category === 'defensive').length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {serviceTemplates
@@ -575,39 +564,176 @@ export default function ServiceTemplatesPage() {
                 </div>
               ) : (
                 <div className="text-center py-8 text-gray-400">
-                  Aucun template défensif. Cliquez sur "Ajouter Défensif" pour en créer un.
+                  Aucun template défensif. Cliquez sur &quot;Ajouter Défensif&quot; pour en créer un.
                 </div>
               )}
             </div>
 
-            {/* Section Général */}
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-1 h-8 bg-gray-500 rounded-full"></div>
-                  <h2 className="text-2xl font-bold text-white">Général</h2>
-                  <span className="px-3 py-1 bg-gray-700/30 text-gray-300 rounded-full text-sm font-medium">
-                    {serviceTemplates.filter(t => t.category === 'general').length} template{serviceTemplates.filter(t => t.category === 'general').length > 1 ? 's' : ''}
-                  </span>
-                </div>
-                <button
-                  onClick={() => {
-                    setFormData({
-                      name: '',
-                      description: '',
-                      category: 'general',
-                      icon: '⚙️',
-                      defaultScore: 5,
-                      defaultImportance: 'Moyenne'
-                    });
-                    setEditingTemplate(null);
-                    setShowAddForm(true);
-                  }}
-                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-all duration-300 font-medium"
-                >
-                  + Ajouter Général
-                </button>
-              </div>
+                         {/* Section Général */}
+             <div>
+               {/* Formulaire pour la catégorie Général */}
+               {showAddForm === 'general' && (
+                 <motion.div
+                   initial={{ opacity: 0, y: 20 }}
+                   animate={{ opacity: 1, y: 0 }}
+                   className="mb-8 p-8 rounded-2xl bg-black border border-gray-700"
+                 >
+                   <div className="flex justify-between items-center mb-6">
+                     <h2 className="text-2xl font-bold text-white">
+                       {editingTemplate ? 'Modifier le template' : 'Nouveau template Général'}
+                     </h2>
+                     <button
+                       onClick={() => {
+                         setShowAddForm(null);
+                         setEditingTemplate(null);
+                         setFormData({
+                           name: '',
+                           description: '',
+                           category: 'general',
+                           icon: '⚙️',
+                           defaultScore: 5,
+                           defaultImportance: 'Moyenne'
+                         });
+                       }}
+                       className="text-gray-400 hover:text-white transition-colors"
+                     >
+                       ✕
+                     </button>
+                   </div>
+
+                   <form onSubmit={handleSubmit} className="space-y-6">
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                       <div>
+                         <label className="block text-sm font-semibold text-white mb-2">
+                           Nom du service *
+                         </label>
+                         <input
+                           type="text"
+                           required
+                           value={formData.name}
+                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                           placeholder="Nom du service"
+                         />
+                       </div>
+
+                       <div>
+                         <label className="block text-sm font-semibold text-white mb-2">
+                           Catégorie *
+                         </label>
+                         <select
+                           required
+                           value={formData.category}
+                           onChange={(e) => setFormData({ ...formData, category: e.target.value as 'defensive' | 'general' | 'offensive' })}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                         >
+                           <option value="defensive">Défensif</option>
+                           <option value="general">Général</option>
+                           <option value="offensive">Offensif</option>
+                         </select>
+                       </div>
+                     </div>
+
+                     <div>
+                       <label className="block text-sm font-semibold text-white mb-2">
+                         Description
+                       </label>
+                       <textarea
+                         value={formData.description}
+                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                         className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                         rows={3}
+                         placeholder="Description du service"
+                       />
+                     </div>
+
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                       <div>
+                         <label className="block text-sm font-semibold text-white mb-2">
+                           Score par défaut (1-10)
+                         </label>
+                         <input
+                           type="number"
+                           min="1"
+                           max="10"
+                           value={formData.defaultScore}
+                           onChange={(e) => setFormData({ ...formData, defaultScore: parseInt(e.target.value) })}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                         />
+                       </div>
+
+                       <div>
+                         <label className="block text-sm font-semibold text-white mb-2">
+                           Importance par défaut
+                         </label>
+                         <select
+                           value={formData.defaultImportance}
+                           onChange={(e) => setFormData({ ...formData, defaultImportance: e.target.value })}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                         >
+                           <option value="Faible">Faible</option>
+                           <option value="Moyenne">Moyenne</option>
+                           <option value="Élevée">Élevée</option>
+                         </select>
+                       </div>
+                     </div>
+
+                     <div className="flex space-x-4 pt-4">
+                       <button
+                         type="submit"
+                         className="px-6 py-3 bg-[#CCFF00] text-black font-bold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                       >
+                         {editingTemplate ? 'Modifier' : 'Créer'}
+                       </button>
+                       <button
+                         type="button"
+                         onClick={() => {
+                           setShowAddForm(null);
+                           setEditingTemplate(null);
+                           setFormData({
+                             name: '',
+                             description: '',
+                             category: 'general',
+                             icon: '⚙️',
+                             defaultScore: 5,
+                             defaultImportance: 'Moyenne'
+                           });
+                         }}
+                         className="px-6 py-3 text-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-300 border border-white/30"
+                       >
+                         Annuler
+                       </button>
+                     </div>
+                   </form>
+                 </motion.div>
+               )}
+
+               <div className="flex items-center justify-between mb-6">
+                 <div className="flex items-center gap-4">
+                   <div className="w-1 h-8 bg-gray-500 rounded-full"></div>
+                   <h2 className="text-2xl font-bold text-white">Général</h2>
+                   <span className="px-3 py-1 bg-gray-700/30 text-gray-300 rounded-full text-sm font-medium">
+                     {serviceTemplates.filter(t => t.category === 'general').length} template{serviceTemplates.filter(t => t.category === 'general').length > 1 ? 's' : ''}
+                   </span>
+                 </div>
+                 <button
+                   onClick={() => {
+                     setFormData({
+                       name: '',
+                       description: '',
+                       category: 'general',
+                       icon: '⚙️',
+                       defaultScore: 5,
+                       defaultImportance: 'Moyenne'
+                     });
+                     setEditingTemplate(null);
+                     setShowAddForm('general'); // Show form for general category
+                   }}
+                   className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-all duration-300 font-medium"
+                 >
+                   + Ajouter Général
+                 </button>
+               </div>
               {serviceTemplates.filter(t => t.category === 'general').length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {serviceTemplates
@@ -679,39 +805,176 @@ export default function ServiceTemplatesPage() {
                 </div>
               ) : (
                 <div className="text-center py-8 text-gray-400">
-                  Aucun template général. Cliquez sur "Ajouter Général" pour en créer un.
+                  Aucun template général. Cliquez sur &quot;Ajouter Général&quot; pour en créer un.
                 </div>
               )}
             </div>
 
-            {/* Section Offensif */}
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-1 h-8 bg-red-500 rounded-full"></div>
-                  <h2 className="text-2xl font-bold text-white">Offensif</h2>
-                  <span className="px-3 py-1 bg-red-900/30 text-red-300 rounded-full text-sm font-medium">
-                    {serviceTemplates.filter(t => t.category === 'offensive').length} template{serviceTemplates.filter(t => t.category === 'offensive').length > 1 ? 's' : ''}
-                  </span>
-                </div>
-                <button
-                  onClick={() => {
-                    setFormData({
-                      name: '',
-                      description: '',
-                      category: 'offensive',
-                      icon: '⚔️',
-                      defaultScore: 5,
-                      defaultImportance: 'Moyenne'
-                    });
-                    setEditingTemplate(null);
-                    setShowAddForm(true);
-                  }}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300 font-medium"
-                >
-                  + Ajouter Offensif
-                </button>
-              </div>
+                         {/* Section Offensif */}
+             <div>
+               {/* Formulaire pour la catégorie Offensif */}
+               {showAddForm === 'offensive' && (
+                 <motion.div
+                   initial={{ opacity: 0, y: 20 }}
+                   animate={{ opacity: 1, y: 0 }}
+                   className="mb-8 p-8 rounded-2xl bg-black border border-gray-700"
+                 >
+                   <div className="flex justify-between items-center mb-6">
+                     <h2 className="text-2xl font-bold text-white">
+                       {editingTemplate ? 'Modifier le template' : 'Nouveau template Offensif'}
+                     </h2>
+                     <button
+                       onClick={() => {
+                         setShowAddForm(null);
+                         setEditingTemplate(null);
+                         setFormData({
+                           name: '',
+                           description: '',
+                           category: 'offensive',
+                           icon: '⚔️',
+                           defaultScore: 5,
+                           defaultImportance: 'Moyenne'
+                         });
+                       }}
+                       className="text-gray-400 hover:text-white transition-colors"
+                     >
+                       ✕
+                     </button>
+                   </div>
+
+                   <form onSubmit={handleSubmit} className="space-y-6">
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                       <div>
+                         <label className="block text-sm font-semibold text-white mb-2">
+                           Nom du service *
+                         </label>
+                         <input
+                           type="text"
+                           required
+                           value={formData.name}
+                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                           placeholder="Nom du service"
+                         />
+                       </div>
+
+                       <div>
+                         <label className="block text-sm font-semibold text-white mb-2">
+                           Catégorie *
+                         </label>
+                         <select
+                           required
+                           value={formData.category}
+                           onChange={(e) => setFormData({ ...formData, category: e.target.value as 'defensive' | 'general' | 'offensive' })}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                         >
+                           <option value="defensive">Défensif</option>
+                           <option value="general">Général</option>
+                           <option value="offensive">Offensif</option>
+                         </select>
+                       </div>
+                     </div>
+
+                     <div>
+                       <label className="block text-sm font-semibold text-white mb-2">
+                         Description
+                       </label>
+                       <textarea
+                         value={formData.description}
+                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                         className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                         rows={3}
+                         placeholder="Description du service"
+                       />
+                     </div>
+
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                       <div>
+                         <label className="block text-sm font-semibold text-white mb-2">
+                           Score par défaut (1-10)
+                         </label>
+                         <input
+                           type="number"
+                           min="1"
+                           max="10"
+                           value={formData.defaultScore}
+                           onChange={(e) => setFormData({ ...formData, defaultScore: parseInt(e.target.value) })}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                         />
+                       </div>
+
+                       <div>
+                         <label className="block text-sm font-semibold text-white mb-2">
+                           Importance par défaut
+                         </label>
+                         <select
+                           value={formData.defaultImportance}
+                           onChange={(e) => setFormData({ ...formData, defaultImportance: e.target.value })}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                         >
+                           <option value="Faible">Faible</option>
+                           <option value="Moyenne">Moyenne</option>
+                           <option value="Élevée">Élevée</option>
+                         </select>
+                       </div>
+                     </div>
+
+                     <div className="flex space-x-4 pt-4">
+                       <button
+                         type="submit"
+                         className="px-6 py-3 bg-[#CCFF00] text-black font-bold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                       >
+                         {editingTemplate ? 'Modifier' : 'Créer'}
+                       </button>
+                       <button
+                         type="button"
+                         onClick={() => {
+                           setShowAddForm(null);
+                           setEditingTemplate(null);
+                           setFormData({
+                             name: '',
+                             description: '',
+                             category: 'offensive',
+                             icon: '⚔️',
+                             defaultScore: 5,
+                             defaultImportance: 'Moyenne'
+                           });
+                         }}
+                         className="px-6 py-3 text-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-300 border border-white/30"
+                       >
+                         Annuler
+                       </button>
+                     </div>
+                   </form>
+                 </motion.div>
+               )}
+
+               <div className="flex items-center justify-between mb-6">
+                 <div className="flex items-center gap-4">
+                   <div className="w-1 h-8 bg-red-500 rounded-full"></div>
+                   <h2 className="text-2xl font-bold text-white">Offensif</h2>
+                   <span className="px-3 py-1 bg-red-900/30 text-red-300 rounded-full text-sm font-medium">
+                     {serviceTemplates.filter(t => t.category === 'offensive').length} template{serviceTemplates.filter(t => t.category === 'offensive').length > 1 ? 's' : ''}
+                   </span>
+                 </div>
+                 <button
+                   onClick={() => {
+                     setFormData({
+                       name: '',
+                       description: '',
+                       category: 'offensive',
+                       icon: '⚔️',
+                       defaultScore: 5,
+                       defaultImportance: 'Moyenne'
+                     });
+                     setEditingTemplate(null);
+                     setShowAddForm('offensive'); // Show form for offensive category
+                   }}
+                   className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300 font-medium"
+                 >
+                   + Ajouter Offensif
+                 </button>
+               </div>
               {serviceTemplates.filter(t => t.category === 'offensive').length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {serviceTemplates
@@ -783,7 +1046,7 @@ export default function ServiceTemplatesPage() {
                 </div>
               ) : (
                 <div className="text-center py-8 text-gray-400">
-                  Aucun template offensif. Cliquez sur "Ajouter Offensif" pour en créer un.
+                  Aucun template offensif. Cliquez sur &quot;Ajouter Offensif&quot; pour en créer un.
                 </div>
               )}
             </div>

@@ -36,7 +36,6 @@ interface CategoryDetailsPanelProps {
     dueDate: string;
     assignedTo: string;
   }>;
-  onRemoveTaskFromPanel?: (taskName: string) => void;
   forceSyncPanelData?: () => void;
   panelCards?: Array<{
     id: number;
@@ -70,7 +69,7 @@ const categoryDescriptions = {
 
 
 
-export default function CategoryDetailsPanel({ isOpen, onClose, category, categoryTitle, userRole = 'user', onAddTask, tasksAddedFromPanel = [], onRemoveTaskFromPanel, forceSyncPanelData, panelCards = [] }: CategoryDetailsPanelProps) {
+export default function CategoryDetailsPanel({ isOpen, onClose, category, categoryTitle, userRole = 'user', onAddTask, tasksAddedFromPanel = [], forceSyncPanelData, panelCards = [] }: CategoryDetailsPanelProps) {
   const [activeTab, setActiveTab] = useState<'coverage' | 'infrastructure' | 'compliance' | 'recommendations'>('coverage');
   const [editingCard, setEditingCard] = useState<string | null>(null);
   const [editFormData, setEditFormData] = useState<CardFormData>({} as CardFormData);
@@ -117,10 +116,12 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
   };
 
   const handleEditCard = (cardName: string) => {
+    console.log('handleEditCard appelé pour:', cardName);
     // Récupérer les données existantes de la carte depuis l'API
     const existingCard = panelCards.find(card => card.name === cardName);
     
     if (existingCard) {
+      console.log('Carte trouvée:', existingCard);
       setEditingCard(cardName);
       setEditFormData({
         id: existingCard.id,
@@ -136,6 +137,11 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
         priority: existingCard.priority,
         description: existingCard.description,
         deadline: existingCard.deadline
+      });
+      console.log('editFormData initialisé avec:', {
+        id: existingCard.id,
+        name: existingCard.name,
+        description: existingCard.description
       });
     }
   };
@@ -183,16 +189,20 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
       if (response.ok) {
         console.log('Carte mise à jour avec succès');
         
-        // Réinitialiser l'état
+        // Réinitialiser l'état d'édition
         setEditingCard(null);
         setEditFormData({} as CardFormData);
+        // setIsEditing(false); // Désactiver le mode édition - supprimé
         setRenderKey(prev => prev + 1); // Forcer le re-rendu
         
-        // Déclencher la synchronisation dans la page d'accueil
-        if (forceSyncPanelData) {
-          console.log('Appel de forceSyncPanelData depuis handleSaveEdit');
-          forceSyncPanelData();
-        }
+        // Attendre un peu que l'API traite la mise à jour avant de synchroniser
+        setTimeout(() => {
+          // Déclencher la synchronisation dans la page d'accueil
+          if (forceSyncPanelData) {
+            console.log('Appel de forceSyncPanelData depuis handleSaveEdit (après délai)');
+            forceSyncPanelData();
+          }
+        }, 500); // Attendre 500ms
       } else {
         console.error('Erreur lors de la mise à jour de la carte');
         const errorData = await response.json();
@@ -302,6 +312,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
   const handleCancelEdit = () => {
     setEditingCard(null);
     setEditFormData({} as CardFormData);
+    // setIsEditing(false); // Désactiver le mode édition - supprimé
   };
 
   // Les admins d'entreprise ne peuvent pas supprimer les templates du super admin
@@ -313,21 +324,23 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     
     return panelCards.filter(card => {
       return card.type === type && card.isActive;
-    }).map(card => ({
-      id: card.id, // Ajouter l'ID de la carte
-      name: card.name,
-      type: card.type as 'coverage' | 'infrastructure' | 'compliance' | 'recommendation',
-      category: card.category as 'defensive' | 'general' | 'offensive', // Type assertion
-      total: card.total,
-      completed: card.completed,
-      equipmentCount: card.equipmentCount,
-      status: card.status,
-      certificationDate: card.certificationDate,
-      nextAudit: card.nextAudit,
-      priority: card.priority,
-      description: card.description,
-      deadline: card.deadline
-    }));
+    }).map(card => {
+      return {
+        id: card.id,
+        name: card.name,
+        type: card.type as 'coverage' | 'infrastructure' | 'compliance' | 'recommendation',
+        category: card.category as 'defensive' | 'general' | 'offensive',
+        total: card.total,
+        completed: card.completed,
+        equipmentCount: card.equipmentCount,
+        status: card.status,
+        certificationDate: card.certificationDate,
+        nextAudit: card.nextAudit,
+        priority: card.priority,
+        description: card.description,
+        deadline: card.deadline
+      };
+    });
   };
 
 
@@ -889,7 +902,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                        <input
                          type="text"
                          value={editFormData.name || ''}
-                         onChange={(e) => setEditFormData({...editFormData, name: e.target.value})}
+                         onChange={(e) => setEditFormData(prevData => ({...prevData, name: e.target.value}))}
                          className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                          style={{ 
                            background: 'var(--bg-secondary)', 
@@ -910,7 +923,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            <input
                              type="number"
                              value={editFormData.total || 0}
-                             onChange={(e) => setEditFormData({...editFormData, total: parseInt(e.target.value)})}
+                             onChange={(e) => setEditFormData(prevData => ({...prevData, total: parseInt(e.target.value)}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -927,7 +940,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            <input
                              type="number"
                              value={editFormData.completed || 0}
-                             onChange={(e) => setEditFormData({...editFormData, completed: parseInt(e.target.value)})}
+                             onChange={(e) => setEditFormData(prevData => ({...prevData, completed: parseInt(e.target.value)}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -951,50 +964,84 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                                Math.min(Math.round((editFormData.completed / editFormData.total) * 100), 100) : 0}%
                            </div>
                          </div>
+                         <div>
+                           <label className="block text-sm font-karla-medium mb-2" style={{ color: 'var(--text-primary)' }}>
+                             Description
+                           </label>
+                           <textarea
+                             value={editFormData.description || ''}
+                             onChange={(e) => setEditFormData(prevData => ({...prevData, description: e.target.value}))}
+                             className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
+                             style={{ 
+                               background: 'var(--bg-secondary)', 
+                               borderColor: 'var(--border-secondary)',
+                               color: 'var(--text-primary)'
+                             }}
+                             rows={3}
+                             placeholder="Description de la carte de couverture"
+                           />
+                         </div>
                        </>
                      )}
 
-                    {editFormData.type === 'infrastructure' && (
+                                         {editFormData.type === 'infrastructure' && (
                       <>
                         <div>
-                                                     <label className="block text-sm font-karla-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-                             Nombre d&apos;équipements
-                           </label>
-                          <input
-                            type="number"
-                            value={editFormData.equipmentCount || 0}
-                            onChange={(e) => setEditFormData({...editFormData, equipmentCount: parseInt(e.target.value)})}
-                            className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
-                            style={{ 
-                              background: 'var(--bg-secondary)', 
-                              borderColor: 'var(--border-secondary)',
-                              color: 'var(--text-primary)'
-                            }}
-                            min="0"
-                          />
-                        </div>
-                        <div>
                           <label className="block text-sm font-karla-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-                            État
+                            Nombre d&apos;équipements
                           </label>
-                          <select
-                            value={editFormData.status || ''}
-                            onChange={(e) => setEditFormData({...editFormData, status: e.target.value})}
-                            className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
-                            style={{ 
-                              background: 'var(--bg-secondary)', 
-                              borderColor: 'var(--border-secondary)',
-                              color: 'var(--text-primary)'
-                            }}
-                          >
-                            <option value="Sécurisé">Sécurisé</option>
-                            <option value="À vérifier">À vérifier</option>
-                            <option value="Critique">Critique</option>
-                            <option value="Normal">Normal</option>
-                          </select>
-                        </div>
-                      </>
-                    )}
+                         <input
+                           type="number"
+                           value={editFormData.equipmentCount || 0}
+                           onChange={(e) => setEditFormData(prevData => ({...prevData, equipmentCount: parseInt(e.target.value)}))}
+                           className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
+                           style={{ 
+                             background: 'var(--bg-secondary)', 
+                             borderColor: 'var(--border-secondary)',
+                             color: 'var(--text-primary)'
+                           }}
+                           min="0"
+                         />
+                       </div>
+                       <div>
+                         <label className="block text-sm font-karla-medium mb-2" style={{ color: 'var(--text-primary)' }}>
+                           État
+                         </label>
+                         <select
+                           value={editFormData.status || ''}
+                           onChange={(e) => setEditFormData(prevData => ({...prevData, status: e.target.value}))}
+                           className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
+                           style={{ 
+                             background: 'var(--bg-secondary)', 
+                             borderColor: 'var(--border-secondary)',
+                             color: 'var(--text-primary)'
+                           }}
+                         >
+                           <option value="Sécurisé">Sécurisé</option>
+                           <option value="À vérifier">À vérifier</option>
+                           <option value="Critique">Critique</option>
+                           <option value="Normal">Normal</option>
+                         </select>
+                       </div>
+                       <div>
+                         <label className="block text-sm font-karla-medium mb-2" style={{ color: 'var(--text-primary)' }}>
+                           Description
+                         </label>
+                         <textarea
+                           value={editFormData.description || ''}
+                           onChange={(e) => setEditFormData(prevData => ({...prevData, description: e.target.value}))}
+                           className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
+                           style={{ 
+                             background: 'var(--bg-secondary)', 
+                             borderColor: 'var(--border-secondary)',
+                             color: 'var(--text-primary)'
+                           }}
+                           rows={3}
+                           placeholder="Description de l'infrastructure"
+                         />
+                       </div>
+                     </>
+                   )}
 
                                          {editFormData.type === 'compliance' && (
                        <>
@@ -1004,7 +1051,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            </label>
                            <select
                              value={editFormData.status || ''}
-                             onChange={(e) => setEditFormData({...editFormData, status: e.target.value})}
+                             onChange={(e) => setEditFormData(prevData => ({...prevData, status: e.target.value}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -1024,7 +1071,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            <input
                              type="text"
                              value={editFormData.certificationDate || ''}
-                             onChange={(e) => setEditFormData({...editFormData, certificationDate: e.target.value})}
+                             onChange={(e) => setEditFormData(prevData => ({...prevData, certificationDate: e.target.value}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -1041,7 +1088,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            <input
                              type="text"
                              value={editFormData.nextAudit || ''}
-                             onChange={(e) => setEditFormData({...editFormData, nextAudit: e.target.value})}
+                             onChange={(e) => setEditFormData(prevData => ({...prevData, nextAudit: e.target.value}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -1049,6 +1096,23 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                                color: 'var(--text-primary)'
                              }}
                              placeholder="ex: Décembre 2024"
+                           />
+                         </div>
+                         <div>
+                           <label className="block text-sm font-karla-medium mb-2" style={{ color: 'var(--text-primary)' }}>
+                             Description
+                           </label>
+                           <textarea
+                             value={editFormData.description || ''}
+                             onChange={(e) => setEditFormData(prevData => ({...prevData, description: e.target.value}))}
+                             className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
+                             style={{ 
+                               background: 'var(--bg-secondary)', 
+                               borderColor: 'var(--border-secondary)',
+                               color: 'var(--text-primary)'
+                             }}
+                             rows={3}
+                             placeholder="Description de la conformité"
                            />
                          </div>
                        </>
@@ -1062,7 +1126,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            </label>
                            <select
                              value={editFormData.priority || ''}
-                             onChange={(e) => setEditFormData({...editFormData, priority: e.target.value})}
+                             onChange={(e) => setEditFormData(prevData => ({...prevData, priority: e.target.value}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -1081,7 +1145,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            </label>
                            <textarea
                              value={editFormData.description || ''}
-                             onChange={(e) => setEditFormData({...editFormData, description: e.target.value})}
+                             onChange={(e) => setEditFormData(prevData => ({...prevData, description: e.target.value}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -1099,7 +1163,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            <input
                              type="text"
                              value={editFormData.deadline || ''}
-                             onChange={(e) => setEditFormData({...editFormData, deadline: e.target.value})}
+                             onChange={(e) => setEditFormData(prevData => ({...prevData, deadline: e.target.value}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -1183,7 +1247,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                        <input
                          type="text"
                          value={addFormData.name || ''}
-                         onChange={(e) => setAddFormData({...addFormData, name: e.target.value})}
+                         onChange={(e) => setAddFormData(prevData => ({...prevData, name: e.target.value}))}
                          className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                          style={{ 
                            background: 'var(--bg-secondary)', 
@@ -1204,7 +1268,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            <input
                              type="number"
                              value={addFormData.total || 0}
-                             onChange={(e) => setAddFormData({...addFormData, total: parseInt(e.target.value)})}
+                             onChange={(e) => setAddFormData(prevData => ({...prevData, total: parseInt(e.target.value)}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -1221,7 +1285,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            <input
                              type="number"
                              value={addFormData.completed || 0}
-                             onChange={(e) => setAddFormData({...addFormData, completed: parseInt(e.target.value)})}
+                             onChange={(e) => setAddFormData(prevData => ({...prevData, completed: parseInt(e.target.value)}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -1245,6 +1309,23 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                                Math.min(Math.round((addFormData.completed / addFormData.total) * 100), 100) : 0}%
                            </div>
                          </div>
+                         <div>
+                           <label className="block text-sm font-karla-medium mb-2" style={{ color: 'var(--text-primary)' }}>
+                             Description
+                           </label>
+                           <textarea
+                             value={addFormData.description || ''}
+                             onChange={(e) => setAddFormData(prevData => ({...prevData, description: e.target.value}))}
+                             className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
+                             style={{ 
+                               background: 'var(--bg-secondary)', 
+                               borderColor: 'var(--border-secondary)',
+                               color: 'var(--text-primary)'
+                             }}
+                             rows={3}
+                             placeholder="Description de la carte de couverture"
+                           />
+                         </div>
                        </>
                      )}
 
@@ -1257,7 +1338,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            <input
                              type="number"
                              value={addFormData.equipmentCount || 0}
-                             onChange={(e) => setAddFormData({...addFormData, equipmentCount: parseInt(e.target.value)})}
+                             onChange={(e) => setAddFormData(prevData => ({...prevData, equipmentCount: parseInt(e.target.value)}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -1273,7 +1354,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            </label>
                            <select
                              value={addFormData.status || ''}
-                             onChange={(e) => setAddFormData({...addFormData, status: e.target.value})}
+                             onChange={(e) => setAddFormData(prevData => ({...prevData, status: e.target.value}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -1287,6 +1368,23 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                              <option value="Normal">Normal</option>
                            </select>
                          </div>
+                         <div>
+                           <label className="block text-sm font-karla-medium mb-2" style={{ color: 'var(--text-primary)' }}>
+                             Description
+                           </label>
+                           <textarea
+                             value={addFormData.description || ''}
+                             onChange={(e) => setAddFormData(prevData => ({...prevData, description: e.target.value}))}
+                             className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
+                             style={{ 
+                               background: 'var(--bg-secondary)', 
+                               borderColor: 'var(--border-secondary)',
+                               color: 'var(--text-primary)'
+                             }}
+                             rows={3}
+                             placeholder="Description de l'infrastructure"
+                           />
+                         </div>
                        </>
                      )}
 
@@ -1298,7 +1396,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            </label>
                            <select
                              value={addFormData.status || ''}
-                             onChange={(e) => setAddFormData({...addFormData, status: e.target.value})}
+                             onChange={(e) => setAddFormData(prevData => ({...prevData, status: e.target.value}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -1318,7 +1416,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            <input
                              type="text"
                              value={addFormData.certificationDate || ''}
-                             onChange={(e) => setAddFormData({...addFormData, certificationDate: e.target.value})}
+                             onChange={(e) => setAddFormData(prevData => ({...prevData, certificationDate: e.target.value}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -1335,7 +1433,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            <input
                              type="text"
                              value={addFormData.nextAudit || ''}
-                             onChange={(e) => setAddFormData({...addFormData, nextAudit: e.target.value})}
+                             onChange={(e) => setAddFormData(prevData => ({...prevData, nextAudit: e.target.value}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -1343,6 +1441,23 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                                color: 'var(--text-primary)'
                              }}
                              placeholder="ex: Décembre 2024"
+                           />
+                         </div>
+                         <div>
+                           <label className="block text-sm font-karla-medium mb-2" style={{ color: 'var(--text-primary)' }}>
+                             Description
+                           </label>
+                           <textarea
+                             value={addFormData.description || ''}
+                             onChange={(e) => setAddFormData(prevData => ({...prevData, description: e.target.value}))}
+                             className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
+                             style={{ 
+                               background: 'var(--bg-secondary)', 
+                               borderColor: 'var(--border-secondary)',
+                               color: 'var(--text-primary)'
+                             }}
+                             rows={3}
+                             placeholder="Description de la conformité"
                            />
                          </div>
                        </>
@@ -1356,7 +1471,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            </label>
                            <select
                              value={addFormData.priority || ''}
-                             onChange={(e) => setAddFormData({...addFormData, priority: e.target.value})}
+                             onChange={(e) => setAddFormData(prevData => ({...prevData, priority: e.target.value}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -1375,7 +1490,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            </label>
                            <textarea
                              value={addFormData.description || ''}
-                             onChange={(e) => setAddFormData({...addFormData, description: e.target.value})}
+                             onChange={(e) => setAddFormData(prevData => ({...prevData, description: e.target.value}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
@@ -1393,7 +1508,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                            <input
                              type="text"
                              value={addFormData.deadline || ''}
-                             onChange={(e) => setAddFormData({...addFormData, deadline: e.target.value})}
+                             onChange={(e) => setAddFormData(prevData => ({...prevData, deadline: e.target.value}))}
                              className="w-full px-3 py-2 rounded-lg border transition-all duration-300"
                              style={{ 
                                background: 'var(--bg-secondary)', 
