@@ -35,6 +35,8 @@ export function middleware(request: NextRequest) {
         'https://vercel.live',
         'https://vercel.app',
         'https://drelto-interface.vercel.app',
+        'https://interface-managee-drelto-62e0lksbj-soufs-projects-d07553b5.vercel.app',
+        'https://interface-managee-drelto-*.vercel.app',
         'https://interface-manage-*.vercel.app',
         'https://*.vercel.app'
       ].filter(Boolean);
