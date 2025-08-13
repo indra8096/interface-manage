@@ -4,7 +4,7 @@ import { verifyToken } from '@/lib/auth';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     // Vérifier l'authentification
@@ -18,7 +18,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
     }
 
-    const { id } = await params();
+    const { id } = params;
     const body = await request.json();
     const { name, description, category, type, priority, isActive } = body;
 
@@ -56,7 +56,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     // Vérifier l'authentification
@@ -70,7 +70,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
     }
 
-    const { id } = await params();
+    const { id } = params;
 
     // Vérifier que la carte existe
     const existingCard = await prisma.panelCardTemplate.findUnique({

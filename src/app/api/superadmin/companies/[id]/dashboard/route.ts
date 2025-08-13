@@ -23,7 +23,7 @@ async function verifySuperAdmin(req: NextRequest) {
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   const user = await verifySuperAdmin(req);
   if (!user) {
