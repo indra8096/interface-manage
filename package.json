@@ -63,7 +63,7 @@
       "Logging de sécurité",
       "Base PostgreSQL Vercel connectée",
       "Variables d'environnement configurées",
-      "Base prête pour initialisation"
+      "Base prête pour initialisation - Forçage synchronisation Vercel"
     ]
   }
 }
