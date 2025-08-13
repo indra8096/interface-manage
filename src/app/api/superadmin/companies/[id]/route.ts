@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Vérifier l'authentification et le rôle
@@ -15,7 +15,7 @@ export async function GET(
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 401 });
     }
 
-    const { id } = params;
+    const { id } = await params;
     const companyId = parseInt(id);
     
     if (isNaN(companyId)) {
@@ -69,7 +69,7 @@ export async function GET(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Vérifier l'authentification et le rôle
@@ -78,7 +78,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 401 });
     }
 
-    const { id } = params;
+    const { id } = await params;
     const companyId = parseInt(id);
     
     if (isNaN(companyId)) {
