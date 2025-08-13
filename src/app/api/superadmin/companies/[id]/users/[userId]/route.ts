@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 // Modifier un utilisateur
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string; userId: string }> }
+  { params }: { params: { id: string; userId: string } }
 ) {
   try {
     // Vérifier l'authentification et le rôle
@@ -16,8 +16,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 401 });
     }
 
-    // Attendre params dans Next.js 15
-    const { id, userId } = await params;
+    const { id, userId } = params;
     const companyId = parseInt(id);
     const userIdInt = parseInt(userId);
     
@@ -98,7 +97,7 @@ export async function PUT(
 // Supprimer un utilisateur
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string; userId: string }> }
+  { params }: { params: { id: string; userId: string } }
 ) {
   try {
     // Vérifier l'authentification et le rôle
@@ -107,8 +106,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 401 });
     }
 
-    // Attendre params dans Next.js 15
-    const { id, userId } = await params;
+    const { id, userId } = params;
     const companyId = parseInt(id);
     const userIdInt = parseInt(userId);
     

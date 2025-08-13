@@ -3,7 +3,7 @@ import { prisma } from '../../../../lib/prisma';
 import bcrypt from 'bcryptjs';
 import { verifyToken } from '../../../../lib/auth';
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Vérifier l'authentification
     const user = await verifyToken(req);
@@ -11,7 +11,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
-    const { id: idParam } = await params;
+    const { id: idParam } = params;
     const id = Number(idParam);
     if (!id) return NextResponse.json({ error: 'ID manquant' }, { status: 400 });
 
@@ -58,15 +58,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    // Vérifier l'authentification
-    const user = await verifyToken(req);
-    if (!user) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
-
-    const { id: idParam } = await params;
+    const { id: idParam } = params;
     const id = Number(idParam);
     if (!id) return NextResponse.json({ error: 'ID manquant' }, { status: 400 });
 

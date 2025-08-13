@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     // Vérifier l'authentification et les permissions
@@ -13,7 +13,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
-    const { id } = await params;
+    const { id } = params;
     const templateId = parseInt(id);
     const body = await request.json();
     const { 
@@ -66,7 +66,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     // Vérifier l'authentification et les permissions
@@ -75,7 +75,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
-    const { id } = await params;
+    const { id } = params;
     const templateId = parseInt(id);
 
     // Supprimer toutes les instances de ce template d'abord

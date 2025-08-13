@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 // Créer un nouvel utilisateur
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     // Vérifier l'authentification et le rôle
@@ -17,8 +17,7 @@ export async function POST(
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 401 });
     }
 
-    // Attendre params dans Next.js 15
-    const { id } = await params;
+    const { id } = params;
     const companyId = parseInt(id);
     
     if (isNaN(companyId)) {
@@ -78,6 +77,21 @@ export async function POST(
     console.error('Erreur lors de la création de l\'utilisateur:', error);
     return NextResponse.json(
       { error: 'Erreur lors de la création de l\'utilisateur' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des utilisateurs:', error);
+    return NextResponse.json(
+      { error: 'Erreur lors de la récupération des utilisateurs' },
       { status: 500 }
     );
   }
