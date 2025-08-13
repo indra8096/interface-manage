@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     // Récupérer UNIQUEMENT les vraies cartes de panel des entreprises
     const companies = await prisma.company.findMany({
       include: {
-        panelCards: {
+        panelCardInstances: {
           select: {
             id: true,
             name: true,
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const allCards = companies.flatMap((company: any) => 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      company.panelCards.map((card: any) => ({
+      company.panelCardInstances.map((card: any) => ({
         ...card,
         company: { id: company.id, name: company.name },
         isRealCard: true
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
     const createdCards = await Promise.all(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       companies.map((company: any) => 
-        prisma.panelCard.create({
+        prisma.panelCardInstance.create({
           data: {
             name,
             type,
@@ -194,7 +194,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Mettre à jour la carte de panel
-    const updatedCard = await prisma.panelCard.update({
+    const updatedCard = await prisma.panelCardInstance.update({
       where: { id: parseInt(id) },
       data: {
         name,
@@ -247,7 +247,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Supprimer la carte de panel
-    await prisma.panelCard.delete({
+    await prisma.panelCardInstance.delete({
       where: { id: parseInt(id) }
     });
 

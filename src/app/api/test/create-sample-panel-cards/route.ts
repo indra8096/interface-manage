@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     
     for (const company of companies) {
       for (const cardData of sampleCards) {
-        const card = await prisma.panelCard.create({
+        const card = await prisma.panelCardInstance.create({
           data: {
             ...cardData,
             companyId: company.id,

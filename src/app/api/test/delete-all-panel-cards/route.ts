@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 export async function POST(request: NextRequest) {
   try {
     // Supprimer toutes les cartes de panel
-    const deletedCards = await prisma.panelCard.deleteMany({});
+    const deletedCards = await prisma.panelCardInstance.deleteMany({});
 
     return NextResponse.json({ 
       message: 'Toutes les cartes de panel ont été supprimées',

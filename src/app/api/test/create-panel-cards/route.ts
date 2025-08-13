@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
 
     // Créer les cartes
     const createdCards = await Promise.all(
-      testCards.map(card => prisma.panelCard.create({ data: card }))
+      testCards.map(card => prisma.panelCardInstance.create({ data: card }))
     );
 
     return NextResponse.json({ 
