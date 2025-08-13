@@ -19,20 +19,28 @@ export async function GET(request: NextRequest) {
     const companies = await prisma.company.findMany({
       include: {
         panelCardInstances: {
+          include: {
+            template: {
+              select: {
+                id: true,
+                name: true,
+                type: true,
+                category: true,
+                description: true,
+                priority: true,
+                isActive: true
+              }
+            }
+          },
           select: {
             id: true,
-            name: true,
-            type: true,
             total: true,
             completed: true,
             equipmentCount: true,
             status: true,
             certificationDate: true,
             nextAudit: true,
-            priority: true,
-            description: true,
             deadline: true,
-            category: true,
             isActive: true,
             createdAt: true,
             updatedAt: true
@@ -46,7 +54,22 @@ export async function GET(request: NextRequest) {
     const allCards = companies.flatMap((company: any) => 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       company.panelCardInstances.map((card: any) => ({
-        ...card,
+        id: card.id,
+        name: card.template.name,
+        type: card.template.type,
+        category: card.template.category,
+        description: card.template.description,
+        priority: card.template.priority,
+        total: card.total,
+        completed: card.completed,
+        equipmentCount: card.equipmentCount,
+        status: card.status,
+        certificationDate: card.certificationDate,
+        nextAudit: card.nextAudit,
+        deadline: card.deadline,
+        isActive: card.isActive,
+        createdAt: card.createdAt,
+        updatedAt: card.updatedAt,
         company: { id: company.id, name: company.name },
         isRealCard: true
       }))
@@ -120,26 +143,34 @@ export async function POST(request: NextRequest) {
     // Récupérer toutes les entreprises pour propager la carte
     const companies = await prisma.company.findMany();
 
+    // Créer d'abord le template de carte
+    const template = await prisma.panelCardTemplate.create({
+      data: {
+        name,
+        type,
+        category: category || 'defensive',
+        description: description || '',
+        priority: priority || 'Moyenne',
+        isActive: true
+      }
+    });
+
     // Créer la carte de panel pour chaque entreprise
     const createdCards = await Promise.all(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       companies.map((company: any) => 
         prisma.panelCardInstance.create({
           data: {
-            name,
-            type,
-            category: category || 'defensive',
+            templateId: template.id,
+            companyId: company.id,
             total: total || 0,
             completed: completed || 0,
             equipmentCount: equipmentCount || 0,
             status: status || 'Normal',
-            certificationDate: certificationDate ? new Date(certificationDate) : null,
-            nextAudit: nextAudit ? new Date(nextAudit) : null,
-            priority: priority || 'Moyenne',
-            description: description || '',
-            deadline: deadline ? new Date(deadline) : null,
-            isActive: true,
-            companyId: company.id
+            certificationDate: certificationDate || null,
+            nextAudit: nextAudit || null,
+            deadline: deadline || null,
+            isActive: true
           }
         })
       )
@@ -193,29 +224,37 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'ID, nom et type requis' }, { status: 400 });
     }
 
-    // Mettre à jour la carte de panel
-    const updatedCard = await prisma.panelCardInstance.update({
+    // Mettre à jour le template de la carte de panel
+    const updatedTemplate = await prisma.panelCardTemplate.update({
       where: { id: parseInt(id) },
       data: {
         name,
         type,
         category: category || 'defensive',
+        description: description || '',
+        priority: priority || 'Moyenne',
+        isActive: true
+      }
+    });
+
+    // Mettre à jour aussi toutes les instances de cette carte
+    await prisma.panelCardInstance.updateMany({
+      where: { templateId: parseInt(id) },
+      data: {
         total: total || 0,
         completed: completed || 0,
         equipmentCount: equipmentCount || 0,
         status: status || 'Normal',
-        certificationDate: certificationDate ? new Date(certificationDate) : null,
-        nextAudit: nextAudit ? new Date(nextAudit) : null,
-        priority: priority || 'Moyenne',
-        description: description || '',
-        deadline: deadline ? new Date(deadline) : null,
+        certificationDate: certificationDate || null,
+        nextAudit: nextAudit || null,
+        deadline: deadline || null,
         isActive: true
       }
     });
 
     return NextResponse.json({ 
       message: 'Carte de panel mise à jour',
-      card: updatedCard
+      card: updatedTemplate
     });
   } catch (error) {
     console.error('Erreur lors de la mise à jour de la carte de panel:', error);
@@ -246,8 +285,13 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'ID requis' }, { status: 400 });
     }
 
-    // Supprimer la carte de panel
-    await prisma.panelCardInstance.delete({
+    // Supprimer d'abord toutes les instances de cette carte
+    await prisma.panelCardInstance.deleteMany({
+      where: { templateId: parseInt(id) }
+    });
+
+    // Puis supprimer le template
+    await prisma.panelCardTemplate.delete({
       where: { id: parseInt(id) }
     });
 
