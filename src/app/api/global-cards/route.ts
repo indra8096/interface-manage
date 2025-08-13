@@ -12,22 +12,26 @@ export async function GET(req: NextRequest) {
 
     // Si c'est un Super Admin, il peut voir toutes les cartes
     if (user.role === 'SUPER_ADMIN') {
-      const globalCards = await prisma.globalCard.findMany({
+      const panelCardTemplates = await prisma.panelCardTemplate.findMany({
+        where: { isActive: true },
         orderBy: { createdAt: 'desc' }
       });
-      return NextResponse.json({ globalCards });
+      return NextResponse.json({ globalCards: panelCardTemplates });
     }
 
     // Si c'est un admin ou utilisateur de société, il ne voit que les cartes de sa société
     if (user.companyId) {
-      const globalCards = await prisma.globalCard.findMany({
+      const panelCardInstances = await prisma.panelCardInstance.findMany({
         where: { 
           companyId: user.companyId,
           isActive: true
         },
+        include: {
+          template: true
+        },
         orderBy: { createdAt: 'desc' }
       });
-      return NextResponse.json({ globalCards });
+      return NextResponse.json({ globalCards: panelCardInstances });
     }
 
     return NextResponse.json({ globalCards: [] });
@@ -51,13 +55,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
     }
 
-    const { title, description, category, content } = await req.json();
+    const { title, description, category, content, type } = await req.json();
 
-    if (!title || !category) {
-      return NextResponse.json({ error: 'Titre et catégorie requis' }, { status: 400 });
+    if (!title || !category || !type) {
+      return NextResponse.json({ error: 'Titre, catégorie et type requis' }, { status: 400 });
     }
 
-    // Déterminer la société pour la carte
+    // Créer d'abord le template
+    const panelCardTemplate = await prisma.panelCardTemplate.create({
+      data: {
+        name: title,
+        description: description || '',
+        category: category,
+        type: type,
+        isActive: true
+      }
+    });
+
+    // Déterminer la société pour l'instance
     let companyId = null;
     if (user.role === 'COMPANY_ADMIN') {
       companyId = user.companyId;
@@ -67,18 +82,22 @@ export async function POST(req: NextRequest) {
         parseInt(req.nextUrl.searchParams.get('companyId')!) : null;
     }
 
-    const globalCard = await prisma.globalCard.create({
-      data: {
-        title,
-        description,
-        category,
-        content: content || {},
-        isActive: true,
-        companyId
-      }
-    });
+    // Créer l'instance pour la société si spécifiée
+    let panelCardInstance = null;
+    if (companyId) {
+      panelCardInstance = await prisma.panelCardInstance.create({
+        data: {
+          templateId: panelCardTemplate.id,
+          companyId: companyId,
+          isActive: true
+        }
+      });
+    }
 
-    return NextResponse.json({ globalCard }, { status: 201 });
+    return NextResponse.json({ 
+      globalCard: panelCardTemplate,
+      instance: panelCardInstance 
+    }, { status: 201 });
 
   } catch (error) {
     console.error('Erreur lors de la création de la carte globale:', error);

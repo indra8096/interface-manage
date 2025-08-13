@@ -4,7 +4,7 @@ import { verifyToken } from '@/lib/auth';
 
 export async function PUT(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Vérifier l'authentification
@@ -18,17 +18,12 @@ export async function PUT(
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
     }
 
-    const { id } = await context.params;
+    const { id } = await params();
     const body = await request.json();
-    const { name, description, category, icon, defaultScore, defaultImportance, isActive } = body;
-
-    // Validation des données
-    if (!name || !category) {
-      return NextResponse.json({ error: 'Nom et catégorie requis' }, { status: 400 });
-    }
+    const { name, description, category, type, priority, isActive } = body;
 
     // Vérifier que la carte existe
-    const existingCard = await prisma.globalCard.findUnique({
+    const existingCard = await prisma.panelCardTemplate.findUnique({
       where: { id: parseInt(id) }
     });
 
@@ -37,24 +32,23 @@ export async function PUT(
     }
 
     // Mettre à jour la carte
-    const card = await prisma.globalCard.update({
+    const card = await prisma.panelCardTemplate.update({
       where: { id: parseInt(id) },
       data: {
-        name,
-        description: description || '',
-        category,
-        icon: icon || '🛡️',
-        defaultScore: defaultScore || 5,
-        defaultImportance: defaultImportance || 'Moyenne',
-        isActive: isActive !== undefined ? isActive : true,
+        name: name || existingCard.name,
+        description: description !== undefined ? description : existingCard.description,
+        category: category || existingCard.category,
+        type: type || existingCard.type,
+        priority: priority || existingCard.priority,
+        isActive: isActive !== undefined ? isActive : existingCard.isActive,
       }
     });
 
     return NextResponse.json({ card });
   } catch (error) {
-    console.error('Erreur lors de la mise à jour de la carte globale:', error);
+    console.error('Erreur lors de la mise à jour de la carte:', error);
     return NextResponse.json(
-      { error: 'Erreur lors de la mise à jour de la carte globale' },
+      { error: 'Erreur lors de la mise à jour de la carte' },
       { status: 500 }
     );
   }
@@ -62,7 +56,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Vérifier l'authentification
@@ -76,10 +70,10 @@ export async function DELETE(
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
     }
 
-    const { id } = await context.params;
+    const { id } = await params();
 
     // Vérifier que la carte existe
-    const existingCard = await prisma.globalCard.findUnique({
+    const existingCard = await prisma.panelCardTemplate.findUnique({
       where: { id: parseInt(id) }
     });
 
@@ -88,15 +82,15 @@ export async function DELETE(
     }
 
     // Supprimer la carte
-    await prisma.globalCard.delete({
+    await prisma.panelCardTemplate.delete({
       where: { id: parseInt(id) }
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ message: 'Carte supprimée avec succès' });
   } catch (error) {
-    console.error('Erreur lors de la suppression de la carte globale:', error);
+    console.error('Erreur lors de la suppression de la carte:', error);
     return NextResponse.json(
-      { error: 'Erreur lors de la suppression de la carte globale' },
+      { error: 'Erreur lors de la suppression de la carte' },
       { status: 500 }
     );
   }

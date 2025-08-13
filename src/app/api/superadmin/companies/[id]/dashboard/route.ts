@@ -62,25 +62,29 @@ export async function GET(
       return NextResponse.json({ error: 'Entreprise non trouvée' }, { status: 404 });
     }
 
-    // Récupérer les cartes globales de cette société spécifique
-    const globalCards = await prisma.globalCard.findMany({
-      where: { 
-        companyId: companyId,
-        isActive: true 
+    // Récupérer les cartes globales de la société
+    const globalCards = await prisma.panelCardTemplate.findMany({
+      where: { isActive: true },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    // Récupérer les instances de cartes de la société
+    const panelCardInstances = await prisma.panelCardInstance.findMany({
+      where: { companyId: parseInt(id) },
+      include: {
+        template: true
       },
-      orderBy: {
-        createdAt: 'desc'
-      }
+      orderBy: { createdAt: 'desc' }
     });
 
     return NextResponse.json({
       company,
+      users: company.users,
+      tasks: company.tasks,
       globalCards,
-      stats: {
-        totalUsers: company.users.length,
-        totalTasks: company.tasks.length,
-        globalCardsCount: globalCards.length
-      }
+      panelCardInstances,
+      globalCardsCount: globalCards.length,
+      panelCardInstancesCount: panelCardInstances.length
     });
   } catch (error) {
     console.error('Erreur lors de la récupération du dashboard:', error);

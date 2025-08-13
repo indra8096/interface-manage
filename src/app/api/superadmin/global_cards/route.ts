@@ -15,34 +15,24 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
     }
 
-    // Récupérer toutes les cartes de services prédéfinis de toutes les entreprises
-    const globalCards = await prisma.globalCard.findMany({
-      include: {
-        company: {
-          select: {
-            id: true,
-            name: true
-          }
-        }
-      },
+    // Récupérer tous les templates de cartes de services prédéfinis
+    const panelCardTemplates = await prisma.panelCardTemplate.findMany({
+      where: { isActive: true },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    // Récupérer tous les templates de services prédéfinis
+    const serviceTemplates = await prisma.serviceTemplate.findMany({
+      where: { isActive: true },
       orderBy: { createdAt: 'desc' }
     });
 
     // Récupérer les vraies cartes de services prédéfinis des entreprises
     const companies = await prisma.company.findMany({
       include: {
-        globalCards: {
-          select: {
-            id: true,
-            name: true,
-            description: true,
-            category: true,
-            icon: true,
-            defaultScore: true,
-            defaultImportance: true,
-            isActive: true,
-            createdAt: true,
-            updatedAt: true
+        panelCardInstances: {
+          include: {
+            template: true
           }
         },
         tasks: {
@@ -68,11 +58,28 @@ export async function GET(request: NextRequest) {
 
     // Combiner toutes les vraies cartes des entreprises
     const allCards = [
-      ...globalCards,
+      ...panelCardTemplates.map(template => ({
+        ...template,
+        type: 'template',
+        isRealCard: true
+      })),
+      ...serviceTemplates.map(template => ({
+        ...template,
+        type: 'service',
+        isRealCard: true
+      })),
       ...companies.flatMap(company => [
-        ...company.globalCards.map(card => ({
-          ...card,
+        ...company.panelCardInstances.map(instance => ({
+          id: instance.id,
+          name: instance.template.name,
+          description: instance.template.description || '',
+          category: instance.template.category || 'general',
+          type: instance.template.type,
+          isActive: instance.isActive,
+          createdAt: instance.createdAt,
+          updatedAt: instance.updatedAt,
           company: { id: company.id, name: company.name },
+          isInstance: true,
           isRealCard: true
         })),
         ...company.tasks.map(task => ({
@@ -136,22 +143,21 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, description, category, icon, defaultScore, defaultImportance } = body;
+    const { name, description, category, type, priority } = body;
 
     // Validation des données
-    if (!name || !category) {
-      return NextResponse.json({ error: 'Nom et catégorie requis' }, { status: 400 });
+    if (!name || !category || !type) {
+      return NextResponse.json({ error: 'Nom, catégorie et type requis' }, { status: 400 });
     }
 
-    // Créer la nouvelle carte globale
-    const card = await prisma.globalCard.create({
+    // Créer le nouveau template de carte
+    const card = await prisma.panelCardTemplate.create({
       data: {
         name,
         description: description || '',
         category,
-        icon: icon || '🛡️',
-        defaultScore: defaultScore || 5,
-        defaultImportance: defaultImportance || 'Moyenne',
+        type,
+        priority: priority || 'Moyenne',
         isActive: true,
       }
     });
