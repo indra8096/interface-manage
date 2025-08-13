@@ -28,7 +28,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     // Règles de sécurité
     if (user.role === 'SUPER_ADMIN') {
       // Le Super Admin peut supprimer n'importe qui sauf lui-même
-      if (userToDelete?.id === user.userId) {
+      if (userToDelete?.id === user.id) {
         return NextResponse.json({ error: 'Vous ne pouvez pas vous supprimer vous-même' }, { status: 403 });
       }
     } else if (user.role === 'COMPANY_ADMIN') {
@@ -60,6 +60,12 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    // Vérifier l'authentification
+    const user = await verifyToken(req);
+    if (!user) {
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+    }
+
     const { id: idParam } = await params;
     const id = Number(idParam);
     if (!id) return NextResponse.json({ error: 'ID manquant' }, { status: 400 });
@@ -92,7 +98,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
 
     const { email, password, role } = await req.json();
-    const data: { email?: string; password?: string; role?: string } = {};
+    const data: { email?: string; password?: string; role?: 'SUPER_ADMIN' | 'COMPANY_ADMIN' | 'COMPANY_USER' } = {};
     
     if (email) data.email = email;
     if (password) data.password = await bcrypt.hash(password, 10);

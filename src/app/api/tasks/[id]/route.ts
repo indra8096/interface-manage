@@ -40,7 +40,7 @@ export async function PATCH(
     
     // Préparer les données à mettre à jour
     const updateData: {
-      status?: string;
+      status?: 'completed' | 'warning' | 'error';
       name?: string;
       description?: string;
       score?: number;
@@ -51,7 +51,7 @@ export async function PATCH(
     
     // Gérer le statut
     if (body.status && ['completed', 'warning', 'error'].includes(body.status)) {
-      updateData.status = body.status
+      updateData.status = body.status as 'completed' | 'warning' | 'error'
     }
     
     // Gérer les autres champs
