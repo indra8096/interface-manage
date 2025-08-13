@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
+    const { id } = context.params;
     const templateId = parseInt(id);
 
-    // Récupérer le template de service
     const template = await prisma.serviceTemplate.findUnique({
       where: { id: templateId }
     });
@@ -28,13 +26,12 @@ export async function GET(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
+    const { id } = context.params;
     const templateId = parseInt(id);
 
-    // Supprimer le template de service
     await prisma.serviceTemplate.delete({
       where: { id: templateId }
     });
