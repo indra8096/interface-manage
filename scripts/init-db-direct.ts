@@ -16,7 +16,7 @@ async function main() {
     console.log('✅ Entreprise créée:', company.name);
 
     // Créer le Super Admin
-    const superAdminPassword = await bcrypt.hash('superadmin123', 10);
+    const superAdminPassword = await bcrypt.hash('SuperAdmin123!', 10);
     const superAdmin = await prisma.user.create({
       data: {
         email: 'superadmin@example.com',
@@ -27,7 +27,7 @@ async function main() {
     console.log('✅ Super Admin créé:', superAdmin.email);
 
     // Créer un admin de l'entreprise
-    const adminPassword = await bcrypt.hash('admin123', 10);
+    const adminPassword = await bcrypt.hash('Admin123!', 10);
     const companyAdmin = await prisma.user.create({
       data: {
         email: 'admin@societe1.com',
@@ -39,7 +39,7 @@ async function main() {
     console.log('✅ Admin Entreprise créé:', companyAdmin.email);
 
     // Créer un utilisateur de l'entreprise
-    const userPassword = await bcrypt.hash('user123', 10);
+    const userPassword = await bcrypt.hash('User123!', 10);
     const companyUser = await prisma.user.create({
       data: {
         email: 'user@societe1.com',
@@ -91,9 +91,9 @@ async function main() {
 
     console.log('\n🎉 Base de données initialisée avec succès !');
     console.log('\n📧 Comptes créés:');
-    console.log('   Super Admin:', superAdmin.email, '| Mot de passe: superadmin123');
-    console.log('   Admin Entreprise:', companyAdmin.email, '| Mot de passe: admin123');
-    console.log('   Utilisateur Entreprise:', companyUser.email, '| Mot de passe: user123');
+    console.log('   Super Admin:', superAdmin.email, '| Mot de passe: SuperAdmin123!');
+    console.log('   Admin Entreprise:', companyAdmin.email, '| Mot de passe: Admin123!');
+    console.log('   Utilisateur Entreprise:', companyUser.email, '| Mot de passe: User123!');
     console.log('🏢 Entreprise:', company.name);
 
   } catch (error) {
