@@ -8,16 +8,16 @@ const prisma = new PrismaClient();
 // Créer un nouvel utilisateur
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Vérifier l'authentification et le rôle
     const user = await verifyToken(request);
     if (!user || user.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 401 });
     }
 
-    const { id } = params;
     const companyId = parseInt(id);
     
     if (isNaN(companyId)) {
@@ -84,10 +84,10 @@ export async function POST(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
   } catch (error) {
     console.error('Erreur lors de la récupération des utilisateurs:', error);
     return NextResponse.json(
