@@ -67,8 +67,6 @@ export async function POST(req: NextRequest) {
         role: user.role,
         companyId: user.companyId,
         email: user.email,
-        iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60),
         jti: crypto.randomBytes(16).toString('hex')
       },
       secret,
