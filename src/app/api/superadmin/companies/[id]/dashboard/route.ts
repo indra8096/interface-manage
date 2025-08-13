@@ -30,7 +30,7 @@ export async function GET(
     return NextResponse.json({ error: 'Accès non autorisé' }, { status: 401 });
   }
 
-  const { id } = await params;
+  const { id } = params;
   const companyId = Number(id);
 
   if (!companyId) {
