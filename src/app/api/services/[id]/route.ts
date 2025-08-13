@@ -3,10 +3,10 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = context.params;
+    const { id } = await params;
     const templateId = parseInt(id);
 
     const template = await prisma.serviceTemplate.findUnique({
@@ -26,10 +26,10 @@ export async function GET(
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = context.params;
+    const { id } = await params;
     const templateId = parseInt(id);
 
     await prisma.serviceTemplate.delete({
@@ -43,4 +43,4 @@ export async function DELETE(
     console.error('Erreur lors de la suppression du template:', error);
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
-} 
+}
