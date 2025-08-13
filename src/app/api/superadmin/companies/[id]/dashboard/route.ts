@@ -11,7 +11,10 @@ async function verifySuperAdmin(req: NextRequest) {
   
   const token = authHeader.substring(7);
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev-secret') as any;
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET non configuré');
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
     if (decoded.role !== 'SUPER_ADMIN') {
       return null;
     }
