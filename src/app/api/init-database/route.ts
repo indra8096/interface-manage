@@ -1,7 +1,8 @@
-import { prisma } from './prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '../../../../lib/prisma';
 import bcrypt from 'bcryptjs';
 
-export async function initDatabase() {
+export async function POST(req: NextRequest) {
   try {
     console.log('🔍 Initialisation automatique de la base de données...');
     
@@ -47,9 +48,15 @@ export async function initDatabase() {
       console.log('✅ Admin d\'entreprise créé:', companyAdmin.email);
       
       console.log('🎉 Base de données initialisée avec succès !');
-      console.log('🔑 Identifiants de connexion:');
-      console.log('   - Super Admin: superadmin@example.com / superadmin123');
-      console.log('   - Admin Entreprise: admin@entreprise.com / admin123');
+      
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Base de données initialisée',
+        usersCreated: {
+          superAdmin: superAdmin.email,
+          companyAdmin: companyAdmin.email
+        }
+      });
       
     } else {
       console.log('✅ Base de données déjà initialisée');
@@ -73,10 +80,19 @@ export async function initDatabase() {
       } else {
         console.log('✅ Super Admin existe déjà');
       }
+      
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Base de données déjà initialisée',
+        userCount 
+      });
     }
     
   } catch (error) {
     console.error('❌ Erreur lors de l\'initialisation de la base:', error);
-    // Ne pas faire échouer l'application si l'initialisation échoue
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Erreur lors de l\'initialisation' 
+    }, { status: 500 });
   }
 }
