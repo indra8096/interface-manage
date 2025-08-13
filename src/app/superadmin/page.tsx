@@ -399,7 +399,6 @@ export default function SuperAdminDashboard() {
           {companies.length === 0 && (
             <div className="text-center py-16">
               <div className="bg-black/50 backdrop-blur-md rounded-xl p-12 border border-gray-800">
-                <div className="text-6xl mb-4" style={{ color: '#CCFF00' }}>🏢</div>
                 <h3 className="text-xl font-bold text-white mb-2">Aucune entreprise</h3>
                 <p className="text-gray-400">Créez votre première entreprise pour commencer</p>
               </div>
