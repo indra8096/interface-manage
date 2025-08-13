@@ -2,7 +2,7 @@ import { prisma } from '../../../../lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { validateEmail, validatePassword, sanitizeString, logSecurityEvent } from '../../../../lib/security';
+import { validateEmail, sanitizeString, logSecurityEvent } from '../../../../lib/security';
 import crypto from 'crypto';
 
 // Validation stricte du secret JWT
@@ -36,15 +36,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Format d\'email invalide' }, { status: 400 });
     }
     
-    // Validation du mot de passe
-    const passwordValidation = validatePassword(password);
-    if (!passwordValidation.isValid) {
-      logSecurityEvent('login_attempt_weak_password', { email }, 'warn');
-      return NextResponse.json({ 
-        error: 'Mot de passe trop faible', 
-        details: passwordValidation.errors 
-      }, { status: 400 });
-    }
+    // Validation du mot de passe - DÉSACTIVÉE pour la connexion
+    // La validation se fait seulement lors de la création/modification des comptes
+    // const passwordValidation = validatePassword(password);
+    // if (!passwordValidation.isValid) {
+    //   logSecurityEvent('login_attempt_weak_password', { email }, 'warn');
+    //   return NextResponse.json({ 
+    //     error: 'Mot de passe trop faible', 
+    //     details: passwordValidation.errors 
+    //   }, { status: 400 });
+    // }
     
     console.log('🔍 Tentative de connexion:', { email, password: password ? '***' : 'undefined' });
     
