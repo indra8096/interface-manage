@@ -23,14 +23,14 @@ async function verifySuperAdmin(req: NextRequest) {
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const user = await verifySuperAdmin(req);
   if (!user) {
     return NextResponse.json({ error: 'Accès non autorisé' }, { status: 401 });
   }
 
-  const { id } = params;
+  const { id } = await params;
   const companyId = Number(id);
 
   if (!companyId) {
