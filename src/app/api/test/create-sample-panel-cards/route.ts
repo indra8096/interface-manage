@@ -55,25 +55,46 @@ export async function POST(request: NextRequest) {
       }
     ];
 
-    const createdCards = [];
-    
-    for (const company of companies) {
-      for (const cardData of sampleCards) {
-        const card = await prisma.panelCardInstance.create({
+    // Créer d'abord les templates de cartes
+    const templates = await Promise.all(
+      sampleCards.map(async (cardData) => {
+        return await prisma.panelCardTemplate.create({
           data: {
-            ...cardData,
-            companyId: company.id,
+            name: cardData.name,
+            type: cardData.type as any,
+            category: cardData.category as any,
+            description: cardData.description,
+            priority: cardData.priority,
             isActive: true
           }
         });
-        createdCards.push(card);
+      })
+    );
+
+    // Créer ensuite les instances pour chaque entreprise
+    for (const company of companies) {
+      for (const template of templates) {
+        await prisma.panelCardInstance.create({
+          data: {
+            templateId: template.id,
+            companyId: company.id,
+            total: 0,
+            completed: 0,
+            equipmentCount: 0,
+            status: 'Normal',
+            certificationDate: null,
+            nextAudit: null,
+            deadline: null,
+            isActive: true
+          }
+        });
       }
     }
 
     return NextResponse.json({ 
       message: 'Cartes de panel d\'exemple créées',
-      createdCount: createdCards.length,
-      cards: createdCards
+      createdCount: templates.length * companies.length, // Total de cartes créées
+      cards: templates // On retourne les templates créés
     });
   } catch (error) {
     console.error('Erreur lors de la création des cartes d\'exemple:', error);

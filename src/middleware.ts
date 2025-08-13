@@ -43,7 +43,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Rate limiting basique (peut être amélioré avec Redis)
-  const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown';
+  const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
   const rateLimitKey = `rate_limit_${ip}`;
   
   // Log des tentatives d'accès suspectes

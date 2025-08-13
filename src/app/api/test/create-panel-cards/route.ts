@@ -128,9 +128,43 @@ export async function POST(request: NextRequest) {
       }
     ];
 
-    // Créer les cartes
+    // Créer d'abord les templates de cartes
+    const templates = await Promise.all(
+      testCards.map(async (card) => {
+        return await prisma.panelCardTemplate.create({
+          data: {
+            name: card.name,
+            type: card.type as any,
+            category: card.category as any,
+            description: card.description,
+            priority: card.priority,
+            isActive: card.isActive
+          }
+        });
+      })
+    );
+
+    // Créer ensuite les instances pour chaque entreprise
+    const allCompanies = await prisma.company.findMany();
     const createdCards = await Promise.all(
-      testCards.map(card => prisma.panelCardInstance.create({ data: card }))
+      allCompanies.flatMap(company =>
+        templates.map(template => 
+          prisma.panelCardInstance.create({
+            data: {
+              templateId: template.id,
+              companyId: company.id,
+              total: 0,
+              completed: 0,
+              equipmentCount: 0,
+              status: 'Normal',
+              certificationDate: null,
+              nextAudit: null,
+              deadline: null,
+              isActive: true
+            }
+          })
+        )
+      )
     );
 
     return NextResponse.json({ 

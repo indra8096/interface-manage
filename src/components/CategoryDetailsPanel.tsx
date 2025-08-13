@@ -26,6 +26,7 @@ interface CategoryDetailsPanelProps {
   categoryTitle: string;
   userRole?: string;
   onAddTask?: (taskData: { name: string; score: number; category: string; description: string; importance: string; dueDate: string; assignedTo: string }) => void;
+  onRemoveTaskFromPanel?: (taskName: string) => void;
   tasksAddedFromPanel?: Array<{
     id: number;
     name: string;
@@ -69,7 +70,7 @@ const categoryDescriptions = {
 
 
 
-export default function CategoryDetailsPanel({ isOpen, onClose, category, categoryTitle, userRole = 'user', onAddTask, tasksAddedFromPanel = [], forceSyncPanelData, panelCards = [] }: CategoryDetailsPanelProps) {
+export default function CategoryDetailsPanel({ isOpen, onClose, category, categoryTitle, userRole = 'user', onAddTask, onRemoveTaskFromPanel, tasksAddedFromPanel = [], forceSyncPanelData, panelCards = [] }: CategoryDetailsPanelProps) {
   const [activeTab, setActiveTab] = useState<'coverage' | 'infrastructure' | 'compliance' | 'recommendations'>('coverage');
   const [editingCard, setEditingCard] = useState<string | null>(null);
   const [editFormData, setEditFormData] = useState<CardFormData>({} as CardFormData);

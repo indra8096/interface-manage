@@ -56,6 +56,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<string>('user');
   const [tasksAddedFromPanel, setTasksAddedFromPanel] = useState<Array<{
+    id: number;
     name: string;
     description: string;
     importance: string;
@@ -181,7 +182,11 @@ export default function Home() {
   const handleAddTaskFromPanel = (taskData: { name: string; score: number; category: string; description: string; importance: string; dueDate: string; assignedTo: string }) => {
     // Ne pas appeler handleCreateTask pour éviter l'ajout dans les TaskColumns
     // Marquer cette tâche comme ajoutée depuis le panneau
-    const updatedTasks = [...tasksAddedFromPanel, taskData];
+    const taskWithId = {
+      ...taskData,
+      id: Date.now() // Ajouter un ID unique
+    };
+    const updatedTasks = [...tasksAddedFromPanel, taskWithId];
     setTasksAddedFromPanel(updatedTasks);
     // Sauvegarder dans localStorage
     localStorage.setItem('tasksAddedFromPanel', JSON.stringify(updatedTasks));

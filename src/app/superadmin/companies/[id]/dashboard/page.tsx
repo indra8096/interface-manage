@@ -136,7 +136,9 @@ export default function CompanyDashboardPage() {
       setCreateUserData({ email: '', password: '', role: 'COMPANY_USER' });
       
       // Recharger les détails de l'entreprise
-      fetchCompanyDetails(token, companyId);
+      if (companyId) {
+        fetchCompanyDetails(token, companyId);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue');
     } finally {
@@ -181,7 +183,9 @@ export default function CompanyDashboardPage() {
       setEditUserData({ email: '', role: 'COMPANY_USER' });
       
       // Recharger les détails de l'entreprise
-      fetchCompanyDetails(token, companyId);
+      if (companyId) {
+        fetchCompanyDetails(token, companyId);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue');
     } finally {
@@ -222,7 +226,9 @@ export default function CompanyDashboardPage() {
       setSelectedUser(null);
       
       // Recharger les détails de l'entreprise
-      fetchCompanyDetails(token, companyId);
+      if (companyId) {
+        fetchCompanyDetails(token, companyId);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue');
     } finally {

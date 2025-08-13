@@ -77,14 +77,25 @@ export async function POST(request: NextRequest) {
     }
 
     // Déterminer la société pour la nouvelle tâche
-    let companyId = null;
+    let companyId: number;
     if (user.role === 'COMPANY_ADMIN') {
       // L'admin de société ne peut créer que des tâches dans sa société
+      if (!user.companyId) {
+        return NextResponse.json({ error: 'Aucune société associée' }, { status: 403 });
+      }
       companyId = user.companyId;
     } else if (user.role === 'SUPER_ADMIN') {
-      // Le Super Admin peut spécifier une société ou créer sans société
-      companyId = request.nextUrl.searchParams.get('companyId') ? 
-        parseInt(request.nextUrl.searchParams.get('companyId')!) : null;
+      // Le Super Admin doit spécifier une société
+      const companyIdParam = request.nextUrl.searchParams.get('companyId');
+      if (!companyIdParam) {
+        return NextResponse.json({ error: 'companyId requis pour le Super Admin' }, { status: 400 });
+      }
+      companyId = parseInt(companyIdParam);
+      if (isNaN(companyId)) {
+        return NextResponse.json({ error: 'companyId invalide' }, { status: 400 });
+      }
+    } else {
+      return NextResponse.json({ error: 'Rôle non autorisé' }, { status: 403 });
     }
 
     const task = await prisma.task.create({
@@ -94,7 +105,7 @@ export async function POST(request: NextRequest) {
         score,
         description,
         importance,
-        dueDate: dueDate ? new Date(dueDate) : null,
+        dueDate: dueDate || null,
         assignedTo,
         status: 'warning',
         companyId

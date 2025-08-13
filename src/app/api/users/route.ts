@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     }
 
     console.log('🔍 GET /api/users - User connecté:', {
-      userId: user.userId,
+      userId: user.id,
       role: user.role,
       companyId: user.companyId
     });
@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
     // Si c'est un utilisateur normal, il ne peut voir que lui-même
     if (user.role === 'COMPANY_USER') {
       const userData = await prisma.user.findUnique({
-        where: { id: user.userId },
+        where: { id: user.id },
         select: { id: true, email: true, role: true },
       });
       return NextResponse.json([userData]);

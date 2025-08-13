@@ -7,29 +7,29 @@ export async function POST(request: NextRequest) {
     const panelTemplates = [
       {
         name: 'Formation Cybersécurité',
-        type: 'coverage',
-        category: 'defensive',
+        type: 'coverage' as const,
+        category: 'defensive' as const,
         description: 'Formation obligatoire pour tous les employés',
         priority: 'Moyenne'
       },
       {
         name: 'Pentest Infrastructure',
-        type: 'coverage',
-        category: 'offensive',
+        type: 'coverage' as const,
+        category: 'offensive' as const,
         description: 'Tests de pénétration sur l\'infrastructure',
         priority: 'Haute'
       },
       {
         name: 'Configuration Switches',
-        type: 'infrastructure',
-        category: 'general',
+        type: 'infrastructure' as const,
+        category: 'general' as const,
         description: 'Configuration des switches réseau',
         priority: 'Moyenne'
       },
       {
         name: 'Certification ISO 27001',
-        type: 'compliance',
-        category: 'defensive',
+        type: 'compliance' as const,
+        category: 'defensive' as const,
         description: 'Certification de sécurité ISO 27001',
         priority: 'Haute'
       }
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       {
         name: 'Firewall',
         description: 'Système de protection réseau avec filtrage de trafic',
-        category: 'defensive',
+        category: 'defensive' as const,
         icon: '🛡️',
         defaultScore: 8,
         defaultImportance: 'Haute'
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
       {
         name: 'IDS/IPS',
         description: 'Détection et prévention d\'intrusions',
-        category: 'defensive',
+        category: 'defensive' as const,
         icon: '🔍',
         defaultScore: 9,
         defaultImportance: 'Haute'
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
       {
         name: 'VPN',
         description: 'Réseau privé virtuel sécurisé',
-        category: 'defensive',
+        category: 'defensive' as const,
         icon: '🔒',
         defaultScore: 7,
         defaultImportance: 'Moyenne'
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
       {
         name: 'Antivirus',
         description: 'Protection contre les logiciels malveillants',
-        category: 'defensive',
+        category: 'defensive' as const,
         icon: '🦠',
         defaultScore: 6,
         defaultImportance: 'Moyenne'
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
       {
         name: 'Sauvegarde',
         description: 'Système de sauvegarde automatisé',
-        category: 'general',
+        category: 'general' as const,
         icon: '💾',
         defaultScore: 8,
         defaultImportance: 'Haute'
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
       {
         name: 'Scan de Vulnérabilités',
         description: 'Analyse des vulnérabilités système',
-        category: 'offensive',
+        category: 'offensive' as const,
         icon: '🔬',
         defaultScore: 9,
         defaultImportance: 'Haute'

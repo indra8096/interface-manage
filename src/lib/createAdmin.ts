@@ -11,7 +11,7 @@ async function main() {
     create: {
       email,
       password: hashed,
-      role: 'admin',
+      role: 'SUPER_ADMIN',
     },
   });
   console.log('Admin créé :', admin);
