@@ -7,14 +7,14 @@
       "use": "@vercel/next"
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/vitrine",
-      "dest": "/vitrine"
+      "source": "/vitrine",
+      "destination": "/vitrine"
     },
     {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/(.*)",
+      "destination": "/$1"
     }
   ],
   "headers": [
