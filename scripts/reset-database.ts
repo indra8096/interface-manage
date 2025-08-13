@@ -9,10 +9,12 @@ async function resetDatabase() {
     
     // Supprimer toutes les données existantes
     console.log('🗑️ Suppression des données existantes...');
+    await prisma.panelCardInstance.deleteMany();
+    await prisma.panelCardTemplate.deleteMany();
+    await prisma.serviceTemplate.deleteMany();
     await prisma.task.deleteMany();
     await prisma.user.deleteMany();
     await prisma.company.deleteMany();
-    await prisma.globalCard.deleteMany();
     
     console.log('✅ Données supprimées avec succès');
     

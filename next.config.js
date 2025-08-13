@@ -93,7 +93,7 @@ const nextConfig = {
   
   // Protection contre les attaques par timing
   experimental: {
-    serverComponentsExternalPackages: ['@prisma/client'],
+    // Option obsolète supprimée
   }
 }
 
