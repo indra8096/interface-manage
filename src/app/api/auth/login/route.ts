@@ -2,55 +2,132 @@ import { prisma } from '../../../../lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { validateEmail, validatePassword, sanitizeString, logSecurityEvent } from '../../../../lib/security';
+import crypto from 'crypto';
+
+// Validation stricte du secret JWT
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret || secret === 'dev-secret' || secret.length < 32) {
+    throw new Error('JWT_SECRET non configuré ou trop faible. Configurez une clé secrète d\'au moins 32 caractères.');
+  }
+  return secret;
+}
 
 export async function POST(req: NextRequest) {
-  const { email, password } = await req.json();
-  console.log('🔍 Tentative de connexion:', { email, password: password ? '***' : 'undefined' });
-  
-  if (!email || !password) {
-    console.log('❌ Champs manquants');
-    return NextResponse.json({ error: 'Champs manquants' }, { status: 400 });
-  }
-  
-  const user = await prisma.user.findUnique({ 
-    where: { email },
-    include: {
-      company: true
+  try {
+    const body = await req.json();
+    
+    // Sanitisation des entrées
+    const { email, password } = {
+      email: sanitizeString(body.email || '', 254),
+      password: body.password || ''
+    };
+    
+    // Validation des entrées
+    if (!email || !password) {
+      logSecurityEvent('login_attempt_invalid', { email: email ? 'provided' : 'missing' }, 'warn');
+      return NextResponse.json({ error: 'Champs manquants ou invalides' }, { status: 400 });
     }
-  });
-  
-  console.log('👤 Utilisateur trouvé:', user ? { id: user.id, email: user.email, role: user.role } : 'null');
-  
-  if (!user) {
-    console.log('❌ Utilisateur non trouvé');
-    return NextResponse.json({ error: 'Utilisateur non trouvé' }, { status: 401 });
-  }
-  
-  const valid = await bcrypt.compare(password, user.password);
-  console.log('🔐 Vérification mot de passe:', valid);
-  
-  if (!valid) {
-    console.log('❌ Mot de passe incorrect');
-    return NextResponse.json({ error: 'Mot de passe incorrect' }, { status: 401 });
-  }
-  
-  // Générer un JWT avec les informations de l'utilisateur
-  const token = jwt.sign(
-    { 
-      id: user.id, 
+    
+    // Validation du format email
+    if (!validateEmail(email)) {
+      logSecurityEvent('login_attempt_invalid_email', { email }, 'warn');
+      return NextResponse.json({ error: 'Format d\'email invalide' }, { status: 400 });
+    }
+    
+    // Validation du mot de passe
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      logSecurityEvent('login_attempt_weak_password', { email }, 'warn');
+      return NextResponse.json({ 
+        error: 'Mot de passe trop faible', 
+        details: passwordValidation.errors 
+      }, { status: 400 });
+    }
+    
+    console.log('🔍 Tentative de connexion:', { email, password: password ? '***' : 'undefined' });
+    
+    const user = await prisma.user.findUnique({ 
+      where: { email: email.toLowerCase().trim() },
+      include: {
+        company: true
+      }
+    });
+    
+    console.log('👤 Utilisateur trouvé:', user ? { id: user.id, email: user.email, role: user.role } : 'null');
+    
+    if (!user) {
+      // Délai artificiel pour éviter l'énumération d'utilisateurs
+      await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
+      logSecurityEvent('login_attempt_user_not_found', { email }, 'warn');
+      console.log('❌ Utilisateur non trouvé');
+      return NextResponse.json({ error: 'Identifiants invalides' }, { status: 401 });
+    }
+    
+    const valid = await bcrypt.compare(password, user.password);
+    console.log('🔐 Vérification mot de passe:', valid);
+    
+    if (!valid) {
+      // Délai artificiel pour éviter l'énumération de mots de passe
+      await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
+      logSecurityEvent('login_attempt_invalid_password', { email, userId: user.id }, 'warn');
+      console.log('❌ Mot de passe incorrect');
+      return NextResponse.json({ error: 'Identifiants invalides' }, { status: 401 });
+    }
+    
+    // Connexion réussie
+    logSecurityEvent('login_success', { email, userId: user.id, role: user.role }, 'info');
+    
+    // Générer un JWT avec les informations de l'utilisateur
+    const secret = getJwtSecret();
+    const token = jwt.sign(
+      { 
+        id: user.id, 
+        role: user.role,
+        companyId: user.companyId,
+        email: user.email,
+        iat: Math.floor(Date.now() / 1000), // Timestamp d'émission
+        exp: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60), // Expiration 7 jours
+        jti: crypto.randomBytes(16).toString('hex') // JWT ID unique
+      },
+      secret,
+      { 
+        expiresIn: '7d',
+        issuer: 'interface-manage',
+        audience: 'web-app'
+      }
+    );
+    
+    // Headers de sécurité
+    const response = NextResponse.json({ 
+      token, 
       role: user.role,
       companyId: user.companyId,
-      email: user.email
-    },
-    process.env.JWT_SECRET || 'dev-secret',
-    { expiresIn: '7d' }
-  );
-  
-  return NextResponse.json({ 
-    token, 
-    role: user.role,
-    companyId: user.companyId,
-    companyName: user.company?.name,
-    email: user.email
-  });
+      companyName: user.company?.name,
+      email: user.email,
+      expiresIn: 7 * 24 * 60 * 60 // 7 jours en secondes
+    });
+    
+    // Cookies sécurisés (optionnel, pour une double sécurité)
+    response.cookies.set('auth-token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60, // 7 jours
+      path: '/'
+    });
+    
+    // Headers de sécurité supplémentaires
+    response.headers.set('X-Auth-Status', 'success');
+    response.headers.set('X-User-Role', user.role);
+    
+    return response;
+    
+  } catch (error) {
+    console.error('Erreur lors de la connexion:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
+    logSecurityEvent('login_error', { error: errorMessage }, 'error');
+    return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 });
+  }
 } 

@@ -8,6 +8,26 @@ export interface AuthUser {
   companyId?: number;
 }
 
+// Interface pour le token JWT décodé
+interface DecodedToken {
+  userId?: number;
+  id?: number;
+  email: string;
+  role: string;
+  companyId?: number;
+  iat?: number;
+  exp?: number;
+}
+
+// Validation stricte du secret JWT
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret || secret === 'dev-secret' || secret.length < 32) {
+    throw new Error('JWT_SECRET non configuré ou trop faible. Configurez une clé secrète d\'au moins 32 caractères.');
+  }
+  return secret;
+}
+
 export async function verifyToken(reqOrToken: NextRequest | string): Promise<AuthUser | null> {
   let token: string;
   
@@ -24,9 +44,16 @@ export async function verifyToken(reqOrToken: NextRequest | string): Promise<Aut
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev-secret') as any;
+    const secret = getJwtSecret();
+    const decoded = jwt.verify(token, secret) as DecodedToken;
+    
+    // Validation des données décodées
+    if (!decoded.userId && !decoded.id) {
+      throw new Error('Token invalide: ID utilisateur manquant');
+    }
+    
     return {
-      id: decoded.userId || decoded.id,
+      id: (decoded.userId || decoded.id)!,
       email: decoded.email,
       role: decoded.role,
       companyId: decoded.companyId

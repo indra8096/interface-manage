@@ -8,10 +8,15 @@
     "start": "next start",
     "lint": "next lint",
     "db:generate": "prisma generate",
-    "db:push": "prisma db push",
+    "db:push": "prisma push",
     "db:migrate": "prisma migrate dev",
     "db:init": "tsx scripts/init-db-direct.ts",
-    "db:reset": "tsx scripts/reset-database.ts"
+    "db:reset": "tsx scripts/reset-database.ts",
+    "security:generate-secrets": "tsx scripts/generate-secrets.ts",
+    "security:audit": "npm audit && npm audit fix",
+    "security:check-deps": "npm outdated",
+    "security:test": "npm run lint && npm run build",
+    "deploy:prepare": "npm run security:test && npm run security:audit"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
@@ -40,5 +45,22 @@
     "tailwindcss": "^3.4.0",
     "tsx": "^4.20.3",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "security": {
+    "description": "Application sécurisée avec protection XSS, CSRF, et validation stricte des entrées",
+    "features": [
+      "Content Security Policy (CSP)",
+      "Protection XSS",
+      "Protection CSRF",
+      "Validation des entrées",
+      "Sanitisation des données",
+      "Headers de sécurité",
+      "Rate limiting",
+      "Logging de sécurité"
+    ]
   }
 }
