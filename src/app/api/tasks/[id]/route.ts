@@ -4,7 +4,7 @@ import { verifyToken } from '@/lib/auth'
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Vérifier l'authentification
@@ -13,7 +13,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
-    const { id } = params
+    const { id } = await params
     const body = await request.json()
     
     // Vérifier que la tâche existe et appartient à la bonne société
@@ -79,7 +79,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Vérifier l'authentification
@@ -88,7 +88,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     // Vérifier que la tâche existe et appartient à la bonne société
     const existingTask = await prisma.task.findUnique({
