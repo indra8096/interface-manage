@@ -33,7 +33,9 @@ export function middleware(request: NextRequest) {
       const allowedOrigins = [
         process.env.NEXT_PUBLIC_BASE_URL,
         'https://vercel.live',
-        'https://vercel.app'
+        'https://vercel.app',
+        'https://drelto-interface.vercel.app',
+        'https://*.vercel.app'
       ].filter(Boolean);
       
       if (!allowedOrigins.includes(origin)) {
