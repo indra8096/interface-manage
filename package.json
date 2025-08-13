@@ -51,7 +51,7 @@
     "npm": ">=8.0.0"
   },
   "security": {
-    "description": "Application sécurisée avec protection XSS, CSRF, et validation stricte des entrées",
+    "description": "Application sécurisée avec protection XSS, CSRF, et validation stricte des entrées - Base PostgreSQL connectée",
     "features": [
       "Content Security Policy (CSP)",
       "Protection XSS",
@@ -60,7 +60,8 @@
       "Sanitisation des données",
       "Headers de sécurité",
       "Rate limiting",
-      "Logging de sécurité"
+      "Logging de sécurité",
+      "Base PostgreSQL Vercel"
     ]
   }
 }
