@@ -16,11 +16,10 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     if (!id) return NextResponse.json({ error: 'ID manquant' }, { status: 400 });
 
     // Vérifier que l'utilisateur à supprimer existe
-    const userToDelete = await prisma.$queryRaw`
-      SELECT id, role, company_id as companyId 
-      FROM users 
-      WHERE id = ${id}
-    ` as any;
+    const userToDelete = await prisma.user.findUnique({
+      where: { id },
+      select: { id: true, role: true, companyId: true }
+    });
 
     if (!userToDelete) {
       return NextResponse.json({ error: 'Utilisateur non trouvé' }, { status: 404 });
@@ -29,13 +28,17 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     // Règles de sécurité
     if (user.role === 'SUPER_ADMIN') {
       // Le Super Admin peut supprimer n'importe qui sauf lui-même
-      if (userToDelete.id === user.userId) {
+      if (userToDelete?.id === user.userId) {
         return NextResponse.json({ error: 'Vous ne pouvez pas vous supprimer vous-même' }, { status: 403 });
       }
     } else if (user.role === 'COMPANY_ADMIN') {
       // L'admin de société ne peut supprimer que les utilisateurs de sa société
-      if (userToDelete.company?.id !== user.companyId) {
+      if (userToDelete.companyId !== user.companyId) {
         return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+      }
+      // L'admin ne peut pas supprimer d'autres administrateurs
+      if (userToDelete.role === 'COMPANY_ADMIN') {
+        return NextResponse.json({ error: 'Vous ne pouvez pas supprimer d\'autres administrateurs' }, { status: 403 });
       }
       // L'admin ne peut pas supprimer le Super Admin
       if (userToDelete.role === 'SUPER_ADMIN') {

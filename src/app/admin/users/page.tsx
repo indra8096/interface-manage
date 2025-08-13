@@ -589,26 +589,33 @@ export default function AdminUsersPage() {
                             </span>
                           </td>
                           <td className="p-4 text-center">
-                            <div className="flex gap-2 justify-center">
-                              <motion.button 
-                                onClick={() => handleEdit(user)}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="px-3 py-2 text-white rounded-lg font-karla-semibold transition-all duration-300 shadow-lg" 
-                                style={{ backgroundColor: '#f59e0b' }}
-                              >
-                                Modifier
-                              </motion.button>
-                              <motion.button 
-                                onClick={() => handleDelete(user.id)}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="px-3 py-2 text-white rounded-lg font-karla-semibold transition-all duration-300 shadow-lg" 
-                                style={{ backgroundColor: '#ef4444' }}
-                              >
-                                Supprimer
-                              </motion.button>
-                            </div>
+                            {/* Seuls les utilisateurs non-admin peuvent être modifiés/supprimés par les admin d'entreprise */}
+                            {user.role !== 'COMPANY_ADMIN' ? (
+                              <div className="grid grid-cols-2 gap-2 items-center min-h-[40px] w-full max-w-[200px] mx-auto">
+                                <motion.button 
+                                  onClick={() => handleEdit(user)}
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  className="px-3 py-2 text-white rounded-lg font-karla-semibold transition-all duration-300 shadow-lg" 
+                                  style={{ backgroundColor: '#f59e0b' }}
+                                >
+                                  Modifier
+                                </motion.button>
+                                <motion.button 
+                                  onClick={() => handleDelete(user.id)}
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  className="px-3 py-2 text-white rounded-lg font-karla-semibold transition-all duration-300 shadow-lg" 
+                                  style={{ backgroundColor: '#ef4444' }}
+                                >
+                                  Supprimer
+                                </motion.button>
+                              </div>
+                            ) : (
+                              <div className="text-sm font-karla-medium" style={{ color: 'var(--text-muted)' }}>
+                                Actions non autorisées
+                              </div>
+                            )}
                           </td>
                         </>
                       )}
