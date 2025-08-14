@@ -1,116 +1,206 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../lib/prisma';
+import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { verifyToken } from '../../../lib/auth';
-
-export async function GET(req: NextRequest) {
-  try {
-    // Vérifier l'authentification
-    const user = await verifyToken(req);
-    if (!user) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
-
-    console.log('🔍 GET /api/users - User connecté:', {
-      userId: user.id,
-      role: user.role,
-      companyId: user.companyId
-    });
-
-    // Si c'est un Super Admin, il peut voir tous les utilisateurs
-    if (user.role === 'SUPER_ADMIN') {
-      const users = await prisma.user.findMany({
-        select: { id: true, email: true, role: true, companyId: true },
-        orderBy: { id: 'asc' },
-      });
-      return NextResponse.json(users);
-    }
-
-    // Si c'est un admin de société, il ne peut voir que les utilisateurs de sa société
-    if (user.role === 'COMPANY_ADMIN' && user.companyId) {
-      console.log('🔍 COMPANY_ADMIN cherche les utilisateurs pour companyId:', user.companyId);
-      
-      const users = await prisma.user.findMany({
-        where: { 
-          companyId: user.companyId,
-          role: { not: 'SUPER_ADMIN' } // Exclure le Super Admin
-        },
-        select: { id: true, email: true, role: true },
-        orderBy: { id: 'asc' },
-      });
-      
-      console.log('✅ Utilisateurs trouvés pour cette société:', users);
-      return NextResponse.json(users);
-    }
-
-    // Si c'est un utilisateur normal, il ne peut voir que lui-même
-    if (user.role === 'COMPANY_USER') {
-      const userData = await prisma.user.findUnique({
-        where: { id: user.id },
-        select: { id: true, email: true, role: true },
-      });
-      return NextResponse.json([userData]);
-    }
-
-    return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-
-  } catch (error) {
-    console.error('Erreur lors de la récupération des utilisateurs:', error);
-    return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 });
-  }
-}
+import { 
+  validateEmail, 
+  validatePassword, 
+  sanitizeString, 
+  logSecurityEvent,
+  validateCompanyName
+} from '../../../lib/security';
+import { verifySuperAdmin } from '../../../lib/auth';
 
 export async function POST(req: NextRequest) {
   try {
-    // Vérifier l'authentification
-    const user = await verifyToken(req);
-    if (!user) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
-
-    // Seuls les Super Admin et Company Admin peuvent créer des utilisateurs
-    if (user.role !== 'SUPER_ADMIN' && user.role !== 'COMPANY_ADMIN') {
+    // === VÉRIFICATION DES PERMISSIONS ===
+    const authResult = await verifySuperAdmin(req);
+    if (!authResult.success) {
+      logSecurityEvent('user_creation_unauthorized', { 
+        ip: req.headers.get('x-forwarded-for') || 'unknown' 
+      }, 'warn');
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
     }
 
-    const { email, password, role = 'COMPANY_USER' } = await req.json();
+    const body = await req.json();
     
-    if (!email || !password) {
-      return NextResponse.json({ error: 'Champs manquants' }, { status: 400 });
+    // === VALIDATION ET SANITISATION DES DONNÉES ===
+    const { email, password, role, companyName } = {
+      email: sanitizeString(body.email || '', 254),
+      password: body.password || '',
+      role: sanitizeString(body.role || '', 50),
+      companyName: sanitizeString(body.companyName || '', 100)
+    };
+
+    // === VALIDATION DES CHAMPS OBLIGATOIRES ===
+    if (!email || !password || !role) {
+      return NextResponse.json({ 
+        error: 'Email, mot de passe et rôle sont obligatoires' 
+      }, { status: 400 });
     }
 
-    // Vérifier si l'email existe déjà
-    const exists = await prisma.user.findUnique({ where: { email } });
-    if (exists) {
-      return NextResponse.json({ error: 'Email déjà utilisé' }, { status: 409 });
-    }
-
-    // Déterminer la société pour le nouvel utilisateur
-    let companyId = null;
-    if (user.role === 'COMPANY_ADMIN') {
-      // L'admin de société ne peut créer que des utilisateurs dans sa société
-      companyId = user.companyId;
-    } else if (user.role === 'SUPER_ADMIN') {
-      // Le Super Admin peut spécifier une société ou créer sans société
-      companyId = req.nextUrl.searchParams.get('companyId') ? 
-        parseInt(req.nextUrl.searchParams.get('companyId')!) : null;
-    }
-
-    const hashed = await bcrypt.hash(password, 10);
-    const newUser = await prisma.user.create({
-      data: { 
+    // === VALIDATION STRICTE DE L'EMAIL ===
+    if (!validateEmail(email)) {
+      logSecurityEvent('user_creation_invalid_email', { 
         email, 
-        password: hashed, 
-        role,
-        companyId
-      },
-      select: { id: true, email: true, role: true },
+        adminId: authResult.user?.id 
+      }, 'warn');
+      return NextResponse.json({ 
+        error: 'Format d\'email invalide',
+        field: 'email'
+      }, { status: 400 });
+    }
+
+    // === VALIDATION RENFORCÉE DU MOT DE PASSE ===
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      logSecurityEvent('user_creation_weak_password', { 
+        email, 
+        adminId: authResult.user?.id,
+        errors: passwordValidation.errors
+      }, 'warn');
+      return NextResponse.json({ 
+        error: 'Mot de passe trop faible',
+        details: passwordValidation.errors,
+        field: 'password'
+      }, { status: 400 });
+    }
+
+    // === VALIDATION DU RÔLE ===
+    const validRoles = ['COMPANY_ADMIN', 'COMPANY_USER'] as const;
+    if (!validRoles.includes(role as 'COMPANY_ADMIN' | 'COMPANY_USER')) {
+      return NextResponse.json({ 
+        error: 'Rôle invalide. Rôles autorisés: COMPANY_ADMIN, COMPANY_USER',
+        field: 'role'
+      }, { status: 400 });
+    }
+
+    // === VALIDATION DU NOM D'ENTREPRISE ===
+    if (companyName && !validateCompanyName(companyName)) {
+      return NextResponse.json({ 
+        error: 'Nom d\'entreprise invalide',
+        field: 'companyName'
+      }, { status: 400 });
+    }
+
+    // === VÉRIFICATION DE L'EXISTENCE DE L'EMAIL ===
+    const existingUser = await prisma.user.findUnique({
+      where: { email: email.toLowerCase().trim() }
     });
 
-    return NextResponse.json(newUser);
+    if (existingUser) {
+      return NextResponse.json({ 
+        error: 'Un utilisateur avec cet email existe déjà',
+        field: 'email'
+      }, { status: 409 });
+    }
+
+    // === CRÉATION DE L'ENTREPRISE SI NÉCESSAIRE ===
+    let companyId: number | null = null;
+    
+    if (companyName) {
+      let company = await prisma.company.findFirst({
+        where: { name: companyName }
+      });
+
+      if (!company) {
+        company = await prisma.company.create({
+          data: { name: companyName }
+        });
+        logSecurityEvent('company_created', { 
+          companyName, 
+          adminId: authResult.user?.id 
+        }, 'info');
+      }
+      
+      companyId = company.id;
+    }
+
+    // === HACHAGE SÉCURISÉ DU MOT DE PASSE ===
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    // === CRÉATION DE L'UTILISATEUR ===
+    const user = await prisma.user.create({
+      data: {
+        email: email.toLowerCase().trim(),
+        password: hashedPassword,
+        role: role as 'COMPANY_ADMIN' | 'COMPANY_USER',
+        companyId
+      },
+      include: {
+        company: true
+      }
+    });
+
+    // === LOG DE SÉCURITÉ ===
+    logSecurityEvent('user_created', { 
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      companyId: user.companyId,
+      adminId: authResult.user?.id
+    }, 'info');
+
+    // === RÉPONSE DE SUCCÈS ===
+    return NextResponse.json({
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        companyId: user.companyId,
+        companyName: user.company?.name,
+        createdAt: user.createdAt
+      },
+      message: 'Utilisateur créé avec succès'
+    }, { status: 201 });
 
   } catch (error) {
     console.error('Erreur lors de la création de l\'utilisateur:', error);
-    return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
+    
+    logSecurityEvent('user_creation_error', { 
+      error: errorMessage
+    }, 'error');
+
+    return NextResponse.json({ 
+      error: 'Erreur interne du serveur' 
+    }, { status: 500 });
+  }
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    // === VÉRIFICATION DES PERMISSIONS ===
+    const authResult = await verifySuperAdmin(req);
+    if (!authResult.success) {
+      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+    }
+
+    // === RÉCUPÉRATION DES UTILISATEURS ===
+    const users = await prisma.user.findMany({
+      include: {
+        company: true
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+
+    return NextResponse.json({
+      users: users.map(user => ({
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        companyId: user.companyId,
+        companyName: user.company?.name,
+        createdAt: user.createdAt
+      }))
+    });
+
+  } catch (error) {
+    console.error('Erreur lors de la récupération des utilisateurs:', error);
+    return NextResponse.json({ 
+      error: 'Erreur interne du serveur' 
+    }, { status: 500 });
   }
 } 
