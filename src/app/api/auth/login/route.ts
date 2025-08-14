@@ -5,8 +5,7 @@ import jwt from 'jsonwebtoken';
 import { 
   validateEmail, 
   sanitizeString, 
-  logSecurityEvent,
-  checkLoginAttempts
+  logSecurityEvent
 } from '../../../../lib/security';
 import crypto from 'crypto';
 
@@ -23,19 +22,12 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     
-    // === PROTECTION CONTRE LES ATTAQUES PAR FORCE BRUTE ===
-    const clientIP = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
-    if (!checkLoginAttempts(clientIP, 10, 300000)) { // 10 tentatives max, blocage 5 min
-      logSecurityEvent('login_brute_force_blocked', { ip: clientIP }, 'warn');
-      return NextResponse.json({ 
-        error: 'Trop de tentatives de connexion. Réessayez dans 5 minutes.' 
-      }, { status: 429 });
-    }
+
     
     // === VALIDATION CSRF ===
     const csrfToken = body._csrf;
     if (!csrfToken) {
-      logSecurityEvent('login_csrf_missing', { ip: clientIP }, 'warn');
+      logSecurityEvent('login_csrf_missing', { ip: 'unknown' }, 'warn');
       return NextResponse.json({ error: 'Token CSRF manquant' }, { status: 403 });
     }
     
@@ -49,7 +41,7 @@ export async function POST(req: NextRequest) {
     if (!email || !password) {
       logSecurityEvent('login_attempt_invalid', { 
         email: email ? 'provided' : 'missing',
-        ip: clientIP 
+        ip: 'unknown'
       }, 'warn');
       return NextResponse.json({ error: 'Champs manquants ou invalides' }, { status: 400 });
     }
@@ -58,7 +50,7 @@ export async function POST(req: NextRequest) {
     if (!validateEmail(email)) {
       logSecurityEvent('login_attempt_invalid_email', { 
         email, 
-        ip: clientIP 
+        ip: 'unknown'
       }, 'warn');
       return NextResponse.json({ error: 'Format d\'email invalide' }, { status: 400 });
     }
@@ -68,7 +60,7 @@ export async function POST(req: NextRequest) {
     console.log('🔍 Tentative de connexion:', { 
       email, 
       password: password ? '***' : 'undefined',
-      ip: clientIP 
+      ip: 'unknown'
     });
     
     const user = await prisma.user.findUnique({ 
@@ -89,7 +81,7 @@ export async function POST(req: NextRequest) {
       await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
       logSecurityEvent('login_attempt_user_not_found', { 
         email, 
-        ip: clientIP 
+        ip: 'unknown'
       }, 'warn');
       console.log('❌ Utilisateur non trouvé');
       return NextResponse.json({ error: 'Identifiants invalides' }, { status: 401 });
@@ -104,7 +96,7 @@ export async function POST(req: NextRequest) {
       logSecurityEvent('login_attempt_invalid_password', { 
         email, 
         userId: user.id, 
-        ip: clientIP 
+        ip: 'unknown'
       }, 'warn');
       console.log('❌ Mot de passe incorrect');
       return NextResponse.json({ error: 'Identifiants invalides' }, { status: 401 });
@@ -115,7 +107,7 @@ export async function POST(req: NextRequest) {
       email, 
       userId: user.id, 
       role: user.role, 
-      ip: clientIP 
+      ip: 'unknown'
     }, 'info');
     
     // Générer un JWT avec les informations de l'utilisateur
@@ -129,7 +121,7 @@ export async function POST(req: NextRequest) {
         iat: Math.floor(Date.now() / 1000), // Timestamp d'émission
         exp: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60), // Expiration 7 jours
         jti: crypto.randomBytes(16).toString('hex'), // JWT ID unique
-        clientIP: clientIP // IP de connexion pour traçabilité
+        clientIP: 'unknown' // IP de connexion pour traçabilité
       },
       secret,
       { 
