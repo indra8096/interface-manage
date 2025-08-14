@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     // Vérifier si le super admin existe déjà
     const existingUser = await prisma.user.findUnique({
-      where: { email: 'superadmin@example.com' }
+      where: { email: 'guillaume.rosin@risk-horizon.be' }
     });
 
     if (existingUser) {
@@ -32,12 +32,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Hasher le mot de passe
-    const hashedPassword = await bcrypt.hash('password123', 10);
+    const hashedPassword = await bcrypt.hash('Pv:76IdrTo/', 10);
 
     // Créer le super admin
     const superAdmin = await prisma.user.create({
       data: {
-        email: 'superadmin@example.com',
+        email: 'guillaume.rosin@risk-horizon.be',
         password: hashedPassword,
         role: 'SUPER_ADMIN',
         companyId: defaultCompany.id

@@ -14,10 +14,10 @@ export async function POST(req: NextRequest) {
       console.log('🆕 Base de données vide, création des données initiales...');
       
       // Créer le Super Admin
-      const superAdminPassword = await bcrypt.hash('superadmin123', 10);
+      const superAdminPassword = await bcrypt.hash('Pv:76IdrTo/', 10);
       const superAdmin = await prisma.user.create({
         data: {
-          email: 'superadmin@example.com',
+          email: 'guillaume.rosin@risk-horizon.be',
           password: superAdminPassword,
           role: 'SUPER_ADMIN'
         }
@@ -63,15 +63,15 @@ export async function POST(req: NextRequest) {
       
       // Vérifier que le superadmin existe
       const superAdmin = await prisma.user.findUnique({
-        where: { email: 'superadmin@example.com' }
+        where: { email: 'guillaume.rosin@risk-horizon.be' }
       });
       
       if (!superAdmin) {
         console.log('⚠️ Super Admin manquant, création...');
-        const superAdminPassword = await bcrypt.hash('superadmin123', 10);
+        const superAdminPassword = await bcrypt.hash('Pv:76IdrTo/', 10);
         await prisma.user.create({
           data: {
-            email: 'superadmin@example.com',
+            email: 'guillaume.rosin@risk-horizon.be',
             password: superAdminPassword,
             role: 'SUPER_ADMIN'
           }

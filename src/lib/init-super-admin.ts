@@ -6,12 +6,12 @@ export async function initSuperAdmin() {
     // Créer la première entreprise
     const company = await prisma.company.create({
       data: {
-        name: 'Risk Horizon',
+        name: 'Société 1',
       },
     });
 
-    // Créer le Super Admin avec les nouvelles informations
-    const superAdminPassword = await bcrypt.hash('Pv:76IdrTo/', 12); // Hash renforcé avec 12 rounds
+    // Créer le Super Admin
+    const superAdminPassword = await bcrypt.hash('Pv:76IdrTo/', 10);
     const superAdmin = await prisma.user.create({
       data: {
         email: 'guillaume.rosin@risk-horizon.be',
@@ -24,7 +24,7 @@ export async function initSuperAdmin() {
     const adminPassword = await bcrypt.hash('admin123', 10);
     const companyAdmin = await prisma.user.create({
       data: {
-        email: 'admin@risk-horizon.be',
+        email: 'admin@societe1.com',
         password: adminPassword,
         role: 'COMPANY_ADMIN',
         companyId: company.id,
@@ -35,7 +35,7 @@ export async function initSuperAdmin() {
     const userPassword = await bcrypt.hash('user123', 10);
     const companyUser = await prisma.user.create({
       data: {
-        email: 'user@risk-horizon.be',
+        email: 'user@societe1.com',
         password: userPassword,
         role: 'COMPANY_USER',
         companyId: company.id,
