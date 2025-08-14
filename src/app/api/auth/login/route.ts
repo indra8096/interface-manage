@@ -25,10 +25,10 @@ export async function POST(req: NextRequest) {
     
     // === PROTECTION CONTRE LES ATTAQUES PAR FORCE BRUTE ===
     const clientIP = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
-    if (!checkLoginAttempts(clientIP, 5, 900000)) { // 5 tentatives max, blocage 15 min
+    if (!checkLoginAttempts(clientIP, 10, 300000)) { // 10 tentatives max, blocage 5 min
       logSecurityEvent('login_brute_force_blocked', { ip: clientIP }, 'warn');
       return NextResponse.json({ 
-        error: 'Trop de tentatives de connexion. Réessayez dans 15 minutes.' 
+        error: 'Trop de tentatives de connexion. Réessayez dans 5 minutes.' 
       }, { status: 429 });
     }
     
