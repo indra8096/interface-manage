@@ -509,7 +509,6 @@ export default function SuperAdminDashboard() {
               className="bg-black/90 backdrop-blur-md rounded-2xl p-8 border border-gray-800 max-w-md w-full"
             >
               <div className="text-center mb-6">
-                <div className="text-6xl mb-4">🗑️</div>
                 <h2 className="text-2xl font-bold text-white mb-2">
                   Supprimer la société
                 </h2>
@@ -518,7 +517,7 @@ export default function SuperAdminDashboard() {
                 </p>
                 <div className="mt-4 p-4 bg-red-900/20 border border-red-500/30 rounded-lg">
                   <p className="text-red-300 text-sm">
-                    ⚠️ Cette action supprimera définitivement :
+                    Cette action supprimera définitivement :
                   </p>
                   <ul className="text-red-300 text-sm mt-2 space-y-1">
                     <li>• Tous les utilisateurs de cette société</li>
