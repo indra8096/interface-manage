@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 export default function Home() {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -167,7 +169,7 @@ export default function Home() {
             {/* Carte Interface de Connexion */}
             <div className="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up">
               <div className="aspect-video bg-gray-800 flex items-center justify-center relative overflow-hidden">
-                <img src="/connexion.png" alt="Interface de Connexion" className="w-full h-full object-cover" />
+                <Image src="/connexion.png" alt="Interface de Connexion" width={400} height={225} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                   <div className="text-center p-6">
                   </div>
@@ -186,7 +188,7 @@ export default function Home() {
             {/* Carte Dashboard Principal */}
             <div className="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up" style={{ animationDelay: '0.1s' }}>
               <div className="aspect-video bg-gray-800 flex items-center justify-center relative overflow-hidden">
-                <img src="/tableau.png" alt="Dashboard Principal" className="w-full h-full object-cover" />
+                <Image src="/tableau.png" alt="Dashboard Principal" width={400} height={225} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                   <div className="text-center p-6">
                   </div>
@@ -205,7 +207,7 @@ export default function Home() {
             {/* Carte Gestion des Services */}
             <div className="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up" style={{ animationDelay: '0.2s' }}>
               <div className="aspect-video bg-gray-800 flex items-center justify-center relative overflow-hidden">
-                <img src="/services.png" alt="Gestion des Services" className="w-full h-full object-cover" />
+                <Image src="/services.png" alt="Gestion des Services" width={400} height={225} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                   <div className="text-center p-6">
                   </div>
@@ -224,7 +226,7 @@ export default function Home() {
             {/* Carte Services Prédéfinis */}
             <div className="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up" style={{ animationDelay: '0.3s' }}>
               <div className="aspect-video bg-gray-800 flex items-center justify-center relative overflow-hidden">
-                <img src="/predefinis.png" alt="Services Prédéfinis" className="w-full h-full object-cover" />
+                <Image src="/predefinis.png" alt="Services Prédéfinis" width={400} height={225} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                   <div className="text-center p-6">
                   </div>
