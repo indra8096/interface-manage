@@ -168,8 +168,13 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Carte Interface de Connexion */}
             <div className="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up">
-              <div className="aspect-video bg-gray-800 flex items-center justify-center relative overflow-hidden">
-                <Image src="/connexion.png" alt="Interface de Connexion" width={400} height={225} className="w-full h-full object-cover" />
+              <div className="aspect-video bg-gray-800 relative overflow-hidden">
+                <Image 
+                  src="/connexion.png" 
+                  alt="Interface de Connexion" 
+                  fill
+                  className="object-cover" 
+                />
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                   <div className="text-center p-6">
                   </div>
@@ -187,8 +192,13 @@ export default function Home() {
 
             {/* Carte Dashboard Principal */}
             <div className="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up" style={{ animationDelay: '0.1s' }}>
-              <div className="aspect-video bg-gray-800 flex items-center justify-center relative overflow-hidden">
-                <Image src="/tableau.png" alt="Dashboard Principal" width={400} height={225} className="w-full h-full object-cover" />
+              <div className="aspect-video bg-gray-800 relative overflow-hidden">
+                <Image 
+                  src="/tableau.png" 
+                  alt="Dashboard Principal" 
+                  fill
+                  className="object-cover" 
+                />
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                   <div className="text-center p-6">
                   </div>
@@ -206,8 +216,13 @@ export default function Home() {
 
             {/* Carte Gestion des Services */}
             <div className="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up" style={{ animationDelay: '0.2s' }}>
-              <div className="aspect-video bg-gray-800 flex items-center justify-center relative overflow-hidden">
-                <Image src="/services.png" alt="Gestion des Services" width={400} height={225} className="w-full h-full object-cover" />
+              <div className="aspect-video bg-gray-800 relative overflow-hidden">
+                <Image 
+                  src="/services.png" 
+                  alt="Gestion des Services" 
+                  fill
+                  className="object-cover" 
+                />
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                   <div className="text-center p-6">
                   </div>
@@ -225,8 +240,13 @@ export default function Home() {
 
             {/* Carte Services Prédéfinis */}
             <div className="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up" style={{ animationDelay: '0.3s' }}>
-              <div className="aspect-video bg-gray-800 flex items-center justify-center relative overflow-hidden">
-                <Image src="/predefinis.png" alt="Services Prédéfinis" width={400} height={225} className="w-full h-full object-cover" />
+              <div className="aspect-video bg-gray-800 relative overflow-hidden">
+                <Image 
+                  src="/predefinis.png" 
+                  alt="Services Prédéfinis" 
+                  fill
+                  className="object-cover" 
+                />
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                   <div className="text-center p-6">
                   </div>
