@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 export default function MentionsLegales() {
   return (
     <div className="bg-black text-white font-karla min-h-screen">
@@ -8,15 +10,15 @@ export default function MentionsLegales() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <a href="/" className="text-xl font-karla-bold" style={{ color: '#CCFF00' }}>
+              <Link href="/" className="text-xl font-karla-bold" style={{ color: '#CCFF00' }}>
                 Drelto
-              </a>
+              </Link>
             </div>
             
             <div className="flex space-x-4">
-              <a href="/" className="px-6 py-2 text-black font-karla-bold rounded-lg transition-all duration-300" style={{ background: '#CCFF00' }}>
+              <Link href="/" className="px-6 py-2 text-black font-karla-bold rounded-lg transition-all duration-300" style={{ background: '#CCFF00' }}>
                 RETOUR
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -39,32 +41,32 @@ export default function MentionsLegales() {
               <p className="text-gray-300 leading-relaxed">
                 Conformément aux obligations légales en vigueur en Belgique, notamment celles
                 découlant du Code de droit économique, les présentes mentions légales définissent
-                les informations d'identification de l'éditeur de la plateforme en ligne et les conditions
-                d'utilisation générales.
+                les informations d&apos;identification de l&apos;éditeur de la plateforme en ligne et les conditions
+                d&apos;utilisation générales.
               </p>
             </div>
 
             <div>
               <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
-                Informations sur l'éditeur de la plateforme
+                Informations sur l&apos;éditeur de la plateforme
               </h2>
               <div className="space-y-3 text-gray-300">
-                <p><strong>Nom ou Dénomination sociale :</strong> [Nom et prénom (si particulier) ou raison sociale (si société)]</p>
+                <p><strong>Nom ou Dénomination sociale :</strong> Guillaume Rosin</p>
                 <p><strong>Adresse complète :</strong> Rue de Cuesmes 199, 7012 Jemappes</p>
                 <p><strong>Numéro de TVA intracommunautaire :</strong> BE20.642.017</p>
                 <p><strong>Adresse e-mail :</strong> guillaume.rosin@risk-horizon.be</p>
                 <p><strong>Numéro de téléphone :</strong> 0494876620</p>
-                <p><strong>Responsable de la publication :</strong> [Nom du responsable de la publication]</p>
+                <p><strong>Responsable de la publication :</strong> Guillaume Rosin</p>
               </div>
             </div>
 
             <div>
               <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
-                Informations sur l'hébergeur
+                Informations sur l&apos;hébergeur
               </h2>
               <div className="space-y-3 text-gray-300">
-                <p><strong>Nom de l'hébergeur :</strong> Vercel</p>
-                <p><strong>Adresse de l'hébergeur :</strong> Vercel.com</p>
+                <p><strong>Nom de l&apos;hébergeur :</strong> Vercel</p>
+                <p><strong>Adresse de l&apos;hébergeur :</strong> Vercel.com</p>
               </div>
             </div>
 
@@ -73,11 +75,11 @@ export default function MentionsLegales() {
                 Propriété intellectuelle
               </h2>
               <p className="text-gray-300 leading-relaxed">
-                L'ensemble des éléments constituant la présente plateforme (textes, images, logos,
-                icônes, sons, logiciels, etc.) sont la propriété exclusive de l'éditeur, sauf mentions
+                L&apos;ensemble des éléments constituant la présente plateforme (textes, images, logos,
+                icônes, sons, logiciels, etc.) sont la propriété exclusive de l&apos;éditeur, sauf mentions
                 contraires. Toute reproduction, représentation, modification, publication, adaptation
                 de tout ou partie des éléments de la plateforme, quel que soit le moyen ou le procédé
-                utilisé, est interdite, sauf autorisation écrite préalable de l'éditeur.
+                utilisé, est interdite, sauf autorisation écrite préalable de l&apos;éditeur.
               </p>
             </div>
 
@@ -86,13 +88,13 @@ export default function MentionsLegales() {
                 Limitation de responsabilité
               </h2>
               <p className="text-gray-300 leading-relaxed">
-                L'éditeur s'efforce d'assurer l'exactitude et la mise à jour des informations diffusées sur
+                L&apos;éditeur s&apos;efforce d&apos;assurer l&apos;exactitude et la mise à jour des informations diffusées sur
                 cette plateforme, dont il se réserve le droit de corriger, à tout moment et sans préavis,
-                le contenu. Toutefois, l'éditeur ne peut garantir l'exactitude, la précision ou
-                l'exhaustivité des informations mises à disposition sur cette plateforme. En
-                conséquence, l'éditeur décline toute responsabilité pour toute imprécision,
+                le contenu. Toutefois, l&apos;éditeur ne peut garantir l&apos;exactitude, la précision ou
+                l&apos;exhaustivité des informations mises à disposition sur cette plateforme. En
+                conséquence, l&apos;éditeur décline toute responsabilité pour toute imprécision,
                 inexactitude ou omission portant sur des informations disponibles sur la plateforme,
-                ainsi que pour tous dommages résultant d'une intrusion frauduleuse d'un tiers ayant
+                ainsi que pour tous dommages résultant d&apos;une intrusion frauduleuse d&apos;un tiers ayant
                 entraîné une modification des informations mises à disposition sur la plateforme.
               </p>
             </div>
