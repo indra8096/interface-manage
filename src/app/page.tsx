@@ -354,7 +354,7 @@ export default function Home() {
             <p className="text-gray-400 mb-6">
               Plateforme moderne de gestion d&apos;infrastructure développée avec les dernières technologies
             </p>
-            <div className="flex justify-center space-x-6">
+            <div className="flex justify-center space-x-6 mb-4">
               <a href="#interfaces" className="text-gray-400 hover:text-[#CCFF00] transition-colors">
                 Interfaces
               </a>
@@ -363,6 +363,17 @@ export default function Home() {
               </a>
               <a href="#purple-team" className="text-gray-400 hover:text-[#CCFF00] transition-colors">
                 Purple Team
+              </a>
+            </div>
+            <div className="flex justify-center space-x-6 mb-4">
+              <a href="/mentions-legales" className="text-gray-400 hover:text-[#CCFF00] transition-colors">
+                Mentions Légales
+              </a>
+              <a href="/politique-confidentialite" className="text-gray-400 hover:text-[#CCFF00] transition-colors">
+                Politique de Confidentialité
+              </a>
+              <a href="/cgu" className="text-gray-400 hover:text-[#CCFF00] transition-colors">
+                CGU
               </a>
             </div>
             <div className="mt-8 pt-8 border-t border-gray-800">
