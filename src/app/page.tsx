@@ -84,7 +84,7 @@ export default function Home() {
       <section id="features" className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-900/30">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 animate-slide-up">
-            <h2 className="text-4xl md:text-5xl font-karla-bold mb-6" style={{ color: '#9933FF' }}>
+            <h2 className="text-4xl md:text-5xl font-karla-bold mb-6" style={{ color: 'white' }}>
               Fonctionnalités
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
@@ -157,7 +157,7 @@ export default function Home() {
       <section id="interfaces" className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 animate-slide-up">
-            <h2 className="text-4xl md:text-5xl font-karla-bold mb-6" style={{ color: '#9933FF' }}>
+            <h2 className="text-4xl md:text-5xl font-karla-bold mb-6" style={{ color: 'white' }}>
               Interfaces
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
@@ -269,7 +269,7 @@ export default function Home() {
       <section id="tech" className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 animate-slide-up">
-            <h2 className="text-4xl md:text-5xl font-karla-bold mb-6" style={{ color: '#9933FF' }}>
+            <h2 className="text-4xl md:text-5xl font-karla-bold mb-6" style={{ color: 'white' }}>
               Technologies
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
@@ -301,7 +301,7 @@ export default function Home() {
       <section id="purple-team" className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 animate-slide-up">
-            <h2 className="text-4xl md:text-5xl font-karla-bold mb-6" style={{ color: '#9933FF' }}>
+            <h2 className="text-4xl md:text-5xl font-karla-bold mb-6" style={{ color: 'white' }}>
               Purple Team
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">

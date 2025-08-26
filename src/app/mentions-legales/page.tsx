@@ -38,74 +38,80 @@ export default function MentionsLegales() {
 
           <div className="glass-effect rounded-2xl p-8 border border-gray-700 space-y-8">
             <div>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+                Qui est l&apos;éditeur du site ?
+              </h2>
               <p className="text-gray-300 leading-relaxed">
-                Conformément aux obligations légales en vigueur en Belgique, notamment celles
-                découlant du Code de droit économique, les présentes mentions légales définissent
-                les informations d&apos;identification de l&apos;éditeur de la plateforme en ligne et les conditions
-                d&apos;utilisation générales.
+                Le site interface-managee-drelto.vercel.app est édité par l&apos;Association Drelto ASBL, domiciliée Rue de Cuesmes 199, 7012 Flénu dont le numéro d&apos;entreprise est le 1008.675.581.
               </p>
             </div>
 
             <div>
               <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
-                Informations sur l&apos;éditeur de la plateforme
-              </h2>
-              <div className="space-y-3 text-gray-300">
-                <p><strong>Nom ou Dénomination sociale :</strong> Guillaume Rosin</p>
-                <p><strong>Adresse complète :</strong> Rue de Cuesmes 199, 7012 Jemappes</p>
-                <p><strong>Numéro de TVA intracommunautaire :</strong> BE20.642.017</p>
-                <p><strong>Adresse e-mail :</strong> guillaume.rosin@risk-horizon.be</p>
-                <p><strong>Numéro de téléphone :</strong> 0494876620</p>
-                <p><strong>Responsable de la publication :</strong> Guillaume Rosin</p>
-              </div>
-            </div>
-
-            <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
-                Informations sur l&apos;hébergeur
-              </h2>
-              <div className="space-y-3 text-gray-300">
-                <p><strong>Nom de l&apos;hébergeur :</strong> Vercel</p>
-                <p><strong>Adresse de l&apos;hébergeur :</strong> Vercel.com</p>
-              </div>
-            </div>
-
-            <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
-                Propriété intellectuelle
+                Qui est l&apos;hébergeur du site ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
-                L&apos;ensemble des éléments constituant la présente plateforme (textes, images, logos,
-                icônes, sons, logiciels, etc.) sont la propriété exclusive de l&apos;éditeur, sauf mentions
-                contraires. Toute reproduction, représentation, modification, publication, adaptation
-                de tout ou partie des éléments de la plateforme, quel que soit le moyen ou le procédé
-                utilisé, est interdite, sauf autorisation écrite préalable de l&apos;éditeur.
+                Le site est hébergé par : Vercel Inc., dont le siège social est situé au 340 S Lemon Ave #4133 Walnut, CA 91789, États-Unis.
               </p>
             </div>
 
             <div>
               <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
-                Limitation de responsabilité
+                Qui est le directeur de la publication ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
-                L&apos;éditeur s&apos;efforce d&apos;assurer l&apos;exactitude et la mise à jour des informations diffusées sur
-                cette plateforme, dont il se réserve le droit de corriger, à tout moment et sans préavis,
-                le contenu. Toutefois, l&apos;éditeur ne peut garantir l&apos;exactitude, la précision ou
-                l&apos;exhaustivité des informations mises à disposition sur cette plateforme. En
-                conséquence, l&apos;éditeur décline toute responsabilité pour toute imprécision,
-                inexactitude ou omission portant sur des informations disponibles sur la plateforme,
-                ainsi que pour tous dommages résultant d&apos;une intrusion frauduleuse d&apos;un tiers ayant
-                entraîné une modification des informations mises à disposition sur la plateforme.
+                Monsieur Guillaume RICHARD est le directeur de la publication. Il peut être contacté à l&apos;adresse suivante : guillaume.rosin@drelto.be
               </p>
             </div>
 
             <div>
               <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
-                Droit applicable et juridiction compétente
+                Quels sont les droits liés à la propriété intellectuelle ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
-                Les présentes mentions légales sont régies par le droit belge. En cas de litige, et à
-                défaut de résolution amiable, les tribunaux belges seront seuls compétents.
+                Tous les contenus présents sur ce site, tels que les textes, images, graphiques et logos, sont protégés par des droits d&apos;auteur. Cela signifie que vous ne pouvez pas copier, distribuer, modifier ou utiliser ces éléments sans avoir obtenu une autorisation écrite de Risk Horizon ASBL au préalable.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+                Le site est-il toujours disponible ?
+              </h2>
+              <p className="text-gray-300 leading-relaxed">
+                Nous faisons de notre mieux pour que notre site soit accessible en permanence. Cependant, il peut arriver que le site soit temporairement indisponible en raison de maintenances techniques, de mises à jour ou de problèmes de réseau.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+                Quand Drelto ASBL n&apos;est-elle pas responsable de l&apos;utilisation du site ?
+              </h2>
+              <p className="text-gray-300 leading-relaxed">
+                Drelto ASBL ne peut pas être tenue responsable des dommages directs ou indirects dans les cas suivants :
+              </p>
+              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4 mt-3">
+                <li>Si vous accédez ou utilisez ce site et que vous subissez des problèmes ou des pertes.</li>
+                <li>En cas d&apos;interruption de l&apos;accès au site, y compris pendant les maintenances techniques ou les mises à jour.</li>
+                <li>Si les informations sur le site sont inexactes ou incomplètes.</li>
+                <li>Si vous utilisez des liens vers des sites tiers, nous déclinons toute responsabilité pour le contenu de ces sites.</li>
+              </ul>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+                Quel tribunal est compétent en cas de litige ?
+              </h2>
+              <p className="text-gray-300 leading-relaxed">
+                Si un désaccord survient, nous vous encourageons d&apos;abord à nous contacter par e-mail pour essayer de le résoudre.
+              </p>
+              <p className="text-gray-300 leading-relaxed mt-3">
+                Si le litige persiste, l&apos;utilisateur reconnaît que la loi belge s&apos;applique concernant l&apos;utilisation de notre site web. Tout différend sera soumis à la compétence exclusive du tribunal de commerce de Mons.
+              </p>
+            </div>
+
+            <div className="text-center pt-6 border-t border-gray-700">
+              <p className="text-sm text-gray-400">
+                <strong>Date de dernière mise à jour :</strong> 26 aout 2025
               </p>
             </div>
           </div>
