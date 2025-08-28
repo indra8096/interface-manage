@@ -55,14 +55,6 @@ const TaskCard: React.FC<TaskCardProps> = ({
 }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editForm, setEditForm] = useState({
-    name: name,
-    description: description || '',
-    importance: importance || 'Moyenne',
-    dueDate: dueDate || '',
-    assignedTo: assignedTo || '',
-  });
 
   const handleComplete = async () => {
     await onStatusChange(id, 'completed');
@@ -111,29 +103,6 @@ const TaskCard: React.FC<TaskCardProps> = ({
     }
   };
 
-  const handleInlineEdit = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/tasks/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(editForm),
-      });
-
-      if (response.ok) {
-        setIsEditing(false);
-        window.location.reload();
-      } else {
-        console.error('Erreur lors de la mise à jour:', response.status, response.statusText);
-      }
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour:', error);
-    }
-  };
-
   // Formatage de la date
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
@@ -155,14 +124,14 @@ const TaskCard: React.FC<TaskCardProps> = ({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, x: -100 }}
         transition={{ duration: 0.3 }}
-        className={`relative p-4 rounded-xl border transition-all duration-300 group ${
+        className={`relative p-3 rounded-xl border transition-all duration-300 group ${
           isCompleted ? 'opacity-75' : ''
         }`}
         style={{ 
           background: isCompleted ? 'var(--bg-secondary)' : 'var(--bg-card)',
           border: '1px solid var(--border-primary)',
           borderLeft: `4px solid ${category ? categoryColors[category as keyof typeof categoryColors] : statusColors[status]}`,
-          boxShadow: `0 8px 20px rgba(0,0,0,0.15), 0 0 0 1px ${category ? categoryColors[category as keyof typeof categoryColors] : statusColors[status]}20`
+          boxShadow: `0 6px 15px rgba(0,0,0,0.12), 0 0 0 1px ${category ? categoryColors[category as keyof typeof categoryColors] : statusColors[status]}20`
         }}
       >
         {/* Filtre grisé pour les tâches terminées */}
@@ -180,15 +149,15 @@ const TaskCard: React.FC<TaskCardProps> = ({
           <div className="flex items-start justify-between gap-3">
             <div className="flex-grow min-w-0">
               {/* Header avec nom */}
-              <div className="mb-3">
+              <div className="mb-2">
                 <h3 className={`font-karla-bold text-base transition-colors duration-300 ${isCompleted ? 'line-through' : ''}`} style={{ color: 'var(--text-primary)' }}>
                   {name}
                 </h3>
               </div>
 
-              {/* Statut visuel */}
-              <div className="flex items-center gap-3 mb-3">
-                <div className="flex items-center gap-2">
+              {/* Statut visuel et personne assignée */}
+              <div className="mb-2">
+                <div className="flex items-center gap-2 mb-1">
                   <div 
                     className="w-2 h-2 rounded-full animate-pulse"
                     style={{ 
@@ -201,43 +170,54 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   </span>
                 </div>
                 
+                {/* Personne assignée juste en dessous du statut */}
+                {assignedTo && (
+                  <div className="flex items-center gap-1 ml-4">
+                    <FontAwesomeIcon icon={faUser} className="w-2 h-3" style={{ color: 'var(--text-muted)' }} />
+                    <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
+                      {assignedTo}
+                    </span>
+                  </div>
+                )}
+                
                 {/* Date de fin pour les tâches terminées */}
                 {isCompleted && completedAt && (
-                  <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
-                    Terminé le {formatDate(completedAt)}
-                  </span>
+                  <div className="ml-4 mt-1">
+                    <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
+                      Terminé le {formatDate(completedAt)}
+                    </span>
+                  </div>
                 )}
-              </div>
-
-              {/* Bouton accordéon en bas à droite */}
-              <div className="flex justify-end">
-                <button
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className="p-2 rounded-full transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-700"
-                  style={{ color: 'var(--text-muted)' }}
-                  title={isExpanded ? "Réduire" : "Développer"}
-                >
-                  <FontAwesomeIcon 
-                    icon={isExpanded ? faChevronUp : faChevronDown} 
-                    className="w-4 h-4" 
-                  />
-                </button>
               </div>
             </div>
 
-            {/* Bouton rond à coche */}
-            <div className="flex flex-col gap-2">
+            {/* Bouton rond à coche et flèche accordéon alignés verticalement */}
+            <div className="flex flex-col items-center gap-2">
+              {/* Bouton rond à coche (plus petit) */}
               <button
                 onClick={handleComplete}
                 disabled={isCompleted}
-                className={`w-8 h-8 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
+                className={`w-6 h-6 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
                   isCompleted 
                     ? 'bg-green-500 border-green-500 text-white' 
                     : 'border-gray-400 hover:border-green-500 hover:bg-green-50'
                 }`}
                 title={isCompleted ? "Déjà terminé" : "Marquer comme terminé"}
               >
-                {isCompleted && <FontAwesomeIcon icon={faCheck} className="w-4 h-4" />}
+                {isCompleted && <FontAwesomeIcon icon={faCheck} className="w-3 h-3" />}
+              </button>
+
+              {/* Flèche accordéon alignée verticalement */}
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="p-1 rounded-full transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-700"
+                style={{ color: 'var(--text-muted)' }}
+                title={isExpanded ? "Réduire" : "Développer"}
+              >
+                <FontAwesomeIcon 
+                  icon={isExpanded ? faChevronUp : faChevronDown} 
+                  className="w-3 h-3" 
+                />
               </button>
             </div>
           </div>
@@ -250,32 +230,23 @@ const TaskCard: React.FC<TaskCardProps> = ({
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
-                className="border-t pt-4 mt-4"
+                className="border-t pt-3 mt-3"
                 style={{ borderColor: 'var(--border-primary)' }}
               >
-                {/* Informations sur les assignations */}
-                <div className="mb-4 space-y-2">
-                  {assignedBy && (
+                {/* Informations sur l'assignateur */}
+                {assignedBy && (
+                  <div className="mb-3">
                     <div className="flex items-center gap-2">
                       <FontAwesomeIcon icon={faUserTie} className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
                       <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
                         Assigné par: <span className="font-karla-semibold">{assignedBy}</span>
                       </span>
                     </div>
-                  )}
-                  
-                  {assignedTo && (
-                    <div className="flex items-center gap-2">
-                      <FontAwesomeIcon icon={faUser} className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
-                      <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
-                        Assigné à: <span className="font-karla-semibold">{assignedTo}</span>
-                      </span>
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
 
                 {/* Priorité */}
-                <div className="mb-4">
+                <div className="mb-3">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>PRIORITÉ:</span>
                     <span className="text-xs px-2 py-1 rounded-lg font-karla-semibold transition-colors duration-300" style={{
@@ -290,7 +261,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
                 {/* Description */}
                 {description && (
-                  <div className="mb-4">
+                  <div className="mb-3">
                     <h4 className="text-xs font-karla-semibold mb-2 transition-colors duration-300" style={{ color: 'var(--text-secondary)' }}>
                       DESCRIPTION
                     </h4>
@@ -301,7 +272,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                 )}
 
                 {/* Dates */}
-                <div className="space-y-2 mb-4">
+                <div className="space-y-2 mb-3">
                   {dueDate && (
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>

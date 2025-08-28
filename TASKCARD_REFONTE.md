@@ -1,9 +1,9 @@
-# Refonte des TaskCard et TaskColumn - Version 2
+# Refonte des TaskCard et TaskColumn - Version 3
 
 ## 🎯 Objectif
 Refonte complète du design et des fonctionnalités des cartes de tâches dans les colonnes de tâches pour améliorer l'expérience utilisateur et la lisibilité.
 
-## ✨ Nouvelles Fonctionnalités Implémentées (Version 2)
+## ✨ Nouvelles Fonctionnalités Implémentées (Version 3)
 
 ### 1. **Affichage des tâches terminées**
 - ✅ Les tâches terminées apparaissent en **grisé** avec une opacité réduite
@@ -12,10 +12,10 @@ Refonte complète du design et des fonctionnalités des cartes de tâches dans l
 - ✅ Titre barré (`line-through`) pour les tâches terminées
 
 ### 2. **Informations sur les assignations**
-- ✅ Affichage de **qui a assigné** la tâche (`assignedBy`)
-- ✅ Affichage de la **personne assignée** (`assignedTo`)
+- ✅ Affichage de **qui a assigné** la tâche (`assignedBy`) dans l'accordéon
+- ✅ Affichage de la **personne assignée** (`assignedTo`) **juste sous le statut**
+- ✅ **Suppression** de la personne assignée de l'accordéon
 - ✅ Icônes distinctes : `faUserTie` pour l'assignateur, `faUser` pour l'assigné
-- ✅ Format : "Assigné par: [Nom]" et "Assigné à: [Nom]"
 
 ### 3. **Gestion de la priorité**
 - ✅ **Suppression** de la priorité de l'affichage principal des cards
@@ -24,9 +24,9 @@ Refonte complète du design et des fonctionnalités des cartes de tâches dans l
 
 ### 4. **Contenu supplémentaire (accordéon)**
 - ✅ **Menu accordéon** intégré dans chaque card
-- ✅ **Flèche accordéon déplacée** en bas à droite de la card
+- ✅ **Flèche accordéon alignée verticalement** avec le bouton rond à coche
 - ✅ Affichage de **toutes les infos du formulaire** dans l'accordéon :
-  - Assignations (assigné par/à)
+  - Assignateur (assigné par)
   - Priorité
   - Description
   - Dates (échéance, création)
@@ -34,12 +34,13 @@ Refonte complète du design et des fonctionnalités des cartes de tâches dans l
 
 ### 5. **Améliorations UI sur les cards**
 - ✅ **Titres agrandis** : passage de `text-sm` à `text-base`
-- ✅ **Hauteur réduite** : passage de `p-6` à `p-4`
-- ✅ **Bouton Valider** remplacé par un **bouton rond à coche** simple
+- ✅ **Hauteur encore plus réduite** : passage de `p-4` à `p-3`
+- ✅ **Bouton Valider** remplacé par un **bouton rond à coche plus petit** (w-6 h-6)
 - ✅ **Bouton rond à coche** qui se remplit en vert quand la tâche est terminée
 - ✅ **Switch "Afficher" supprimé** (remplacé par le bouton rond à coche)
 - ✅ **Suppression de l'icône info** (remplacée par l'accordéon)
-- ✅ **Interface simplifiée** avec moins d'éléments visuels
+- ✅ **Interface plus compacte** avec moins d'espacement
+- ✅ **Boutons d'action alignés verticalement** à droite
 
 ### 6. **Gestion des permissions dans l'accordéon**
 - ✅ **Pour les admins** : boutons Modifier et Supprimer dans l'accordéon
@@ -63,7 +64,10 @@ Refonte complète du design et des fonctionnalités des cartes de tâches dans l
 - Gestion de la visibilité des tâches supprimée
 - Menu accordéon redessiné avec toutes les informations
 - Boutons d'action déplacés dans l'accordéon pour les admins
-- Bouton rond à coche simple pour valider les tâches
+- Bouton rond à coche plus petit (w-6 h-6) pour valider les tâches
+- Flèche accordéon alignée verticalement avec le bouton rond
+- Personne assignée affichée sous le statut (pas dans l'accordéon)
+- Hauteur des cards encore réduite (p-3)
 
 ### TaskColumn.tsx
 - Suppression de la boule décorative
@@ -78,9 +82,15 @@ Refonte complète du design et des fonctionnalités des cartes de tâches dans l
 - **En attente** : `#ef4444` (rouge)
 
 ### Bouton rond à coche
+- **Taille** : `w-6 h-6` (plus petit que la version précédente)
 - **Non terminé** : cercle vide avec bordure grise
 - **Terminé** : cercle plein vert avec icône de validation
 - **Hover** : bordure verte avec fond vert clair
+
+### Alignement des éléments
+- **Bouton rond à coche** et **flèche accordéon** alignés verticalement
+- **Personne assignée** affichée sous le statut avec indentation
+- **Interface compacte** avec espacement réduit
 
 ### Animations
 - Transitions fluides avec `framer-motion`
@@ -148,12 +158,13 @@ interface TaskCardProps {
 
 Une page de test est disponible à `/test-dropzone` pour tester toutes les nouvelles fonctionnalités avec des exemples de tâches.
 
-### Instructions de test
-1. **Cliquez sur la flèche** en bas à droite de chaque card pour ouvrir l'accordéon
-2. **Vérifiez que toutes les infos** sont bien dans l'accordéon
-3. **Testez le bouton rond à coche** : il doit se remplir en vert quand une tâche est terminée
-4. **Pour les admins** : vérifiez que les boutons Modifier et Supprimer apparaissent dans l'accordéon
-5. **Vérifiez que la priorité** n'apparaît plus sur l'affichage principal des cards
+### Instructions de test (Version 3)
+1. **Vérifiez que le bouton rond à coche** est plus petit (6x6 au lieu de 8x8)
+2. **Vérifiez que la flèche accordéon** est alignée verticalement avec le bouton rond
+3. **Vérifiez que la personne assignée** apparaît juste sous le statut (En cours/Terminé)
+4. **Vérifiez que la personne assignée** n'apparaît plus dans l'accordéon
+5. **Vérifiez que les cards sont plus compactes** avec moins d'espacement
+6. **Testez l'accordéon** : il ne doit contenir que l'assignateur, priorité, description et dates
 
 ## 🔄 Migration
 
@@ -163,6 +174,8 @@ Une page de test est disponible à `/test-dropzone` pour tester toutes les nouve
 - Changement des couleurs de statut
 - Suppression du composant Switch personnalisé
 - Déplacement des boutons d'action dans l'accordéon
+- Réduction de la taille du bouton rond à coche
+- Réorganisation de l'affichage des assignations
 
 ### Compatibilité
 - Les anciennes props restent supportées
@@ -171,21 +184,21 @@ Une page de test est disponible à `/test-dropzone` pour tester toutes les nouve
 
 ## 🎯 Prochaines Étapes
 
-1. **Tests utilisateurs** pour valider l'UX simplifiée
+1. **Tests utilisateurs** pour valider l'UX compacte
 2. **Optimisations de performance** si nécessaire
 3. **Ajout de fonctionnalités** supplémentaires selon les retours
 4. **Documentation API** pour les développeurs
 
-## 📋 Résumé des Changements Version 2
+## 📋 Résumé des Changements Version 3
 
-- ✅ **Priorité supprimée** de l'affichage principal
-- ✅ **Flèche accordéon déplacée** en bas à droite
-- ✅ **Toutes les infos** dans l'accordéon
-- ✅ **Boutons admin** dans l'accordéon
-- ✅ **Switch "Afficher" supprimé**
-- ✅ **Bouton rond à coche** simple et efficace
-- ✅ **Interface épurée** et plus claire
+- ✅ **Bouton rond à coche plus petit** (w-6 h-6)
+- ✅ **Flèche accordéon alignée verticalement** avec le bouton rond
+- ✅ **Hauteur des cards encore réduite** (p-3)
+- ✅ **Personne assignée sous le statut** (pas dans l'accordéon)
+- ✅ **Interface plus compacte** avec moins d'espacement
+- ✅ **Boutons d'action alignés** verticalement à droite
+- ✅ **Accordéon simplifié** sans les informations d'assignation
 
 ---
 
-*Refonte réalisée selon les spécifications demandées avec une approche moderne, intuitive et épurée.*
+*Refonte réalisée selon les spécifications demandées avec une approche moderne, intuitive, épurée et compacte.*

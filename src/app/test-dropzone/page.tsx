@@ -79,18 +79,16 @@ export default function TestDropzonePage() {
           border: '1px solid var(--border-primary)'
         }}>
           <h2 className="text-xl font-karla-bold mb-4" style={{ color: 'var(--text-primary)' }}>
-            Nouvelles Fonctionnalités Implémentées (Version 2)
+            Nouvelles Fonctionnalités Implémentées (Version 3)
           </h2>
           <ul className="space-y-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-            <li>✅ <strong>Priorité supprimée</strong> de l'affichage principal des cards</li>
-            <li>✅ <strong>Flèche accordéon déplacée</strong> en bas à droite de la card</li>
-            <li>✅ <strong>Toutes les infos du formulaire</strong> dans l'accordéon</li>
-            <li>✅ <strong>Pour les admins</strong> : boutons Modifier et Supprimer dans l'accordéon</li>
-            <li>✅ <strong>Pour les employés</strong> : lecture seule dans l'accordéon</li>
-            <li>✅ <strong>Switch "Afficher" supprimé</strong> et remplacé par un bouton rond à coche</li>
-            <li>✅ <strong>Bouton rond à coche</strong> qui se remplit en vert quand la tâche est terminée</li>
-            <li>✅ <strong>Interface simplifiée</strong> avec moins d'éléments visuels</li>
-            <li>✅ <strong>Accordéon plus complet</strong> avec toutes les informations</li>
+            <li>✅ <strong>Bouton rond à coche plus petit</strong> (w-6 h-6 au lieu de w-8 h-8)</li>
+            <li>✅ <strong>Flèche accordéon alignée verticalement</strong> avec le bouton rond à coche</li>
+            <li>✅ <strong>Hauteur des cards encore réduite</strong> (p-3 au lieu de p-4)</li>
+            <li>✅ <strong>Personne assignée affichée sous le statut</strong> et pas dans l'accordéon</li>
+            <li>✅ <strong>Interface plus compacte</strong> avec moins d'espacement</li>
+            <li>✅ <strong>Boutons d'action alignés</strong> verticalement à droite</li>
+            <li>✅ <strong>Accordéon simplifié</strong> sans les informations d'assignation</li>
           </ul>
         </div>
 
@@ -99,14 +97,15 @@ export default function TestDropzonePage() {
           border: '1px solid var(--border-primary)'
         }}>
           <h3 className="text-lg font-karla-bold mb-3" style={{ color: 'var(--text-primary)' }}>
-            Instructions de Test
+            Instructions de Test (Version 3)
           </h3>
           <ol className="space-y-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-            <li>1. <strong>Cliquez sur la flèche</strong> en bas à droite de chaque card pour ouvrir l'accordéon</li>
-            <li>2. <strong>Vérifiez que toutes les infos</strong> sont bien dans l'accordéon (assignations, priorité, description, dates)</li>
-            <li>3. <strong>Testez le bouton rond à coche</strong> : il doit se remplir en vert quand une tâche est terminée</li>
-            <li>4. <strong>Pour les admins</strong> : vérifiez que les boutons Modifier et Supprimer apparaissent dans l'accordéon</li>
-            <li>5. <strong>Vérifiez que la priorité</strong> n'apparaît plus sur l'affichage principal des cards</li>
+            <li>1. <strong>Vérifiez que le bouton rond à coche</strong> est plus petit (6x6 au lieu de 8x8)</li>
+            <li>2. <strong>Vérifiez que la flèche accordéon</strong> est alignée verticalement avec le bouton rond</li>
+            <li>3. <strong>Vérifiez que la personne assignée</strong> apparaît juste sous le statut (En cours/Terminé)</li>
+            <li>4. <strong>Vérifiez que la personne assignée</strong> n'apparaît plus dans l'accordéon</li>
+            <li>5. <strong>Vérifiez que les cards sont plus compactes</strong> avec moins d'espacement</li>
+            <li>6. <strong>Testez l'accordéon</strong> : il ne doit contenir que l'assignateur, priorité, description et dates</li>
           </ol>
         </div>
       </div>
