@@ -75,6 +75,11 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
 
   const percentage = Math.min(Math.round((tasks.filter(t => t.status === 'completed').length / Math.max(tasks.length, 1)) * 100), 100);
 
+  // Calcul des compteurs de tâches
+  const completedTasks = tasks.filter(t => t.status === 'completed').length;
+  const inProgressTasks = tasks.filter(t => t.status === 'warning').length;
+  const pendingTasks = tasks.filter(t => t.status === 'error').length;
+
   const scoreColors = {
     1: '#ef4444',
     2: '#f59e0b',
@@ -223,14 +228,6 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
               {categoryDescriptions[category]}
             </p>
           </div>
-          <div
-            className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 group"
-            style={{
-              background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-secondary))'
-            }}
-          >
-            <div className="w-8 h-8 rounded-full transition-all duration-300" style={{ background: 'var(--bg-primary)' }}></div>
-          </div>
         </div>
         
         <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent"></div>
@@ -252,8 +249,36 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
           />
         </div>
         <div className="text-center mt-4">
-          <div className="text-lg font-karla-bold" style={{ color: categoryColors[category] }}>
-            {tasks.length}/10
+          <div className="grid grid-cols-3 gap-4">
+            {/* Tâches terminées */}
+            <div className="text-center">
+              <div className="text-lg font-karla-bold text-green-500">
+                {completedTasks}
+              </div>
+              <div className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
+                Terminées
+              </div>
+            </div>
+            
+            {/* Tâches en cours */}
+            <div className="text-center">
+              <div className="text-lg font-karla-bold text-orange-500">
+                {inProgressTasks}
+              </div>
+              <div className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
+                En cours
+              </div>
+            </div>
+            
+            {/* Tâches en attente */}
+            <div className="text-center">
+              <div className="text-lg font-karla-bold text-red-500">
+                {pendingTasks}
+              </div>
+              <div className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
+                En attente
+              </div>
+            </div>
           </div>
         </div>
       </div>
