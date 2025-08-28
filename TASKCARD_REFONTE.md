@@ -1,9 +1,9 @@
-# Refonte des TaskCard et TaskColumn
+# Refonte des TaskCard et TaskColumn - Version 2
 
 ## 🎯 Objectif
 Refonte complète du design et des fonctionnalités des cartes de tâches dans les colonnes de tâches pour améliorer l'expérience utilisateur et la lisibilité.
 
-## ✨ Nouvelles Fonctionnalités Implémentées
+## ✨ Nouvelles Fonctionnalités Implémentées (Version 2)
 
 ### 1. **Affichage des tâches terminées**
 - ✅ Les tâches terminées apparaissent en **grisé** avec une opacité réduite
@@ -18,25 +18,36 @@ Refonte complète du design et des fonctionnalités des cartes de tâches dans l
 - ✅ Format : "Assigné par: [Nom]" et "Assigné à: [Nom]"
 
 ### 3. **Gestion de la priorité**
-- ✅ **Suppression** de la possibilité de modifier la priorité directement depuis la card
-- ✅ Affichage en **lecture seule** avec un style badge
-- ✅ Priorité affichée dans un span stylisé au lieu d'un select
+- ✅ **Suppression** de la priorité de l'affichage principal des cards
+- ✅ Affichage de la priorité **uniquement dans l'accordéon**
+- ✅ Priorité affichée dans un span stylisé (lecture seule)
 
 ### 4. **Contenu supplémentaire (accordéon)**
 - ✅ **Menu accordéon** intégré dans chaque card
-- ✅ Bouton toggle avec icônes `faChevronDown`/`faChevronUp`
-- ✅ Affichage de la **description** de la tâche dans l'accordéon
-- ✅ Affichage des **dates** (échéance, création) dans l'accordéon
+- ✅ **Flèche accordéon déplacée** en bas à droite de la card
+- ✅ Affichage de **toutes les infos du formulaire** dans l'accordéon :
+  - Assignations (assigné par/à)
+  - Priorité
+  - Description
+  - Dates (échéance, création)
 - ✅ Animation fluide avec `AnimatePresence` et `motion.div`
 
 ### 5. **Améliorations UI sur les cards**
 - ✅ **Titres agrandis** : passage de `text-sm` à `text-base`
 - ✅ **Hauteur réduite** : passage de `p-6` à `p-4`
-- ✅ **Bouton Valider** remplacé par un **rond** avec icône `faCheck`
-- ✅ **Switch personnalisé** pour l'option "Afficher" avec icônes `faEye`/`faEyeSlash`
+- ✅ **Bouton Valider** remplacé par un **bouton rond à coche** simple
+- ✅ **Bouton rond à coche** qui se remplit en vert quand la tâche est terminée
+- ✅ **Switch "Afficher" supprimé** (remplacé par le bouton rond à coche)
 - ✅ **Suppression de l'icône info** (remplacée par l'accordéon)
+- ✅ **Interface simplifiée** avec moins d'éléments visuels
 
-### 6. **Modifications des TaskColumn**
+### 6. **Gestion des permissions dans l'accordéon**
+- ✅ **Pour les admins** : boutons Modifier et Supprimer dans l'accordéon
+- ✅ **Pour les employés** : lecture seule dans l'accordéon
+- ✅ **Bouton Modifier** : ouvre le modal d'édition
+- ✅ **Bouton Supprimer** : supprime la tâche (admin seulement)
+
+### 7. **Modifications des TaskColumn**
 - ✅ **Suppression de la boule décorative** (cercle avec gradient)
 - ✅ **Remplacement du compteur** `"0/10"` par :
   - Nombre de **tâches terminées** (vert)
@@ -48,10 +59,11 @@ Refonte complète du design et des fonctionnalités des cartes de tâches dans l
 
 ### TaskCard.tsx
 - Interface étendue avec `assignedBy` et `completedAt`
-- Composant Switch personnalisé intégré
-- Gestion de la visibilité des tâches
-- Menu accordéon avec animations
-- Boutons d'action redessinés
+- Suppression du composant Switch personnalisé
+- Gestion de la visibilité des tâches supprimée
+- Menu accordéon redessiné avec toutes les informations
+- Boutons d'action déplacés dans l'accordéon pour les admins
+- Bouton rond à coche simple pour valider les tâches
 
 ### TaskColumn.tsx
 - Suppression de la boule décorative
@@ -64,6 +76,11 @@ Refonte complète du design et des fonctionnalités des cartes de tâches dans l
 - **Terminé** : `#10b981` (vert)
 - **En cours** : `#f59e0b` (orange)
 - **En attente** : `#ef4444` (rouge)
+
+### Bouton rond à coche
+- **Non terminé** : cercle vide avec bordure grise
+- **Terminé** : cercle plein vert avec icône de validation
+- **Hover** : bordure verte avec fond vert clair
 
 ### Animations
 - Transitions fluides avec `framer-motion`
@@ -120,16 +137,23 @@ interface TaskCardProps {
 - **admin** : Accès complet (modifier, supprimer, valider)
 - **SUPER_ADMIN** : Accès complet
 - **COMPANY_ADMIN** : Accès complet
-- **user** : Accès limité (modifier, valider)
+- **user** : Accès limité (voir, valider)
 
 ### Fonctionnalités par rôle
-- **Tous les utilisateurs** : Voir, modifier, valider
-- **Admins uniquement** : Supprimer des tâches
-- **Switch "Afficher"** : Disponible pour tous
+- **Tous les utilisateurs** : Voir, valider, ouvrir l'accordéon
+- **Admins uniquement** : Modifier et supprimer des tâches (dans l'accordéon)
+- **Bouton rond à coche** : Disponible pour tous
 
 ## 📱 Test et Démonstration
 
 Une page de test est disponible à `/test-dropzone` pour tester toutes les nouvelles fonctionnalités avec des exemples de tâches.
+
+### Instructions de test
+1. **Cliquez sur la flèche** en bas à droite de chaque card pour ouvrir l'accordéon
+2. **Vérifiez que toutes les infos** sont bien dans l'accordéon
+3. **Testez le bouton rond à coche** : il doit se remplir en vert quand une tâche est terminée
+4. **Pour les admins** : vérifiez que les boutons Modifier et Supprimer apparaissent dans l'accordéon
+5. **Vérifiez que la priorité** n'apparaît plus sur l'affichage principal des cards
 
 ## 🔄 Migration
 
@@ -137,6 +161,8 @@ Une page de test est disponible à `/test-dropzone` pour tester toutes les nouve
 - Suppression de `ModalInfoTache` (remplacé par l'accordéon)
 - Modification de l'interface `TaskCardProps`
 - Changement des couleurs de statut
+- Suppression du composant Switch personnalisé
+- Déplacement des boutons d'action dans l'accordéon
 
 ### Compatibilité
 - Les anciennes props restent supportées
@@ -145,11 +171,21 @@ Une page de test est disponible à `/test-dropzone` pour tester toutes les nouve
 
 ## 🎯 Prochaines Étapes
 
-1. **Tests utilisateurs** pour valider l'UX
+1. **Tests utilisateurs** pour valider l'UX simplifiée
 2. **Optimisations de performance** si nécessaire
 3. **Ajout de fonctionnalités** supplémentaires selon les retours
 4. **Documentation API** pour les développeurs
 
+## 📋 Résumé des Changements Version 2
+
+- ✅ **Priorité supprimée** de l'affichage principal
+- ✅ **Flèche accordéon déplacée** en bas à droite
+- ✅ **Toutes les infos** dans l'accordéon
+- ✅ **Boutons admin** dans l'accordéon
+- ✅ **Switch "Afficher" supprimé**
+- ✅ **Bouton rond à coche** simple et efficace
+- ✅ **Interface épurée** et plus claire
+
 ---
 
-*Refonte réalisée selon les spécifications demandées avec une approche moderne et intuitive.*
+*Refonte réalisée selon les spécifications demandées avec une approche moderne, intuitive et épurée.*
