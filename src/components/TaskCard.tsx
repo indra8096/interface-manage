@@ -123,7 +123,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const isCompleted = status === 'completed';
   const isAdmin = userRole === 'admin' || userRole === 'SUPER_ADMIN' || userRole === 'COMPANY_ADMIN';
   const effectiveCompleted = isCompleted || optimisticDone;
-  const effectiveCompletedAt = isCompleted ? completedAt : (optimisticCompletedAt || undefined);
+  const effectiveCompletedAt = completedAt || optimisticCompletedAt || undefined;
 
   return (
     <>

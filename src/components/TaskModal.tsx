@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Calendar } from '@/components/ui/Calendar';
+import { format } from 'date-fns';
 
 interface Task {
   id: number;
@@ -50,6 +52,8 @@ export default function TaskModal({
     assignedTo: '',
   });
 
+  const [dueDateSelected, setDueDateSelected] = useState<Date | undefined>(undefined);
+
   // Pré-remplir le formulaire avec les données de la tâche (mode edit uniquement)
   useEffect(() => {
     if (isOpen) {
@@ -62,6 +66,7 @@ export default function TaskModal({
           dueDate: task.dueDate ? task.dueDate.split('T')[0] : '',
           assignedTo: task.assignedTo || '',
         });
+        setDueDateSelected(task.dueDate ? new Date(task.dueDate) : undefined);
       } else if (mode === 'add') {
         // Réinitialiser le formulaire pour l'ajout
         setFormData({
@@ -72,6 +77,7 @@ export default function TaskModal({
           dueDate: '',
           assignedTo: '',
         });
+        setDueDateSelected(undefined);
       }
     }
   }, [isOpen, task, mode]);
@@ -223,12 +229,21 @@ export default function TaskModal({
                 <label className="block text-sm font-karla-semibold text-white mb-3 modal-label">
                   ÉCHÉANCE
                 </label>
-                <input
-                  type="date"
-                  value={formData.dueDate}
-                  onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
-                />
+                <div className="rounded-xl border border-gray-700 bg-gray-900 p-2">
+                  <Calendar
+                    mode="single"
+                    selected={dueDateSelected}
+                    onSelect={(date) => {
+                      setDueDateSelected(date || undefined);
+                      setFormData({
+                        ...formData,
+                        dueDate: date ? format(date, 'yyyy-MM-dd') : ''
+                      });
+                    }}
+                    className="rounded-md border shadow-sm"
+                    captionLayout="dropdown"
+                  />
+                </div>
               </div>
               
               <div>
