@@ -137,7 +137,7 @@ export default function CompanyDashboardPage() {
 
       setSuccessMessage('Utilisateur créé avec succès !');
       setShowCreateUserForm(false);
-      setCreateUserData({ email: '', password: '', role: 'COMPANY_USER' });
+      setCreateUserData({ email: '', password: '', role: 'COMPANY_USER', itRole: 'IT_INTERN', name: '' });
       
       // Recharger les détails de l'entreprise
       if (companyId) {
