@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import TaskCard from './TaskCard';
 import ProgressCircle from './ProgressCircle';
 import CategoryDetailsPanel from './CategoryDetailsPanel';
+import EmployeeSearch from './EmployeeSearch';
 
 interface Task {
   id: number;
@@ -39,6 +40,7 @@ interface TaskColumnProps {
     assignedTo: string;
   }>;
   onRemoveTaskFromPanel?: (taskName: string) => void;
+  currentUserName?: string;
 }
 
 const categoryTitles = {
@@ -59,7 +61,7 @@ const categoryDescriptions = {
   offensive: 'Tests de pénétration et évaluation',
 };
 
-export default function TaskColumn({ category, tasks, onAddTask, onStatusChange, onDropService, userRole = 'user', onAddTaskFromPanel, tasksAddedFromPanel = [], onRemoveTaskFromPanel }: TaskColumnProps) {
+export default function TaskColumn({ category, tasks, onAddTask, onStatusChange, onDropService, userRole = 'user', onAddTaskFromPanel, tasksAddedFromPanel = [], onRemoveTaskFromPanel, currentUserName }: TaskColumnProps) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -391,6 +393,7 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
                   category={category}
                   onStatusChange={onStatusChange}
                   userRole={userRole}
+                  currentUserName={currentUserName}
                 />
               </motion.div>
             ))
@@ -509,12 +512,16 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
                   <label className="block text-sm font-karla-semibold text-white mb-3">
                     PERSONNE ASSIGNÉE
                   </label>
-                  <input
-                    type="text"
+                  <EmployeeSearch
                     value={formData.assignedTo}
-                    onChange={e => setFormData({ ...formData, assignedTo: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
-                    placeholder="Nom de la personne assignée..."
+                    onChange={(value) => setFormData({ ...formData, assignedTo: value })}
+                    placeholder="Rechercher un employé..."
+                    className="w-full"
+                    style={{
+                      background: 'var(--bg-secondary)',
+                      borderColor: 'var(--border-primary)',
+                      color: 'var(--text-primary)'
+                    }}
                   />
                 </div>
 

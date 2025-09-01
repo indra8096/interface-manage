@@ -22,6 +22,7 @@ interface TaskCardProps {
   category?: string;
   onStatusChange: (id: number, newStatus: 'completed' | 'warning' | 'error') => void;
   userRole?: string;
+  currentUserName?: string;
 }
 
 const statusColors = {
@@ -52,6 +53,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
   category,
   onStatusChange,
   userRole = 'user',
+  currentUserName,
 }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -124,6 +126,11 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const isAdmin = userRole === 'admin' || userRole === 'SUPER_ADMIN' || userRole === 'COMPANY_ADMIN';
   const effectiveCompleted = isCompleted || optimisticDone;
   const effectiveCompletedAt = completedAt || optimisticCompletedAt || undefined;
+  
+  // Vérifier si la tâche est assignée à l'utilisateur connecté
+  const isAssignedToCurrentUser = currentUserName && assignedTo && 
+    (assignedTo.toLowerCase().includes(currentUserName.toLowerCase()) || 
+     currentUserName.toLowerCase().includes(assignedTo.toLowerCase()));
 
   return (
     <>
@@ -134,14 +141,26 @@ const TaskCard: React.FC<TaskCardProps> = ({
         transition={{ duration: 0.3 }}
         className={`relative p-3 rounded-xl border transition-all duration-300 group ${
           effectiveCompleted ? 'opacity-60 grayscale' : ''
-        }`}
+        } ${isAssignedToCurrentUser ? 'ring-2 ring-[#CCFF00] ring-opacity-50' : ''}`}
         style={{ 
-          background: effectiveCompleted ? 'var(--bg-secondary)' : 'var(--bg-card)',
-          border: '1px solid var(--border-primary)',
+          background: effectiveCompleted ? 'var(--bg-secondary)' : 
+                     isAssignedToCurrentUser ? 'var(--bg-card)' : 'var(--bg-card)',
+          border: isAssignedToCurrentUser ? '2px solid #CCFF00' : '1px solid var(--border-primary)',
           borderLeft: `4px solid ${category ? categoryColors[category as keyof typeof categoryColors] : statusColors[status]}`,
-          boxShadow: `0 6px 15px rgba(0,0,0,0.12), 0 0 0 1px ${category ? categoryColors[category as keyof typeof categoryColors] : statusColors[status]}20`
+          boxShadow: isAssignedToCurrentUser ? 
+            `0 8px 25px rgba(204, 255, 0, 0.3), 0 0 0 1px #CCFF00` :
+            `0 6px 15px rgba(0,0,0,0.12), 0 0 0 1px ${category ? categoryColors[category as keyof typeof categoryColors] : statusColors[status]}20`
         }}
       >
+        {/* Badge "ASSIGNÉ À MOI" */}
+        {isAssignedToCurrentUser && !effectiveCompleted && (
+          <div className="absolute -top-2 -right-2 z-30">
+            <div className="bg-[#CCFF00] text-black px-2 py-1 rounded-full text-xs font-karla-bold shadow-lg">
+              ASSIGNÉ À MOI
+            </div>
+          </div>
+        )}
+
         {/* Filtre grisé pour les tâches terminées */}
         {effectiveCompleted && (
           <div 

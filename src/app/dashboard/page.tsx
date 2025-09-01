@@ -951,6 +951,7 @@ export default function Home() {
               onAddTaskFromPanel={handleAddTaskFromPanel}
               tasksAddedFromPanel={tasksAddedFromPanel}
               onRemoveTaskFromPanel={removeTaskFromPanel}
+              currentUserName={userDisplayInfo.name || undefined}
             />
             <TaskColumn
               category="general"
@@ -962,6 +963,7 @@ export default function Home() {
               onAddTaskFromPanel={handleAddTaskFromPanel}
               tasksAddedFromPanel={tasksAddedFromPanel}
               onRemoveTaskFromPanel={removeTaskFromPanel}
+              currentUserName={userDisplayInfo.name || undefined}
             />
             <TaskColumn
               category="offensive"
@@ -973,6 +975,7 @@ export default function Home() {
               onAddTaskFromPanel={handleAddTaskFromPanel}
               tasksAddedFromPanel={tasksAddedFromPanel}
               onRemoveTaskFromPanel={removeTaskFromPanel}
+              currentUserName={userDisplayInfo.name || undefined}
             />
           </motion.div>
         </div>
