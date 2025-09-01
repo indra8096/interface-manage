@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: authResult.error }, { status: 401 });
     }
 
-    const { name, adminEmail, adminPassword } = await req.json();
+    const { name, adminEmail, adminPassword, adminItRole, adminName } = await req.json();
 
     // Validation des données
     if (!name || !adminEmail || !adminPassword) {
@@ -100,7 +100,9 @@ export async function POST(req: NextRequest) {
           email: adminEmail.trim(),
           password: hashedPassword,
           role: 'COMPANY_ADMIN',
-          companyId: company.id
+          companyId: company.id,
+          itRole: adminItRole || 'IT_ADMIN',
+          name: adminName || null
         }
       });
 

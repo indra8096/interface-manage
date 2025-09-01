@@ -29,7 +29,9 @@ export default function SuperAdminDashboard() {
   const [createCompanyData, setCreateCompanyData] = useState({
     name: '',
     adminEmail: '',
-    adminPassword: ''
+    adminPassword: '',
+    adminItRole: 'IT_ADMIN',
+    adminName: ''
   });
   const [creatingCompany, setCreatingCompany] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
@@ -141,7 +143,7 @@ export default function SuperAdminDashboard() {
 
       setSuccessMessage('Société créée avec succès !');
       setShowCreateCompanyForm(false);
-      setCreateCompanyData({ name: '', adminEmail: '', adminPassword: '' });
+      setCreateCompanyData({ name: '', adminEmail: '', adminPassword: '', adminItRole: 'IT_ADMIN', adminName: '' });
       
       // Recharger les entreprises
       fetchCompanies(token);
@@ -454,6 +456,40 @@ export default function SuperAdminDashboard() {
                       className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                       placeholder="admin@societe.com"
                     />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-white mb-2">
+                      Nom de l&apos;administrateur
+                    </label>
+                    <input
+                      type="text"
+                      value={createCompanyData.adminName}
+                      onChange={(e) => setCreateCompanyData({ ...createCompanyData, adminName: e.target.value })}
+                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                      placeholder="Jean Dupont"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-white mb-2">
+                      Rôle IT de l&apos;administrateur *
+                    </label>
+                    <select
+                      value={createCompanyData.adminItRole}
+                      onChange={(e) => setCreateCompanyData({ ...createCompanyData, adminItRole: e.target.value })}
+                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                    >
+                      <option value="IT_INTERN">Stagiaire IT</option>
+                      <option value="IT_SUPPORT">Technicien support IT</option>
+                      <option value="IT_ENGINEER">Ingénieur système / réseau</option>
+                      <option value="IT_ADMIN">Administrateur IT</option>
+                      <option value="IT_MANAGER">Chef IT</option>
+                      <option value="IT_DIRECTOR">Responsable IT</option>
+                      <option value="CIO">Directeur des systèmes d&apos;information</option>
+                    </select>
                   </div>
                 </div>
 
