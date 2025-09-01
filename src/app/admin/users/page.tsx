@@ -10,6 +10,8 @@ interface User {
   id: number;
   email: string;
   role: string;
+  itRole?: string;
+  name?: string | null;
 }
 
 export default function AdminUsersPage() {
@@ -17,13 +19,16 @@ export default function AdminUsersPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('user');
+  const [createItRole, setCreateItRole] = useState('IT_INTERN');
+  const [createName, setCreateName] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
   const [editEmail, setEditEmail] = useState('');
   const [editPassword, setEditPassword] = useState('');
   const [editRole, setEditRole] = useState('user');
+  const [editItRole, setEditItRole] = useState('IT_INTERN');
+  const [editName, setEditName] = useState('');
   const [companyName, setCompanyName] = useState<string>('');
   const router = useRouter();
 
@@ -93,7 +98,7 @@ export default function AdminUsersPage() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(''); setSuccess(''); setLoading(true);
+    setError(''); setSuccess('');
     
     try {
       const token = localStorage.getItem('token');
@@ -111,7 +116,7 @@ export default function AdminUsersPage() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ email, password, role: apiRole }),
+        body: JSON.stringify({ email, password, role: apiRole, itRole: createItRole, name: createName }),
       });
 
       if (res.status === 401) {
@@ -121,7 +126,7 @@ export default function AdminUsersPage() {
 
       if (res.ok) {
         setSuccess('Utilisateur créé avec succès !');
-        setEmail(''); setPassword(''); setRole('user');
+        setEmail(''); setPassword(''); setRole('user'); setCreateItRole('IT_INTERN'); setCreateName('');
         fetchUsers();
       } else {
         const errorData = await res.json();
@@ -130,7 +135,6 @@ export default function AdminUsersPage() {
     } catch {
       setError('Erreur lors de la création de l\'utilisateur');
     } finally {
-      setLoading(false);
     }
   };
 
@@ -187,11 +191,13 @@ export default function AdminUsersPage() {
     setEditEmail(user.email);
     setEditPassword('');
     setEditRole(user.role);
+    setEditItRole(user.itRole || 'IT_INTERN');
+    setEditName(user.name || '');
   };
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(''); setSuccess(''); setLoading(true);
+    setError(''); setSuccess('');
     
     try {
       const token = localStorage.getItem('token');
@@ -212,7 +218,9 @@ export default function AdminUsersPage() {
         body: JSON.stringify({ 
           email: editEmail, 
           password: editPassword, 
-          role: apiRole 
+          role: apiRole,
+          itRole: editItRole,
+          name: editName,
         }),
       });
 
@@ -226,7 +234,7 @@ export default function AdminUsersPage() {
         setEditId(null);
         setEditEmail('');
         setEditPassword('');
-        setEditRole('user');
+        setEditRole('user'); setEditItRole('IT_INTERN'); setEditName('');
         fetchUsers();
       } else {
         const errorData = await res.json();
@@ -235,7 +243,6 @@ export default function AdminUsersPage() {
     } catch {
       setError('Erreur lors de la modification de l\'utilisateur');
     } finally {
-      setLoading(false);
     }
   };
 
@@ -356,6 +363,8 @@ export default function AdminUsersPage() {
           </div>
 
           {/* Formulaire de création */}
+          {/* SUPPRIMÉ: Bloc de création déplacé dans la liste via bouton/modal */}
+          {/*
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -437,6 +446,7 @@ export default function AdminUsersPage() {
               </form>
             </div>
           </motion.div>
+          */}
 
           {/* Messages d'état */}
           {error && (
@@ -479,19 +489,135 @@ export default function AdminUsersPage() {
               border: '1px solid var(--border-primary)'
             }}
           >
-            <h2 className="text-2xl font-karla-bold mb-6" style={{ color: 'var(--text-primary)' }}>
-              Liste des utilisateurs
-            </h2>
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-2xl font-karla-bold" style={{ color: 'var(--text-primary)' }}>
+                Liste des utilisateurs
+              </h2>
+              <motion.button 
+                onClick={() => setEditId(-1)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-3 text-white rounded-xl font-karla-bold transition-all duration-300 shadow-lg" 
+                style={{ backgroundColor: '#CCFF00', color: '#000000' }}
+              >
+                CRÉER UN UTILISATEUR
+              </motion.button>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b" style={{ borderColor: 'var(--border-primary)' }}>
                     <th className="p-4 text-left font-karla-semibold" style={{ color: 'var(--text-muted)' }}>Email</th>
                     <th className="p-4 text-left font-karla-semibold" style={{ color: 'var(--text-muted)' }}>Rôle</th>
+                    <th className="p-4 text-left font-karla-semibold" style={{ color: 'var(--text-muted)' }}>Rôle IT</th>
+                    <th className="p-4 text-left font-karla-semibold" style={{ color: 'var(--text-muted)' }}>Nom</th>
                     <th className="p-4 text-center font-karla-semibold" style={{ color: 'var(--text-muted)' }}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
+                  {editId === -1 && (
+                    <tr className="border-b" style={{ borderColor: 'var(--border-primary)' }}>
+                      <td colSpan={5} className="p-4" style={{ background: 'var(--bg-secondary)' }}>
+                        <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+                          <input 
+                            type="email" 
+                            value={email} 
+                            onChange={e => setEmail(e.target.value)} 
+                            className="px-4 py-3 rounded-xl border transition-all duration-300 font-karla-regular focus:outline-none focus:ring-2 focus:ring-[#CCFF00] focus:border-transparent" 
+                            style={{ 
+                              background: 'var(--bg-primary)',
+                              borderColor: 'var(--border-primary)',
+                              color: 'var(--text-primary)'
+                            }}
+                            placeholder="Email"
+                            required 
+                          />
+                          <input 
+                            type="password" 
+                            value={password} 
+                            onChange={e => setPassword(e.target.value)} 
+                            className="px-4 py-3 rounded-xl border transition-all duration-300 font-karla-regular focus:outline-none focus:ring-2 focus:ring-[#CCFF00] focus:border-transparent" 
+                            style={{ 
+                              background: 'var(--bg-primary)',
+                              borderColor: 'var(--border-primary)',
+                              color: 'var(--text-primary)'
+                            }}
+                            placeholder="Mot de passe"
+                            required 
+                          />
+                          <select 
+                            value={role} 
+                            onChange={e => setRole(e.target.value)} 
+                            className="px-4 py-3 rounded-xl border transition-all duration-300 font-karla-regular focus:outline-none focus:ring-2 focus:ring-[#CCFF00] focus:border-transparent" 
+                            style={{ 
+                              background: 'var(--bg-primary)',
+                              borderColor: 'var(--border-primary)',
+                              color: 'var(--text-primary)'
+                            }}
+                            required 
+                          >
+                            <option value="user">Utilisateur</option>
+                            <option value="admin">Administrateur</option>
+                          </select>
+                          <select 
+                            value={createItRole} 
+                            onChange={e => setCreateItRole(e.target.value)} 
+                            className="px-4 py-3 rounded-xl border transition-all duration-300 font-karla-regular focus:outline-none focus:ring-2 focus:ring-[#CCFF00] focus:border-transparent" 
+                            style={{ 
+                              background: 'var(--bg-primary)',
+                              borderColor: 'var(--border-primary)',
+                              color: 'var(--text-primary)'
+                            }}
+                          >
+                            <option value="IT_INTERN">Stagiaire IT</option>
+                            <option value="IT_SUPPORT">Technicien support IT</option>
+                            <option value="IT_ENGINEER">Ingénieur système / réseau</option>
+                            <option value="IT_ADMIN">Administrateur IT</option>
+                            <option value="IT_MANAGER">Chef IT</option>
+                            <option value="IT_DIRECTOR">Responsable IT</option>
+                            <option value="CIO">Directeur des systèmes d&apos;information</option>
+                          </select>
+                          <input 
+                            type="text" 
+                            value={createName} 
+                            onChange={e => setCreateName(e.target.value)} 
+                            className="px-4 py-3 rounded-xl border transition-all duration-300 font-karla-regular focus:outline-none focus:ring-2 focus:ring-[#CCFF00] focus:border-transparent" 
+                            style={{ 
+                              background: 'var(--bg-primary)',
+                              borderColor: 'var(--border-primary)',
+                              color: 'var(--text-primary)'
+                            }}
+                            placeholder="Nom (optionnel)" 
+                          />
+                          <div className="flex gap-2">
+                            <motion.button 
+                              type="submit" 
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              className="px-4 py-3 text-white rounded-xl font-karla-bold transition-all duration-300 shadow-lg" 
+                              style={{ backgroundColor: '#22c55e' }}
+                            >
+                              Créer
+                            </motion.button>
+                            <motion.button 
+                              type="button" 
+                              onClick={() => setEditId(null)}
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              className="px-4 py-3 rounded-xl font-karla-bold transition-all duration-300 shadow-lg" 
+                              style={{ 
+                                backgroundColor: 'var(--bg-primary)',
+                                color: 'var(--text-primary)',
+                                border: '1px solid var(--border-primary)'
+                              }}
+                            >
+                              Annuler
+                            </motion.button>
+                          </div>
+                        </form>
+                      </td>
+                    </tr>
+                  )}
                   {users.map((user, index) => (
                     <motion.tr 
                       key={user.id}
@@ -505,8 +631,8 @@ export default function AdminUsersPage() {
                       }}
                     >
                       {editId === user.id ? (
-                        <td colSpan={3} className="p-4" style={{ background: 'var(--bg-secondary)' }}>
-                          <form onSubmit={handleUpdate} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        <td colSpan={5} className="p-4" style={{ background: 'var(--bg-secondary)' }}>
+                          <form onSubmit={handleUpdate} className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
                                                          <input 
                                type="email" 
                                value={editEmail} 
@@ -545,6 +671,37 @@ export default function AdminUsersPage() {
                               <option value="user">Utilisateur</option>
                               <option value="admin">Administrateur</option>
                             </select>
+                            <select 
+                              value={editItRole} 
+                              onChange={e => setEditItRole(e.target.value)} 
+                              className="px-4 py-3 rounded-xl border transition-all duration-300 font-karla-regular focus:outline-none focus:ring-2 focus:ring-[#CCFF00] focus:border-transparent" 
+                              style={{ 
+                                background: 'var(--bg-primary)',
+                                borderColor: 'var(--border-primary)',
+                                color: 'var(--text-primary)'
+                              }}
+                            >
+                              <option value="IT_INTERN">Stagiaire IT</option>
+                              <option value="IT_SUPPORT">Technicien support IT</option>
+                              <option value="IT_ENGINEER">Ingénieur système / réseau</option>
+                              <option value="IT_ADMIN">Administrateur IT</option>
+                              <option value="IT_MANAGER">Chef IT</option>
+                              <option value="IT_DIRECTOR">Responsable IT</option>
+                              <option value="CIO">Directeur des systèmes d&apos;information</option>
+                              <option value="CIO">Directeur des systèmes d&apos;information</option>
+                            </select>
+                            <input 
+                              type="text" 
+                              value={editName} 
+                              onChange={e => setEditName(e.target.value)} 
+                              className="px-4 py-3 rounded-xl border transition-all duration-300 font-karla-regular focus:outline-none focus:ring-2 focus:ring-[#CCFF00] focus:border-transparent" 
+                              style={{ 
+                                background: 'var(--bg-primary)',
+                                borderColor: 'var(--border-primary)',
+                                color: 'var(--text-primary)'
+                              }}
+                              placeholder="Nom (optionnel)" 
+                            />
                             <div className="flex gap-2">
                               <motion.button 
                                 type="submit" 
@@ -587,6 +744,12 @@ export default function AdminUsersPage() {
                             }}>
                               {user.role === 'COMPANY_ADMIN' ? 'ADMIN' : 'UTILISATEUR'}
                             </span>
+                          </td>
+                          <td className="p-4 font-karla-regular" style={{ color: 'var(--text-primary)' }}>
+                            {user.itRole || '-'}
+                          </td>
+                          <td className="p-4 font-karla-regular" style={{ color: 'var(--text-primary)' }}>
+                            {user.name || '-'}
                           </td>
                           <td className="p-4 text-center">
                             {/* Seuls les utilisateurs non-admin peuvent être modifiés/supprimés par les admin d'entreprise */}

@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     // Si c'est un Super Admin, il peut voir tous les utilisateurs
     if (user.role === 'SUPER_ADMIN') {
       const users = await prisma.user.findMany({
-        select: { id: true, email: true, role: true, companyId: true },
+        select: { id: true, email: true, role: true, companyId: true, itRole: true, name: true },
         orderBy: { id: 'asc' },
       });
       return NextResponse.json(users);
@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
           companyId: user.companyId,
           role: { not: 'SUPER_ADMIN' } // Exclure le Super Admin
         },
-        select: { id: true, email: true, role: true },
+        select: { id: true, email: true, role: true, itRole: true, name: true },
         orderBy: { id: 'asc' },
       });
       
@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
     if (user.role === 'COMPANY_USER') {
       const userData = await prisma.user.findUnique({
         where: { id: user.id },
-        select: { id: true, email: true, role: true },
+        select: { id: true, email: true, role: true, itRole: true, name: true },
       });
       return NextResponse.json([userData]);
     }
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
     }
 
-    const { email, password, role = 'COMPANY_USER' } = await req.json();
+    const { email, password, role = 'COMPANY_USER', itRole, name } = await req.json();
     
     if (!email || !password) {
       return NextResponse.json({ error: 'Champs manquants' }, { status: 400 });
@@ -102,9 +102,11 @@ export async function POST(req: NextRequest) {
         email, 
         password: hashed, 
         role,
-        companyId
+        companyId,
+        itRole: itRole || 'IT_INTERN',
+        name: name || null
       },
-      select: { id: true, email: true, role: true },
+      select: { id: true, email: true, role: true, itRole: true, name: true },
     });
 
     return NextResponse.json(newUser);

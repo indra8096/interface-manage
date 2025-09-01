@@ -97,17 +97,25 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
     }
 
-    const { email, password, role } = await req.json();
-    const data: { email?: string; password?: string; role?: 'SUPER_ADMIN' | 'COMPANY_ADMIN' | 'COMPANY_USER' } = {};
+    const { email, password, role, itRole, name } = await req.json();
+    const data: { 
+      email?: string; 
+      password?: string; 
+      role?: 'SUPER_ADMIN' | 'COMPANY_ADMIN' | 'COMPANY_USER';
+      itRole?: 'IT_INTERN' | 'IT_SUPPORT' | 'IT_ENGINEER' | 'IT_ADMIN' | 'IT_MANAGER' | 'IT_DIRECTOR' | 'CIO'; 
+      name?: string | null;
+    } = {};
     
     if (email) data.email = email;
     if (password) data.password = await bcrypt.hash(password, 10);
     if (role) data.role = role;
+    if (itRole) data.itRole = itRole;
+    if (typeof name !== 'undefined') data.name = name || null;
 
     const updatedUser = await prisma.user.update({ 
       where: { id }, 
       data,
-      select: { id: true, email: true, role: true }
+      select: { id: true, email: true, role: true, itRole: true, name: true }
     });
     
     return NextResponse.json({ success: true, user: updatedUser });
