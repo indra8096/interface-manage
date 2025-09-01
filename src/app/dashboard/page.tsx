@@ -29,6 +29,7 @@ interface Task {
   assignedBy?: string;
   createdAt?: string;
   updatedAt?: string;
+  completedAt?: string;
 }
 
 interface ServiceCard {
@@ -57,6 +58,8 @@ export default function Home() {
     score: number;
     dueDate: string;
     assignedTo: string;
+    createdAt?: string;
+    completedAt?: string;
   }>>([]);
   const [panelCards, setPanelCards] = useState<Array<{
     id: number;
@@ -1080,9 +1083,33 @@ export default function Home() {
                                 TERMINÉ
                               </span>
                             </div>
-                            <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                              Score: {task.score}/100
-                            </div>
+                            {/* Personne assignée */}
+                            {task.assignedTo && (
+                              <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                                Assigné à: {task.assignedTo}
+                              </div>
+                            )}
+                            
+                            {/* Dates d'attribution et de fin */}
+                            {task.createdAt && (
+                              <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                                Attribuée le: {new Date(task.createdAt).toLocaleDateString('fr-FR', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: 'numeric'
+                                })}
+                              </div>
+                            )}
+                            {task.completedAt && (
+                              <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                                Terminée le: {new Date(task.completedAt).toLocaleDateString('fr-FR', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: 'numeric'
+                                })}
+                              </div>
+                            )}
+                            
                             <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
                               Catégorie: {task.category}
                             </div>
@@ -1141,9 +1168,33 @@ export default function Home() {
                                   100%
                                 </span>
                               </div>
-                              <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                                {cardData?.completed || 0} complété sur {cardData?.total || 0}
-                              </div>
+                              {/* Personne assignée */}
+                              {task.assignedTo && (
+                                <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                                  Assigné à: {task.assignedTo}
+                                </div>
+                              )}
+                              
+                              {/* Dates d'attribution et de fin */}
+                              {task.createdAt && (
+                                <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                                  Attribuée le: {new Date(task.createdAt).toLocaleDateString('fr-FR', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric'
+                                  })}
+                                </div>
+                              )}
+                              {task.completedAt && (
+                                <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                                  Terminée le: {new Date(task.completedAt).toLocaleDateString('fr-FR', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric'
+                                  })}
+                                </div>
+                              )}
+                              
                               <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
                                 Type: {cardData?.type || 'coverage'}
                               </div>
