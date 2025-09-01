@@ -26,6 +26,7 @@ interface Task {
   importance?: string;
   dueDate?: string;
   assignedTo?: string;
+  assignedBy?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -713,6 +714,20 @@ export default function Home() {
                                                   <h1 className="text-5xl font-karla-bold mb-4 transition-colors duration-300 dashboard-title" style={{ color: 'var(--text-primary)' }}>
                    <span style={{ color: 'var(--text-primary)' }}>
                      Tableau de bord
+                   </span>
+                   <span className="text-2xl font-karla-medium ml-4" style={{ color: 'var(--theme-primary)' }}>
+                     {localStorage.getItem('itRole') && (() => {
+                       const itRole = localStorage.getItem('itRole');
+                       const name = localStorage.getItem('name');
+                       const roleLabel = itRole === 'IT_INTERN' ? 'Stagiaire IT' :
+                                        itRole === 'IT_SUPPORT' ? 'Technicien support IT' :
+                                        itRole === 'IT_ENGINEER' ? 'Ingénieur système / réseau' :
+                                        itRole === 'IT_ADMIN' ? 'Administrateur IT' :
+                                        itRole === 'IT_MANAGER' ? 'Chef IT' :
+                                        itRole === 'IT_DIRECTOR' ? 'Responsable IT' :
+                                        itRole === 'CIO' ? 'Directeur des systèmes d'information' : '';
+                       return roleLabel + (name ? ` • ${name}` : '');
+                     })()}
                    </span>
                  </h1>
                  <p className="font-karla-regular text-lg transition-colors duration-300 dashboard-subtitle" style={{ color: 'var(--text-muted)' }}>

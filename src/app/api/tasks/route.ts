@@ -2,6 +2,19 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { verifyToken } from '@/lib/auth'
 
+function mapItRoleToLabel(itRole?: string): string {
+  switch (itRole) {
+    case 'IT_INTERN': return 'Stagiaire IT';
+    case 'IT_SUPPORT': return 'Technicien support IT';
+    case 'IT_ENGINEER': return 'Ingénieur système / réseau';
+    case 'IT_ADMIN': return 'Administrateur IT';
+    case 'IT_MANAGER': return 'Chef IT';
+    case 'IT_DIRECTOR': return 'Responsable IT';
+    case 'CIO': return 'Directeur des systèmes d’information';
+    default: return '';
+  }
+}
+
 export async function GET(req: NextRequest) {
   try {
     // Vérifier l'authentification
@@ -12,16 +25,21 @@ export async function GET(req: NextRequest) {
 
     // Si c'est un Super Admin, il peut voir toutes les tâches
     if (user.role === 'SUPER_ADMIN') {
-      const tasks = await prisma.task.findMany({
+      const tasksRaw = await prisma.task.findMany({
         include: {
           company: {
             select: { id: true, name: true }
-          }
+          },
+          assignedBy: { select: { email: true, name: true, itRole: true } }
         },
         orderBy: {
           createdAt: 'desc'
         }
       });
+      const tasks = tasksRaw.map(t => ({
+        ...t,
+        assignedBy: t.assignedBy ? `${t.assignedBy.name || t.assignedBy.email}${t.assignedBy.itRole ? ' — ' + mapItRoleToLabel(t.assignedBy.itRole) : ''}` : undefined,
+      }));
       return NextResponse.json(tasks);
     }
 
@@ -31,14 +49,21 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: 'Aucune société associée' }, { status: 403 });
       }
 
-      const tasks = await prisma.task.findMany({
+      const tasksRaw = await prisma.task.findMany({
         where: {
           companyId: user.companyId
+        },
+        include: {
+          assignedBy: { select: { email: true, name: true, itRole: true } }
         },
         orderBy: {
           createdAt: 'desc'
         }
       });
+      const tasks = tasksRaw.map(t => ({
+        ...t,
+        assignedBy: t.assignedBy ? `${t.assignedBy.name || t.assignedBy.email}${t.assignedBy.itRole ? ' — ' + mapItRoleToLabel(t.assignedBy.itRole) : ''}` : undefined,
+      }));
       return NextResponse.json(tasks);
     }
 
@@ -108,7 +133,8 @@ export async function POST(request: NextRequest) {
         dueDate: dueDate || null,
         assignedTo,
         status: 'warning',
-        companyId
+        companyId,
+        assignedByUserId: user.id as number
       }
     })
 
