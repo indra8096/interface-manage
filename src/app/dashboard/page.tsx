@@ -393,7 +393,9 @@ export default function Home() {
   };
 
   const getTasksByCategory = (category: string) => {
-    return tasks.filter(task => task.category === category);
+    const byCategory = tasks.filter(task => task.category === category);
+    // Pour les admins: n'afficher que les tâches non terminées dans les colonnes
+    return userRole === 'admin' ? byCategory.filter(t => t.status !== 'completed') : byCategory;
   };
 
   const getCardData = (taskName: string) => {

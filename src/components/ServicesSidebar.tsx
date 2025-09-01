@@ -258,15 +258,14 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
                 </button>
               </div>
 
-              {/* Indicateur de filtrage */}
-              <div className="mb-3">
-                <p className="text-xs text-gray-400 font-karla-medium">
-                  {activeFilter === 'all' 
-                    ? `Affichage de tous les services (${filteredServices.length})`
-                    : `Services ${activeFilter.toUpperCase()} (${filteredServices.length})`
-                  }
-                </p>
-              </div>
+              {/* Indicateur de filtrage (supprimé pour 'all') */}
+              {activeFilter !== 'all' && (
+                <div className="mb-3">
+                  <p className="text-xs text-gray-400 font-karla-medium">
+                    {`Services ${activeFilter.toUpperCase()} (${filteredServices.length})`}
+                  </p>
+                </div>
+              )}
 
               {/* Barre de recherche */}
               <div className="relative">
