@@ -47,6 +47,7 @@ export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<string>('user');
+  const [userDisplayInfo, setUserDisplayInfo] = useState<{ role: string; name: string | null }>({ role: '', name: null });
   const [tasksAddedFromPanel, setTasksAddedFromPanel] = useState<Array<{
     id: number;
     name: string;
@@ -192,6 +193,11 @@ export default function Home() {
         } else {
           setUserRole('user'); // Accès limité : seulement les tâches
         }
+        
+        // Préparer les informations d'affichage de l'utilisateur
+        const displayRole = itRole || '';
+        const displayName = localStorage.getItem('name');
+        setUserDisplayInfo({ role: displayRole, name: displayName });
       }
 
       if (savedTasksFromPanel) {
@@ -687,9 +693,9 @@ export default function Home() {
     setDeleteConfirmation({ show: false, type: 'regular' });
   };
 
-     if (isLoading) {
-     return (
-       <div className="min-h-screen flex items-center justify-center transition-all duration-300" style={{ background: 'var(--bg-primary)' }}>
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center transition-all duration-300" style={{ background: 'var(--bg-primary)' }}>
         <div className="text-center">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center animate-pulse">
             <div className="w-16 h-16 rounded-full bg-black"></div>
@@ -701,8 +707,8 @@ export default function Home() {
     );
   }
 
-     return (
-     <div className="min-h-screen transition-all duration-300" style={{ background: 'var(--bg-primary)' }}>
+  return (
+    <div className="min-h-screen transition-all duration-300" style={{ background: 'var(--bg-primary)' }}>
       <Header />
       
       <main className="p-8">
@@ -711,22 +717,20 @@ export default function Home() {
           <div className="mb-16">
             <div className="flex items-center justify-between mb-12">
               <div>
-                                                  <h1 className="text-5xl font-karla-bold mb-4 transition-colors duration-300 dashboard-title" style={{ color: 'var(--text-primary)' }}>
+                <h1 className="text-5xl font-karla-bold mb-4 transition-colors duration-300 dashboard-title" style={{ color: 'var(--text-primary)' }}>
                    <span style={{ color: 'var(--text-primary)' }}>
                      Tableau de bord
                    </span>
                    <span className="text-2xl font-karla-medium ml-4" style={{ color: 'var(--theme-primary)' }}>
-                     {localStorage.getItem('itRole') && (() => {
-                       const itRole = localStorage.getItem('itRole');
-                       const name = localStorage.getItem('name');
-                       const roleLabel = itRole === 'IT_INTERN' ? 'Stagiaire IT' :
-                                        itRole === 'IT_SUPPORT' ? 'Technicien support IT' :
-                                        itRole === 'IT_ENGINEER' ? 'Ingénieur système / réseau' :
-                                        itRole === 'IT_ADMIN' ? 'Administrateur IT' :
-                                        itRole === 'IT_MANAGER' ? 'Chef IT' :
-                                        itRole === 'IT_DIRECTOR' ? 'Responsable IT' :
-                                        itRole === 'CIO' ? 'Directeur des systèmes d'information' : '';
-                       return roleLabel + (name ? ` • ${name}` : '');
+                     {userDisplayInfo.role && (() => {
+                       const roleLabel = userDisplayInfo.role === 'IT_INTERN' ? 'Stagiaire IT' :
+                                        userDisplayInfo.role === 'IT_SUPPORT' ? 'Technicien support IT' :
+                                        userDisplayInfo.role === 'IT_ENGINEER' ? 'Ingénieur système / réseau' :
+                                        userDisplayInfo.role === 'IT_ADMIN' ? 'Administrateur IT' :
+                                        userDisplayInfo.role === 'IT_MANAGER' ? 'Chef IT' :
+                                        userDisplayInfo.role === 'IT_DIRECTOR' ? 'Responsable IT' :
+                                        userDisplayInfo.role === 'CIO' ? "Directeur des systèmes d'information" : '';
+                       return roleLabel + (userDisplayInfo.name ? ` • ${userDisplayInfo.name}` : '');
                      })()}
                    </span>
                  </h1>
