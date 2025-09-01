@@ -141,22 +141,21 @@ const TaskCard: React.FC<TaskCardProps> = ({
         transition={{ duration: 0.3 }}
         className={`relative p-3 rounded-xl border transition-all duration-300 group ${
           effectiveCompleted ? 'opacity-60 grayscale' : ''
-        } ${isAssignedToCurrentUser ? 'ring-2 ring-[#CCFF00] ring-opacity-50' : ''}`}
+        }`}
         style={{ 
-          background: effectiveCompleted ? 'var(--bg-secondary)' : 
-                     isAssignedToCurrentUser ? 'var(--bg-card)' : 'var(--bg-card)',
-          border: isAssignedToCurrentUser ? '2px solid #CCFF00' : '1px solid var(--border-primary)',
+          background: effectiveCompleted ? 'var(--bg-secondary)' : 'var(--bg-card)',
+          border: isAssignedToCurrentUser ? '1px solid #CCFF00' : '1px solid var(--border-primary)',
           borderLeft: `4px solid ${category ? categoryColors[category as keyof typeof categoryColors] : statusColors[status]}`,
           boxShadow: isAssignedToCurrentUser ? 
-            `0 8px 25px rgba(204, 255, 0, 0.3), 0 0 0 1px #CCFF00` :
+            `0 4px 12px rgba(204, 255, 0, 0.15), 0 0 0 1px rgba(204, 255, 0, 0.3)` :
             `0 6px 15px rgba(0,0,0,0.12), 0 0 0 1px ${category ? categoryColors[category as keyof typeof categoryColors] : statusColors[status]}20`
         }}
       >
-        {/* Badge "ASSIGNÉ À MOI" */}
+        {/* Badge "ASSIGNÉ" - Design épuré */}
         {isAssignedToCurrentUser && !effectiveCompleted && (
-          <div className="absolute -top-2 -right-2 z-30">
-            <div className="bg-[#CCFF00] text-black px-2 py-1 rounded-full text-xs font-karla-bold shadow-lg">
-              ASSIGNÉ À MOI
+          <div className="absolute top-2 right-2 z-30">
+            <div className="bg-[#CCFF00] text-black px-2 py-0.5 rounded-md text-xs font-karla-medium shadow-sm">
+              assigné
             </div>
           </div>
         )}
