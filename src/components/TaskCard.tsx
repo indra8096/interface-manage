@@ -151,14 +151,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
             `0 6px 15px rgba(0,0,0,0.12), 0 0 0 1px ${category ? categoryColors[category as keyof typeof categoryColors] : statusColors[status]}20`
         }}
       >
-        {/* Badge "ASSIGNÉ" - Design épuré */}
-        {isAssignedToCurrentUser && !effectiveCompleted && (
-          <div className="absolute top-2 right-2 z-30">
-            <div className="bg-[#CCFF00] text-black px-2 py-0.5 rounded-md text-xs font-karla-medium shadow-sm">
-              assigné
-            </div>
-          </div>
-        )}
+
 
         {/* Filtre grisé pour les tâches terminées */}
         {effectiveCompleted && (
@@ -206,6 +199,12 @@ const TaskCard: React.FC<TaskCardProps> = ({
                     <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
                       {assignedTo}
                     </span>
+                    {/* Badge "assigné" à côté du nom */}
+                    {isAssignedToCurrentUser && !effectiveCompleted && (
+                      <div className="bg-[#CCFF00] text-black px-1.5 py-0.5 rounded text-xs font-karla-medium shadow-sm ml-1">
+                        assigné
+                      </div>
+                    )}
                   </div>
                 )}
                 
