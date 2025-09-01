@@ -61,10 +61,13 @@ export async function POST(req: NextRequest) {
     
     // Générer le JWT
     const secret = getJwtSecret();
+    const u = user as unknown as { itRole?: string; name?: string };
     const token = jwt.sign(
       { 
         id: user.id, 
         role: user.role,
+        itRole: u.itRole,
+        name: u.name,
         companyId: user.companyId,
         email: user.email,
         jti: crypto.randomBytes(16).toString('hex')
@@ -81,6 +84,8 @@ export async function POST(req: NextRequest) {
     const response = NextResponse.json({ 
       token, 
       role: user.role,
+      itRole: u.itRole,
+      name: u.name,
       companyId: user.companyId,
       companyName: user.company?.name,
       email: user.email,

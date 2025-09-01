@@ -184,9 +184,11 @@ export default function Home() {
 
       if (role) {
         // Conversion des rôles pour le dashboard
-        if (role === 'SUPER_ADMIN' || role === 'COMPANY_ADMIN') {
+        const itRole = localStorage.getItem('itRole');
+        const adminItRoles = new Set(['IT_ADMIN', 'IT_MANAGER', 'IT_DIRECTOR', 'CIO']);
+        if (role === 'SUPER_ADMIN' || role === 'COMPANY_ADMIN' || (itRole && adminItRoles.has(itRole))) {
           setUserRole('admin'); // Accès complet : services, panel de suivi, etc.
-        } else if (role === 'COMPANY_USER') {
+        } else {
           setUserRole('user'); // Accès limité : seulement les tâches
         }
       }

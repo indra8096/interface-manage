@@ -5,6 +5,8 @@ export interface AuthUser {
   id: number;
   email: string;
   role: string;
+  itRole?: string;
+  name?: string;
   companyId?: number;
 }
 
@@ -14,6 +16,8 @@ interface DecodedToken {
   id?: number;
   email: string;
   role: string;
+  itRole?: string;
+  name?: string;
   companyId?: number;
   iat?: number;
   exp?: number;
@@ -56,6 +60,8 @@ export async function verifyToken(reqOrToken: NextRequest | string): Promise<Aut
       id: (decoded.userId || decoded.id)!,
       email: decoded.email,
       role: decoded.role,
+      itRole: decoded.itRole,
+      name: decoded.name,
       companyId: decoded.companyId
     };
   } catch (error) {

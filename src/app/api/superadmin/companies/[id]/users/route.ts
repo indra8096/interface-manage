@@ -25,7 +25,7 @@ export async function POST(
     }
 
     const body = await request.json();
-    const { email, password, role } = body;
+    const { email, password, role, itRole = 'IT_INTERN', name } = body;
 
     // Validation des données
     if (!email || !password || !role) {
@@ -59,6 +59,8 @@ export async function POST(
         email,
         password: hashedPassword,
         role: role as 'COMPANY_ADMIN' | 'COMPANY_USER',
+        itRole: itRole || undefined,
+        name: name || null,
         companyId: companyId
       }
     });
@@ -69,6 +71,8 @@ export async function POST(
         id: newUser.id,
         email: newUser.email,
         role: newUser.role,
+        itRole: newUser.itRole,
+        name: newUser.name,
         companyId: newUser.companyId
       }
     });
@@ -87,7 +91,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
+    await params; // id extrait mais non utilisé pour l'instant
+    // TODO: Implémenter la récupération des utilisateurs
+    return NextResponse.json({ message: 'Non implémenté' }, { status: 501 });
   } catch (error) {
     console.error('Erreur lors de la récupération des utilisateurs:', error);
     return NextResponse.json(

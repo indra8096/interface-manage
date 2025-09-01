@@ -35,6 +35,8 @@ export default function LoginPage() {
         localStorage.setItem('companyId', data.companyId?.toString() || '');
         localStorage.setItem('userCompanyId', data.companyId?.toString() || '');
         localStorage.setItem('companyName', data.companyName || '');
+        if (data.itRole) localStorage.setItem('itRole', data.itRole);
+        if (data.name) localStorage.setItem('name', data.name);
         
         // Redirection selon le rôle
         if (data.role === 'SUPER_ADMIN') {

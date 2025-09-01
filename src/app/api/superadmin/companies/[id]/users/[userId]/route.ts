@@ -25,7 +25,7 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const { email, role } = body;
+    const { email, role, itRole, name } = body;
 
     // Validation des données
     if (!email || !role) {
@@ -71,7 +71,17 @@ export async function PUT(
       where: { id: userIdInt },
       data: {
         email,
-        role: role as 'COMPANY_ADMIN' | 'COMPANY_USER'
+        role: role as 'COMPANY_ADMIN' | 'COMPANY_USER',
+        itRole: itRole || undefined,
+        name: name || undefined
+      },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        itRole: true,
+        name: true,
+        companyId: true
       }
     });
 
@@ -81,6 +91,8 @@ export async function PUT(
         id: updatedUser.id,
         email: updatedUser.email,
         role: updatedUser.role,
+        itRole: updatedUser.itRole,
+        name: updatedUser.name,
         companyId: updatedUser.companyId
       }
     });

@@ -47,11 +47,17 @@ export async function PATCH(
       importance?: string;
       dueDate?: string | null;
       assignedTo?: string;
+      completedAt?: Date | null;
     } = {}
     
     // Gérer le statut
     if (body.status && ['completed', 'warning', 'error'].includes(body.status)) {
       updateData.status = body.status as 'completed' | 'warning' | 'error'
+      if (body.status === 'completed') {
+        updateData.completedAt = new Date();
+      } else if (body.status === 'warning' || body.status === 'error') {
+        updateData.completedAt = null;
+      }
     }
     
     // Gérer les autres champs

@@ -12,10 +12,15 @@ model User {
   email     String   @unique
   password  String
   role      Role     @default(COMPANY_USER)
+  itRole    ITRole?  @default(IT_INTERN)
+  name      String? // Nom affiché pour assignation/UX
   companyId Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   company   Company? @relation(fields: [companyId], references: [id])
+
+  // Tâches assignées par cet utilisateur
+  assignedTasks Task[] @relation("AssignedBy")
 }
 
 model Company {
@@ -29,19 +34,22 @@ model Company {
 }
 
 model Task {
-  id          Int      @id @default(autoincrement())
-  name        String
-  status      Status   @default(warning)
-  score       Int      @default(0)
-  category    Category @default(general)
-  description String?
-  importance  String?
-  dueDate     String?
-  assignedTo  String?
-  companyId   Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  company     Company  @relation(fields: [companyId], references: [id])
+  id               Int       @id @default(autoincrement())
+  name             String
+  status           Status    @default(warning)
+  score            Int       @default(0)
+  category         Category  @default(general)
+  description      String?
+  importance       String?
+  dueDate          String?
+  assignedTo       String?
+  assignedByUserId Int?
+  assignedBy       User?     @relation(name: "AssignedBy", fields: [assignedByUserId], references: [id])
+  completedAt      DateTime?
+  companyId        Int
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  company          Company   @relation(fields: [companyId], references: [id])
 }
 
 model PanelCardTemplate {
@@ -94,6 +102,16 @@ enum Role {
   SUPER_ADMIN
   COMPANY_ADMIN
   COMPANY_USER
+}
+
+enum ITRole {
+  IT_INTERN
+  IT_SUPPORT
+  IT_ENGINEER
+  IT_ADMIN
+  IT_MANAGER
+  IT_DIRECTOR
+  CIO
 }
 
 enum Status {

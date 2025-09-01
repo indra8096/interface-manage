@@ -39,11 +39,15 @@ export default function CompanyDashboardPage() {
   const [createUserData, setCreateUserData] = useState({
     email: '',
     password: '',
-    role: 'COMPANY_USER'
+    role: 'COMPANY_USER',
+    itRole: 'IT_INTERN',
+    name: ''
   });
   const [editUserData, setEditUserData] = useState({
     email: '',
-    role: 'COMPANY_USER'
+    role: 'COMPANY_USER',
+    itRole: 'IT_INTERN',
+    name: ''
   });
   
   // États de chargement
@@ -180,7 +184,7 @@ export default function CompanyDashboardPage() {
       setSuccessMessage('Utilisateur modifié avec succès !');
       setShowEditUserForm(false);
       setSelectedUser(null);
-      setEditUserData({ email: '', role: 'COMPANY_USER' });
+      setEditUserData({ email: '', role: 'COMPANY_USER', itRole: 'IT_INTERN', name: '' });
       
       // Recharger les détails de l'entreprise
       if (companyId) {
@@ -241,7 +245,9 @@ export default function CompanyDashboardPage() {
     setSelectedUser(user);
     setEditUserData({
       email: user.email,
-      role: user.role
+      role: user.role,
+      itRole: (user as any).itRole || 'IT_INTERN',
+      name: (user as any).name || ''
     });
     setShowEditUserForm(true);
   };
@@ -558,6 +564,38 @@ export default function CompanyDashboardPage() {
                 </select>
               </div>
 
+              <div>
+                <label className="block text-sm font-semibold text-white mb-2">
+                  Rôle IT
+                </label>
+                <select
+                  value={createUserData.itRole}
+                  onChange={(e) => setCreateUserData({ ...createUserData, itRole: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                >
+                  <option value="IT_INTERN">Stagiaire IT</option>
+                  <option value="IT_SUPPORT">Technicien support IT</option>
+                  <option value="IT_ENGINEER">Ingénieur système / réseau</option>
+                  <option value="IT_ADMIN">Administrateur IT</option>
+                  <option value="IT_MANAGER">Chef IT</option>
+                  <option value="IT_DIRECTOR">Responsable IT</option>
+                  <option value="CIO">Directeur des systèmes d’information</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-white mb-2">
+                  Nom (affiché)
+                </label>
+                <input
+                  type="text"
+                  value={createUserData.name}
+                  onChange={(e) => setCreateUserData({ ...createUserData, name: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                  placeholder="Nom et prénom"
+                />
+              </div>
+
               <div className="flex space-x-4 pt-4">
                 <button
                   type="submit"
@@ -622,6 +660,38 @@ export default function CompanyDashboardPage() {
                   <option value="COMPANY_USER">Employé</option>
                   <option value="COMPANY_ADMIN">Administrateur</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-white mb-2">
+                  Rôle IT
+                </label>
+                <select
+                  value={editUserData.itRole}
+                  onChange={(e) => setEditUserData({ ...editUserData, itRole: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                >
+                  <option value="IT_INTERN">Stagiaire IT</option>
+                  <option value="IT_SUPPORT">Technicien support IT</option>
+                  <option value="IT_ENGINEER">Ingénieur système / réseau</option>
+                  <option value="IT_ADMIN">Administrateur IT</option>
+                  <option value="IT_MANAGER">Chef IT</option>
+                  <option value="IT_DIRECTOR">Responsable IT</option>
+                  <option value="CIO">Directeur des systèmes d’information</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-white mb-2">
+                  Nom (affiché)
+                </label>
+                <input
+                  type="text"
+                  value={editUserData.name}
+                  onChange={(e) => setEditUserData({ ...editUserData, name: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all durée-300"
+                  placeholder="Nom et prénom"
+                />
               </div>
 
               <div className="flex space-x-4 pt-4">
