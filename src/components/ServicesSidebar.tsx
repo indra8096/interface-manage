@@ -142,7 +142,7 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-0 h-full w-96 bg-gradient-to-b from-gray-900 to-black border-l border-gray-800 shadow-2xl z-50 flex flex-col"
+              className="fixed right-0 top-0 h-full w-96 bg-[#111826] border-l border-gray-800 shadow-2xl z-50 flex flex-col"
             >
               <div className="p-6">
                 <div className="text-center">
@@ -180,7 +180,7 @@ export default function ServicesSidebar({ isOpen, onClose, onDropService }: Serv
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 h-full w-96 bg-gradient-to-b from-gray-900 to-black border-l border-gray-800 shadow-2xl z-50 flex flex-col services-sidebar"
+            className="fixed right-0 top-0 h-full w-96 bg-[#111826] border-l border-gray-800 shadow-2xl z-50 flex flex-col services-sidebar"
           >
             {/* Header */}
             <div className="p-6 border-b border-gray-800">

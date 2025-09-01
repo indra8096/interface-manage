@@ -55,8 +55,14 @@ const TaskCard: React.FC<TaskCardProps> = ({
 }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [optimisticDone, setOptimisticDone] = useState(false);
+  const [optimisticCompletedAt, setOptimisticCompletedAt] = useState<string | null>(null);
 
   const handleComplete = async () => {
+    if (isCompleted || optimisticDone) return;
+    const nowIso = new Date().toISOString();
+    setOptimisticDone(true);
+    setOptimisticCompletedAt(nowIso);
     await onStatusChange(id, 'completed');
   };
 
@@ -116,6 +122,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
   // Déterminer si la tâche est terminée
   const isCompleted = status === 'completed';
   const isAdmin = userRole === 'admin' || userRole === 'SUPER_ADMIN' || userRole === 'COMPANY_ADMIN';
+  const effectiveCompleted = isCompleted || optimisticDone;
+  const effectiveCompletedAt = isCompleted ? completedAt : (optimisticCompletedAt || undefined);
 
   return (
     <>
@@ -125,32 +133,32 @@ const TaskCard: React.FC<TaskCardProps> = ({
         exit={{ opacity: 0, x: -100 }}
         transition={{ duration: 0.3 }}
         className={`relative p-3 rounded-xl border transition-all duration-300 group ${
-          isCompleted ? 'opacity-75' : ''
+          effectiveCompleted ? 'opacity-60 grayscale' : ''
         }`}
         style={{ 
-          background: isCompleted ? 'var(--bg-secondary)' : 'var(--bg-card)',
+          background: effectiveCompleted ? 'var(--bg-secondary)' : 'var(--bg-card)',
           border: '1px solid var(--border-primary)',
           borderLeft: `4px solid ${category ? categoryColors[category as keyof typeof categoryColors] : statusColors[status]}`,
           boxShadow: `0 6px 15px rgba(0,0,0,0.12), 0 0 0 1px ${category ? categoryColors[category as keyof typeof categoryColors] : statusColors[status]}20`
         }}
       >
         {/* Filtre grisé pour les tâches terminées */}
-        {isCompleted && (
+        {effectiveCompleted && (
           <div 
             className="absolute inset-0 pointer-events-none z-10"
             style={{
-              background: `linear-gradient(135deg, rgba(107, 114, 128, 0.1), rgba(107, 114, 128, 0.05))`
+              background: 'linear-gradient(135deg, rgba(17, 24, 39, 0.6), rgba(31, 41, 55, 0.4))'
             }}
           />
         )}
         
         {/* Contenu de la carte */}
-        <div className={`relative ${isCompleted ? 'z-20' : ''}`}>
+        <div className={`relative ${effectiveCompleted ? 'z-20' : ''}`}>
           <div className="flex items-start justify-between gap-3">
             <div className="flex-grow min-w-0">
               {/* Header avec nom */}
               <div className="mb-2">
-                <h3 className={`font-karla-bold text-base transition-colors duration-300 ${isCompleted ? 'line-through' : ''}`} style={{ color: 'var(--text-primary)' }}>
+                <h3 className={`font-karla-bold text-base transition-colors duration-300 ${effectiveCompleted ? 'line-through' : ''}`} style={{ color: 'var(--text-primary)' }}>
                   {name}
                 </h3>
               </div>
@@ -161,12 +169,15 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   <div 
                     className="w-2 h-2 rounded-full animate-pulse"
                     style={{ 
-                      backgroundColor: statusColors[status]
+                      backgroundColor: effectiveCompleted ? statusColors['completed'] : statusColors[status]
                     }}
                   />
                   <span className="text-xs font-karla-medium uppercase transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
-                    {status === 'completed' ? 'Terminé' : 
-                     status === 'warning' ? 'En cours' : 'En attente'}
+                    {effectiveCompleted 
+                      ? `Terminé${effectiveCompletedAt ? ` le ${formatDate(effectiveCompletedAt)}` : ''}` 
+                      : status === 'warning' 
+                        ? 'En cours' 
+                        : 'En attente'}
                   </span>
                 </div>
                 
@@ -180,14 +191,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   </div>
                 )}
                 
-                {/* Date de fin pour les tâches terminées */}
-                {isCompleted && completedAt && (
-                  <div className="ml-4 mt-1">
-                    <span className="text-xs font-karla-medium transition-colors duration-300" style={{ color: 'var(--text-muted)' }}>
-                      Terminé le {formatDate(completedAt)}
-                    </span>
-                  </div>
-                )}
+                
               </div>
             </div>
 
@@ -196,15 +200,15 @@ const TaskCard: React.FC<TaskCardProps> = ({
               {/* Bouton rond à coche (plus petit) */}
               <button
                 onClick={handleComplete}
-                disabled={isCompleted}
+                disabled={effectiveCompleted}
                 className={`w-6 h-6 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
-                  isCompleted 
+                  effectiveCompleted 
                     ? 'bg-green-500 border-green-500 text-white' 
                     : 'border-gray-400 hover:border-green-500 hover:bg-green-50'
                 }`}
                 title={isCompleted ? "Déjà terminé" : "Marquer comme terminé"}
               >
-                {isCompleted && <FontAwesomeIcon icon={faCheck} className="w-3 h-3" />}
+                {effectiveCompleted && <FontAwesomeIcon icon={faCheck} className="w-3 h-3" />}
               </button>
 
               {/* Flèche accordéon alignée verticalement */}
