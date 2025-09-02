@@ -204,7 +204,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
             console.log('Appel de forceSyncPanelData depuis handleSaveEdit (après délai)');
             forceSyncPanelData();
           }
-        }, 500); // Attendre 500ms
+        }, 1000); // Attendre 1 seconde pour une meilleure synchronisation
       } else {
         console.error('Erreur lors de la mise à jour de la carte');
         const errorData = await response.json();
@@ -288,9 +288,11 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
         setIsAddingCard(false);
         setAddFormData({} as CardFormData);
         
-        // Déclencher la synchronisation dans la page d'accueil
+        // Déclencher la synchronisation dans la page d'accueil avec un délai
         if (forceSyncPanelData) {
-          forceSyncPanelData();
+          setTimeout(() => {
+            forceSyncPanelData();
+          }, 1000); // Attendre 1 seconde pour que l'API traite la requête
         }
         
         // Forcer le re-rendu
@@ -506,9 +508,10 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                             </button>
                           )}
                           {/* Switch pour afficher/masquer la carte */}
-                {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
+                {userRole === 'admin' && (
                             <Switch 
                               id={`switch-${card.id}`}
+                              checked={tasksAddedFromPanel.some(task => task.name === card.name)}
                               onCheckedChange={(checked) => {
                                 if (checked) {
                                   handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
@@ -563,9 +566,10 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                         </button>
                       )}
                         {/* Switch pour afficher/masquer la carte */}
-                {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
+                {userRole === 'admin' && (
                         <Switch 
                           id={`switch-${card.id}`}
+                          checked={tasksAddedFromPanel.some(task => task.name === card.name)}
                           onCheckedChange={(checked) => {
                             if (checked) {
                               handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
