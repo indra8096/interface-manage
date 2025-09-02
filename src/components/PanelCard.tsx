@@ -137,13 +137,13 @@ const PanelCard: React.FC<PanelCardProps> = ({
               }}></div>
               <div className="flex-1">
                 <h4 className="text-sm font-karla-bold mb-2" style={{ color: 'var(--text-primary)' }}>
-                  Priorité {priority}
+                  {name}
                 </h4>
                 <p className="text-xs mb-2" style={{ color: 'var(--text-muted)' }}>
                   {description}
                 </p>
                 <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                  Échéance: {deadline || 'Non définie'}
+                  Priorité: {priority} • Échéance: {deadline || 'Non définie'}
                 </div>
               </div>
             </div>
