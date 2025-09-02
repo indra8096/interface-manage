@@ -541,13 +541,13 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
               }}></div>
               <div className="flex-1">
                 <h4 className="text-sm font-karla-bold mb-2 recommendation-card-name" style={{ color: 'var(--text-primary)' }}>
-                  Priorité {card.priority}
+                  {card.name}
                 </h4>
                 <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
                   {card.description}
                 </p>
                 <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                  Échéance: {card.deadline || 'Non définie'}
+                  Priorité: {card.priority} • Échéance: {card.deadline || 'Non définie'}
               </div>
               </div>
               <div className="flex items-center gap-2">
