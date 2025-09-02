@@ -1,4 +1,6 @@
 import React from 'react';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 interface PanelCardProps {
   name: string;
@@ -202,19 +204,19 @@ const PanelCard: React.FC<PanelCardProps> = ({
             </button>
           )}
           {userRole === 'admin' && onAddToDashboard && !isAddedToDashboard && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onAddToDashboard(name, description || '', importance || 'Moyenne');
-              }}
-              className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-              style={{ 
-                background: categoryColors[category],
-                color: 'black'
-              }}
-            >
-              A
-            </button>
+            <div className="flex items-center space-x-2">
+              <Switch 
+                id={`switch-${name}`}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    onAddToDashboard(name, description || '', importance || 'Moyenne');
+                  }
+                }}
+              />
+              <Label htmlFor={`switch-${name}`} className="text-xs font-karla-medium" style={{ color: 'var(--text-primary)' }}>
+                Afficher
+              </Label>
+            </div>
           )}
         </div>
       </div>

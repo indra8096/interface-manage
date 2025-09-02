@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 interface CardFormData {
   id: number;
@@ -70,7 +72,7 @@ const categoryDescriptions = {
 
 
 
-export default function CategoryDetailsPanel({ isOpen, onClose, category, categoryTitle, userRole = 'user', onAddTask, onRemoveTaskFromPanel, tasksAddedFromPanel = [], forceSyncPanelData, panelCards = [] }: CategoryDetailsPanelProps) {
+export default function CategoryDetailsPanel({ isOpen, onClose, category, categoryTitle, userRole = 'user', onAddTask, tasksAddedFromPanel = [], forceSyncPanelData, panelCards = [] }: CategoryDetailsPanelProps) {
   const [activeTab, setActiveTab] = useState<'coverage' | 'infrastructure' | 'compliance' | 'recommendations'>('coverage');
   const [editingCard, setEditingCard] = useState<string | null>(null);
   const [editFormData, setEditFormData] = useState<CardFormData>({} as CardFormData);
@@ -397,21 +399,21 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                             MODIFIER
                           </button>
                         )}
-                        {/* Bouton de suppression supprimé - Seul le super admin peut supprimer les templates */}
+                        {/* Switch pour afficher/masquer la carte */}
                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                      handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
-                            }}
-                            className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                            style={{ 
-                              background: categoryColors[category],
-                              color: 'black'
-                            }}
-                          >
-                            A
-                          </button>
+                          <div className="flex items-center space-x-2">
+                            <Switch 
+                              id={`switch-${card.id}`}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
+                                }
+                              }}
+                            />
+                            <Label htmlFor={`switch-${card.id}`} className="text-xs font-karla-medium" style={{ color: 'var(--text-primary)' }}>
+                              Afficher
+                            </Label>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -457,21 +459,21 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                             MODIFIER
                           </button>
                         )}
-                        {/* Bouton de suppression supprimé - Seul le super admin peut supprimer les templates */}
+                        {/* Switch pour afficher/masquer la carte */}
                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                      handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
-                            }}
-                            className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                            style={{ 
-                              background: categoryColors[category],
-                              color: 'black'
-                            }}
-                          >
-                            A
-                          </button>
+                          <div className="flex items-center space-x-2">
+                            <Switch 
+                              id={`switch-${card.id}`}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
+                                }
+                              }}
+                            />
+                            <Label htmlFor={`switch-${card.id}`} className="text-xs font-karla-medium" style={{ color: 'var(--text-primary)' }}>
+                              Afficher
+                            </Label>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -512,21 +514,21 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                               MODIFIER
                             </button>
                           )}
-                          {/* Bouton de suppression supprimé - Seul le super admin peut supprimer les templates */}
+                          {/* Switch pour afficher/masquer la carte */}
                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
-                              }}
-                              className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                              style={{ 
-                                background: categoryColors[category],
-                                color: 'black'
-                              }}
-                            >
-                              A
-                            </button>
+                            <div className="flex items-center space-x-2">
+                              <Switch 
+                                id={`switch-${card.id}`}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
+                                  }
+                                }}
+                              />
+                              <Label htmlFor={`switch-${card.id}`} className="text-xs font-karla-medium" style={{ color: 'var(--text-primary)' }}>
+                                Afficher
+                              </Label>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -574,21 +576,21 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                           MODIFIER
                         </button>
                       )}
-                        {/* Bouton de suppression supprimé - Seul le super admin peut supprimer les templates */}
+                        {/* Switch pour afficher/masquer la carte */}
                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                      handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
-                          }}
-                          className="px-2 py-1 rounded text-xs font-karla-medium transition-all duration-300"
-                          style={{ 
-                            background: categoryColors[category],
-                            color: 'black'
-                          }}
-                        >
-                          A
-                        </button>
+                        <div className="flex items-center space-x-2">
+                          <Switch 
+                            id={`switch-${card.id}`}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
+                              }
+                            }}
+                          />
+                          <Label htmlFor={`switch-${card.id}`} className="text-xs font-karla-medium" style={{ color: 'var(--text-primary)' }}>
+                            Afficher
+                          </Label>
+                        </div>
                       )}
                     </div>
                   </div>
