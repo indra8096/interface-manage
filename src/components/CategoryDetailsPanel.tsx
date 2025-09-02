@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 
 interface CardFormData {
   id: number;
@@ -401,19 +400,14 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                         )}
                         {/* Switch pour afficher/masquer la carte */}
                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
-                          <div className="flex items-center space-x-2">
-                            <Switch 
-                              id={`switch-${card.id}`}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
-                                }
-                              }}
-                            />
-                            <Label htmlFor={`switch-${card.id}`} className="text-xs font-karla-medium" style={{ color: 'var(--text-primary)' }}>
-                              Afficher
-                            </Label>
-                          </div>
+                          <Switch 
+                            id={`switch-${card.id}`}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
+                              }
+                            }}
+                          />
                         )}
                       </div>
                     </div>
@@ -461,19 +455,14 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                         )}
                         {/* Switch pour afficher/masquer la carte */}
                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
-                          <div className="flex items-center space-x-2">
-                            <Switch 
-                              id={`switch-${card.id}`}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
-                                }
-                              }}
-                            />
-                            <Label htmlFor={`switch-${card.id}`} className="text-xs font-karla-medium" style={{ color: 'var(--text-primary)' }}>
-                              Afficher
-                            </Label>
-                          </div>
+                          <Switch 
+                            id={`switch-${card.id}`}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
+                              }
+                            }}
+                          />
                         )}
                       </div>
                     </div>
@@ -516,19 +505,14 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                           )}
                           {/* Switch pour afficher/masquer la carte */}
                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
-                            <div className="flex items-center space-x-2">
-                              <Switch 
-                                id={`switch-${card.id}`}
-                                onCheckedChange={(checked) => {
-                                  if (checked) {
-                                    handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
-                                  }
-                                }}
-                              />
-                              <Label htmlFor={`switch-${card.id}`} className="text-xs font-karla-medium" style={{ color: 'var(--text-primary)' }}>
-                                Afficher
-                              </Label>
-                            </div>
+                            <Switch 
+                              id={`switch-${card.id}`}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
+                                }
+                              }}
+                            />
                           )}
                         </div>
                       </div>
@@ -578,19 +562,14 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                       )}
                         {/* Switch pour afficher/masquer la carte */}
                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
-                        <div className="flex items-center space-x-2">
-                          <Switch 
-                            id={`switch-${card.id}`}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
-                              }
-                            }}
-                          />
-                          <Label htmlFor={`switch-${card.id}`} className="text-xs font-karla-medium" style={{ color: 'var(--text-primary)' }}>
-                            Afficher
-                          </Label>
-                        </div>
+                        <Switch 
+                          id={`switch-${card.id}`}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
+                            }
+                          }}
+                        />
                       )}
                     </div>
                   </div>
