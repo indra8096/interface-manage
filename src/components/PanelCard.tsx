@@ -53,7 +53,7 @@ const PanelCard: React.FC<PanelCardProps> = ({
   const percentage = hasValidProgressData ? Math.min(Math.round((completed / total) * 100), 100) : 0;
   
   console.log(`PanelCard "${name}": total=${total}, completed=${completed}, percentage=${percentage}, hasValidProgressData=${hasValidProgressData}`);
-  const isAddedToDashboard = tasksAddedFromPanel.some(task => task.name === name);
+  const isAddedToDashboard = tasksAddedFromPanel.some(task => task.name === name && task.category === category);
 
   // Fonction pour rendre le contenu spécifique selon le type
   const renderSpecificContent = () => {

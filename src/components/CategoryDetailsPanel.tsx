@@ -104,7 +104,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
   ] as const;
 
   const handleAddToDashboard = (cardId: number, taskName: string, description: string, importance: string = 'Moyenne') => {
-    if (onAddTask && !tasksAddedFromPanel.some(task => task.name === taskName)) {
+    if (onAddTask && !tasksAddedFromPanel.some(task => task.name === taskName && task.category === category)) {
       onAddTask({
         name: taskName,
         score: 5,
@@ -327,7 +327,8 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
     if (!panelCards || !Array.isArray(panelCards)) return [];
     
     return panelCards.filter(card => {
-      return card.type === type && card.isActive;
+      // Filtrer les cartes par type et exclure les cartes avec des noms problématiques
+      return card.type === type && card.isActive && card.name !== 'Switch';
     }).map(card => {
       return {
         id: card.id,
@@ -404,7 +405,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                 {userRole === 'admin' && (
                           <Switch 
                             id={`switch-${card.id}-${card.name}-${card.type}`}
-                            checked={tasksAddedFromPanel.some(task => task.name === card.name)}
+                            checked={tasksAddedFromPanel.some(task => task.name === card.name && task.category === category)}
                             onCheckedChange={(checked) => {
                               if (checked) {
                                 handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
@@ -460,7 +461,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                 {userRole === 'admin' && (
                           <Switch 
                             id={`switch-${card.id}-${card.name}-${card.type}`}
-                            checked={tasksAddedFromPanel.some(task => task.name === card.name)}
+                            checked={tasksAddedFromPanel.some(task => task.name === card.name && task.category === category)}
                             onCheckedChange={(checked) => {
                               if (checked) {
                                 handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
@@ -511,7 +512,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                 {userRole === 'admin' && (
                             <Switch 
                               id={`switch-${card.id}-${card.name}-${card.type}`}
-                              checked={tasksAddedFromPanel.some(task => task.name === card.name)}
+                              checked={tasksAddedFromPanel.some(task => task.name === card.name && task.category === category)}
                               onCheckedChange={(checked) => {
                                 if (checked) {
                                   handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
@@ -569,7 +570,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                 {userRole === 'admin' && (
                         <Switch 
                           id={`switch-${card.id}-${card.name}-${card.type}`}
-                          checked={tasksAddedFromPanel.some(task => task.name === card.name)}
+                          checked={tasksAddedFromPanel.some(task => task.name === card.name && task.category === category)}
                           onCheckedChange={(checked) => {
                             if (checked) {
                               handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
