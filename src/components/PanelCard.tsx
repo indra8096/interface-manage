@@ -19,7 +19,16 @@ interface PanelCardProps {
   onDelete?: (cardName: string) => void;
   onAddToDashboard?: (taskName: string, description: string, importance: string) => void;
   cardType: 'coverage' | 'infrastructure' | 'compliance' | 'recommendation';
-  tasksAddedFromPanel?: { name: string }[];
+  tasksAddedFromPanel?: Array<{
+    id: number;
+    name: string;
+    description: string;
+    importance: string;
+    category: string;
+    score: number;
+    dueDate: string;
+    assignedTo: string;
+  }>;
 }
 
 const categoryColors = {
