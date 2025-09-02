@@ -204,7 +204,7 @@ const PanelCard: React.FC<PanelCardProps> = ({
           )}
           {userRole === 'admin' && onAddToDashboard && (
             <Switch 
-              id={`switch-${name}`}
+              id={`switch-panelcard-${name}-${cardType}`}
               checked={isAddedToDashboard}
               onCheckedChange={(checked) => {
                 if (checked) {
