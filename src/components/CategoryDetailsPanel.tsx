@@ -402,6 +402,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
                           <Switch 
                             id={`switch-${card.id}`}
+                            checked={tasksAddedFromPanel.some(task => task.name === card.name)}
                             onCheckedChange={(checked) => {
                               if (checked) {
                                 handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
@@ -457,6 +458,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                 {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
                           <Switch 
                             id={`switch-${card.id}`}
+                            checked={tasksAddedFromPanel.some(task => task.name === card.name)}
                             onCheckedChange={(checked) => {
                               if (checked) {
                                 handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');

@@ -752,7 +752,7 @@ export default function Home() {
                >
                 <div className="flex items-center justify-between">
                   <div>
-                                         <div className="font-karla-medium text-sm mb-2 transition-colors duration-300">SERVICES ACTIFS</div>
+                                         <div className="font-karla-medium text-sm mb-2 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>SERVICES ACTIFS</div>
                                          <div className="text-6xl font-karla-bold" style={{ color: 'var(--theme-primary)' }}>{tasks.length}</div>
                   </div>
                                      <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
@@ -770,7 +770,7 @@ export default function Home() {
                >
                 <div className="flex items-center justify-between">
                   <div>
-                                         <div className="font-karla-medium text-sm mb-2 transition-colors duration-300">TÂCHES TERMINÉES</div>
+                                         <div className="font-karla-medium text-sm mb-2 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>TÂCHES TERMINÉES</div>
                                          <div className="text-6xl font-karla-bold" style={{ color: 'var(--theme-secondary)' }}>
                        {Math.min(Math.round((tasks.filter(t => t.status === 'completed').length / Math.max(tasks.length, 1)) * 100), 100)}%
                      </div>
@@ -798,7 +798,7 @@ export default function Home() {
                                      <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
                      {tasks.filter(t => t.category === 'defensive').length}
                    </div>
-                                        <div className="font-karla-medium text-sm transition-colors duration-300">DÉFENSIF</div>
+                                        <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>DÉFENSIF</div>
                 </div>
               </motion.div>
               
@@ -814,7 +814,7 @@ export default function Home() {
                                      <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
                      {tasks.filter(t => t.category === 'general').length}
                    </div>
-                                        <div className="font-karla-medium text-sm transition-colors duration-300">GÉNÉRAL</div>
+                                        <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>GÉNÉRAL</div>
                 </div>
               </motion.div>
               
@@ -827,7 +827,7 @@ export default function Home() {
                                      <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
                      {tasks.filter(t => t.category === 'offensive').length}
                    </div>
-                                        <div className="font-karla-medium text-sm transition-colors duration-300">OFFENSIF</div>
+                                        <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>OFFENSIF</div>
                 </div>
               </motion.div>
               
@@ -843,7 +843,7 @@ export default function Home() {
                                      <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
                      {tasks.filter(t => t.status === 'completed').length}
                    </div>
-                                        <div className="font-karla-medium text-sm transition-colors duration-300">TERMINÉS</div>
+                                        <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>TERMINÉS</div>
                 </div>
                 {/* Indicateur "voir plus" */}
                 <div className="absolute bottom-2 right-3 text-xs font-karla-medium" style={{ color: 'white' }}>
