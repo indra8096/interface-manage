@@ -197,14 +197,11 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
         // setIsEditing(false); // Désactiver le mode édition - supprimé
         setRenderKey(prev => prev + 1); // Forcer le re-rendu
         
-        // Attendre un peu que l'API traite la mise à jour avant de synchroniser
-        setTimeout(() => {
-          // Déclencher la synchronisation dans la page d'accueil
-          if (forceSyncPanelData) {
-            console.log('Appel de forceSyncPanelData depuis handleSaveEdit (après délai)');
-            forceSyncPanelData();
-          }
-        }, 1000); // Attendre 1 seconde pour une meilleure synchronisation
+        // Déclencher la synchronisation immédiatement
+        if (forceSyncPanelData) {
+          console.log('Appel de forceSyncPanelData depuis handleSaveEdit (immédiat)');
+          forceSyncPanelData();
+        }
       } else {
         console.error('Erreur lors de la mise à jour de la carte');
         const errorData = await response.json();
@@ -288,11 +285,9 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
         setIsAddingCard(false);
         setAddFormData({} as CardFormData);
         
-        // Déclencher la synchronisation dans la page d'accueil avec un délai
+        // Déclencher la synchronisation immédiatement
         if (forceSyncPanelData) {
-          setTimeout(() => {
-            forceSyncPanelData();
-          }, 1000); // Attendre 1 seconde pour que l'API traite la requête
+          forceSyncPanelData();
         }
         
         // Forcer le re-rendu
