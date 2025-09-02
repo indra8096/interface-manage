@@ -399,7 +399,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                           </button>
                         )}
                         {/* Switch pour afficher/masquer la carte */}
-                {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
+                {userRole === 'admin' && (
                           <Switch 
                             id={`switch-${card.id}`}
                             checked={tasksAddedFromPanel.some(task => task.name === card.name)}
@@ -455,7 +455,7 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                           </button>
                         )}
                         {/* Switch pour afficher/masquer la carte */}
-                {userRole === 'admin' && !tasksAddedFromPanel.some(task => task.name === card.name) && (
+                {userRole === 'admin' && (
                           <Switch 
                             id={`switch-${card.id}`}
                             checked={tasksAddedFromPanel.some(task => task.name === card.name)}
