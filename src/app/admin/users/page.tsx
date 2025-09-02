@@ -303,7 +303,7 @@ export default function AdminUsersPage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-karla-medium text-sm mb-2 transition-colors duration-300">UTILISATEURS TOTAUX</div>
+                    <div className="font-karla-medium text-sm mb-2 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>UTILISATEURS TOTAUX</div>
                     <div className="text-6xl font-karla-bold" style={{ color: 'var(--theme-primary)' }}>{users.length}</div>
                   </div>
                   <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
@@ -324,7 +324,7 @@ export default function AdminUsersPage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-karla-medium text-sm mb-2 transition-colors duration-300">ADMINISTRATEURS</div>
+                    <div className="font-karla-medium text-sm mb-2 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>ADMINISTRATEURS</div>
                     <div className="text-6xl font-karla-bold" style={{ color: 'var(--theme-secondary)' }}>
                       {users.filter(u => u.role === 'COMPANY_ADMIN').length}
                     </div>
@@ -347,7 +347,7 @@ export default function AdminUsersPage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-karla-medium text-sm mb-2 transition-colors duration-300">UTILISATEURS</div>
+                    <div className="font-karla-medium text-sm mb-2 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>UTILISATEURS</div>
                     <div className="text-6xl font-karla-bold" style={{ color: 'var(--theme-primary)' }}>
                       {users.filter(u => u.role === 'COMPANY_USER').length}
                     </div>
