@@ -85,7 +85,7 @@ export default function Home() {
   const [deleteConfirmation, setDeleteConfirmation] = useState<{ show: boolean; taskId?: number; taskName?: string; type: 'regular' | 'panel' }>({ show: false, type: 'regular' });
   const [isSuperAdminView, setIsSuperAdminView] = useState(false);
   const [superAdminCompanyInfo, setSuperAdminCompanyInfo] = useState<{ companyId: string; companyName: string } | null>(null);
-  const [companyViewKey, setCompanyViewKey] = useState(0);
+  const [currentCompanyId, setCurrentCompanyId] = useState<string | null>(null);
   const router = useRouter();
 
   // Fonction pour retourner à la gestion des utilisateurs de l'entreprise
@@ -126,6 +126,7 @@ export default function Home() {
 
       // Si c'est un super admin en mode "vue", utiliser l'API super admin
       if (isSuperAdminView && superAdminCompanyInfo) {
+        console.log('Fetching tasks for company:', superAdminCompanyInfo.companyId);
         const response = await fetch(`/api/superadmin/companies/${superAdminCompanyInfo.companyId}/tasks`, {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -134,6 +135,7 @@ export default function Home() {
         
         if (response.ok) {
           const data = await response.json();
+          console.log('Tasks loaded for company:', superAdminCompanyInfo.companyName, data.length, 'tasks');
           setTasks(data.tasks || data);
         } else if (response.status === 401) {
           router.push('/login');
@@ -173,6 +175,7 @@ export default function Home() {
       
       // Si c'est un super admin en mode "vue", utiliser l'API super admin
       if (isSuperAdminView && superAdminCompanyInfo) {
+        console.log('Fetching panel cards for company:', superAdminCompanyInfo.companyId);
         const response = await fetch(`/api/superadmin/companies/${superAdminCompanyInfo.companyId}/panel_cards`, {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -181,7 +184,7 @@ export default function Home() {
         
         if (response.ok) {
           const data = await response.json();
-          console.log('fetchPanelCards (Super Admin): Données reçues:', data);
+          console.log('Panel cards loaded for company:', superAdminCompanyInfo.companyName, data.panelCards?.length || 0, 'cards');
           
           // Mettre à jour l'état panelCards
           setPanelCards(data.panelCards || data);
@@ -257,13 +260,16 @@ export default function Home() {
           companyName: superAdminCompanyName
         });
         
-        // Vider le cache des données précédentes
-        setTasks([]);
-        setPanelCards([]);
-        setTasksAddedFromPanel([]);
-        
-        // Incrémenter la clé pour forcer le rechargement
-        setCompanyViewKey(prev => prev + 1);
+        // Vérifier si l'entreprise a changé
+        if (currentCompanyId !== superAdminCompanyId) {
+          console.log('Changement d\'entreprise détecté:', superAdminCompanyName);
+          setCurrentCompanyId(superAdminCompanyId);
+          
+          // Vider le cache des données précédentes
+          setTasks([]);
+          setPanelCards([]);
+          setTasksAddedFromPanel([]);
+        }
         
         // Ne pas rediriger vers /superadmin
       } else {
@@ -312,38 +318,43 @@ export default function Home() {
 
   // Recharger les données quand on change d'entreprise (mode super admin)
   useEffect(() => {
-    if (isSuperAdminView && superAdminCompanyInfo) {
-      console.log('Chargement des données pour l\'entreprise:', superAdminCompanyInfo.companyName, 'Key:', companyViewKey);
+    if (isSuperAdminView && superAdminCompanyInfo && currentCompanyId) {
+      console.log('Chargement des données pour l\'entreprise:', superAdminCompanyInfo.companyName, 'ID:', currentCompanyId);
       fetchTasks();
       fetchPanelCards();
     }
-  }, [isSuperAdminView, superAdminCompanyInfo, companyViewKey]);
+  }, [isSuperAdminView, superAdminCompanyInfo, currentCompanyId]);
 
-  // Vérifier les changements d'entreprise périodiquement
+  // Vérifier les changements d'entreprise quand la fenêtre reprend le focus
   useEffect(() => {
     if (!isSuperAdminView) return;
 
-    const checkCompanyChange = () => {
+    const handleFocus = () => {
       const isSuperAdminReturn = localStorage.getItem('superAdminReturn');
       const superAdminCompanyId = localStorage.getItem('superAdminCompanyId');
       const superAdminCompanyName = localStorage.getItem('superAdminCompanyName');
       
       if (isSuperAdminReturn === 'true' && superAdminCompanyId && superAdminCompanyName) {
         // Vérifier si l'entreprise a changé
-        if (superAdminCompanyInfo?.companyId !== superAdminCompanyId) {
-          console.log('Changement d\'entreprise détecté:', superAdminCompanyName);
+        if (currentCompanyId !== superAdminCompanyId) {
+          console.log('Changement d\'entreprise détecté au focus:', superAdminCompanyName);
           setSuperAdminCompanyInfo({
             companyId: superAdminCompanyId,
             companyName: superAdminCompanyName
           });
-          setCompanyViewKey(prev => prev + 1);
+          setCurrentCompanyId(superAdminCompanyId);
+          
+          // Vider le cache des données précédentes
+          setTasks([]);
+          setPanelCards([]);
+          setTasksAddedFromPanel([]);
         }
       }
     };
 
-    const interval = setInterval(checkCompanyChange, 1000);
-    return () => clearInterval(interval);
-  }, [isSuperAdminView, superAdminCompanyInfo]);
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [isSuperAdminView, currentCompanyId]);
 
   useEffect(() => {
     fetchTasks();
