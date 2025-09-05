@@ -82,9 +82,6 @@ export default function Home() {
   const [deleteConfirmation, setDeleteConfirmation] = useState<{ show: boolean; taskId?: number; taskName?: string; type: 'regular' | 'panel' }>({ show: false, type: 'regular' });
   const [isSuperAdminView, setIsSuperAdminView] = useState(false);
   const [superAdminCompanyInfo, setSuperAdminCompanyInfo] = useState<{ companyId: string; companyName: string } | null>(null);
-  const [currentCompanyId, setCurrentCompanyId] = useState<string | null>(null);
-  const [lastViewTimestamp, setLastViewTimestamp] = useState<string | null>(null);
-  const [forceReload, setForceReload] = useState(0);
   const [isLoadingCompanyData, setIsLoadingCompanyData] = useState(false);
   const router = useRouter();
 
@@ -125,24 +122,25 @@ export default function Home() {
       }
 
       // Si c'est un super admin en mode "vue", utiliser l'API super admin
-      if (isSuperAdminView && superAdminCompanyInfo) {
-        // Récupérer l'ID de l'entreprise depuis localStorage pour s'assurer d'avoir la bonne
-        const currentCompanyIdFromStorage = localStorage.getItem('superAdminCompanyId');
-        const companyIdToUse = currentCompanyIdFromStorage || superAdminCompanyInfo.companyId;
+      if (isSuperAdminView) {
+        const superAdminCompanyId = localStorage.getItem('superAdminCompanyId');
+        const superAdminCompanyName = localStorage.getItem('superAdminCompanyName');
         
-        console.log('Fetching tasks for company:', companyIdToUse, 'Company name:', superAdminCompanyInfo.companyName);
-        const response = await fetch(`/api/superadmin/companies/${companyIdToUse}/tasks`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
+        if (superAdminCompanyId) {
+          console.log('Fetching tasks for company:', superAdminCompanyId, 'Company name:', superAdminCompanyName);
+          const response = await fetch(`/api/superadmin/companies/${superAdminCompanyId}/tasks`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log('Tasks loaded for company:', superAdminCompanyName, data.length || data.tasks?.length || 0, 'tasks');
+            setTasks(data.tasks || data);
+          } else if (response.status === 401) {
+            router.push('/login');
           }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Tasks loaded for company:', superAdminCompanyInfo.companyName, data.length || data.tasks?.length || 0, 'tasks');
-          setTasks(data.tasks || data);
-        } else if (response.status === 401) {
-          router.push('/login');
         }
       } else {
         // API normale pour les utilisateurs de l'entreprise
@@ -164,7 +162,7 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  }, [isSuperAdminView, superAdminCompanyInfo, router]);
+  }, [isSuperAdminView, router]);
 
   // Charger les cartes de panel depuis l'API
   const fetchPanelCards = useCallback(async () => {
@@ -178,29 +176,30 @@ export default function Home() {
       console.log('fetchPanelCards: Récupération des cartes depuis l\'API...');
       
       // Si c'est un super admin en mode "vue", utiliser l'API super admin
-      if (isSuperAdminView && superAdminCompanyInfo) {
-        // Récupérer l'ID de l'entreprise depuis localStorage pour s'assurer d'avoir la bonne
-        const currentCompanyIdFromStorage = localStorage.getItem('superAdminCompanyId');
-        const companyIdToUse = currentCompanyIdFromStorage || superAdminCompanyInfo.companyId;
+      if (isSuperAdminView) {
+        const superAdminCompanyId = localStorage.getItem('superAdminCompanyId');
+        const superAdminCompanyName = localStorage.getItem('superAdminCompanyName');
         
-        console.log('Fetching panel cards for company:', companyIdToUse, 'Company name:', superAdminCompanyInfo.companyName);
-        const response = await fetch(`/api/superadmin/companies/${companyIdToUse}/panel_cards`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
+        if (superAdminCompanyId) {
+          console.log('Fetching panel cards for company:', superAdminCompanyId, 'Company name:', superAdminCompanyName);
+          const response = await fetch(`/api/superadmin/companies/${superAdminCompanyId}/panel_cards`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log('Panel cards loaded for company:', superAdminCompanyName, data.panelCards?.length || 0, 'cards');
+            
+            // Mettre à jour l'état panelCards
+            setPanelCards(data.panelCards || data);
+            
+            // Synchroniser tasksAddedFromPanel avec les nouvelles données
+            syncTasksAddedFromPanelWithData(data.panelCards || data);
+          } else if (response.status === 401) {
+            router.push('/login');
           }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Panel cards loaded for company:', superAdminCompanyInfo.companyName, data.panelCards?.length || 0, 'cards');
-          
-          // Mettre à jour l'état panelCards
-          setPanelCards(data.panelCards || data);
-          
-          // Synchroniser tasksAddedFromPanel avec les nouvelles données
-          syncTasksAddedFromPanelWithData(data.panelCards || data);
-        } else if (response.status === 401) {
-          router.push('/login');
         }
       } else {
         // API normale pour les utilisateurs de l'entreprise
@@ -240,7 +239,7 @@ export default function Home() {
     } catch (error) {
       console.error('Erreur lors du chargement des cartes de panel:', error);
     }
-  }, [isSuperAdminView, superAdminCompanyInfo, router]);
+  }, [isSuperAdminView, router]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -264,7 +263,6 @@ export default function Home() {
       // Si c'est un super admin en mode "vue", autoriser l'accès
       if (isSuperAdminReturn === 'true' && superAdminCompanyId && superAdminCompanyName) {
         console.log('Mode super admin détecté - Entreprise:', superAdminCompanyName, 'ID:', superAdminCompanyId);
-        console.log('Current company ID:', currentCompanyId);
         
         setIsSuperAdminView(true);
         setSuperAdminCompanyInfo({
@@ -272,33 +270,13 @@ export default function Home() {
           companyName: superAdminCompanyName
         });
         
-        // TOUJOURS vider le cache et forcer le rechargement pour le super admin
-        console.log('Mode super admin - FORCE RELOAD des données pour:', superAdminCompanyName);
-        
         // Activer l'indicateur de chargement
         setIsLoadingCompanyData(true);
         
-        // Vider IMMÉDIATEMENT le cache des données précédentes
+        // Vider le cache
         setTasks([]);
         setPanelCards([]);
         setTasksAddedFromPanel([]);
-        
-        // Mettre à jour les états
-        setCurrentCompanyId(superAdminCompanyId);
-        setLastViewTimestamp(viewTimestamp);
-        setForceReload(prev => prev + 1);
-        
-        // Forcer le rechargement immédiat des données
-        setTimeout(async () => {
-          console.log('Rechargement immédiat des données pour:', superAdminCompanyName);
-          try {
-            await fetchTasks();
-            await fetchPanelCards();
-          } finally {
-            // Désactiver l'indicateur de chargement
-            setIsLoadingCompanyData(false);
-          }
-        }, 50);
         
         // Ne pas rediriger vers /superadmin
       } else {
@@ -343,67 +321,34 @@ export default function Home() {
       }
       // Les cartes de panel sont maintenant chargées depuis l'API via fetchPanelCards()
     }
-  }, [router, currentCompanyId, lastViewTimestamp]);
+  }, [router]);
 
-  // Recharger les données quand on change d'entreprise (mode super admin)
+  // Recharger les données quand on est en mode super admin
   useEffect(() => {
-    if (isSuperAdminView && superAdminCompanyInfo && currentCompanyId) {
-      console.log('FORCE RELOAD - Chargement des données pour l\'entreprise:', superAdminCompanyInfo.companyName, 'ID:', currentCompanyId, 'ForceReload:', forceReload);
+    if (isSuperAdminView && superAdminCompanyInfo) {
+      console.log('Chargement des données pour l\'entreprise:', superAdminCompanyInfo.companyName);
       
-      // Vider d'abord le cache pour s'assurer qu'on part de zéro
-      setTasks([]);
-      setPanelCards([]);
-      setTasksAddedFromPanel([]);
-      
-      // Puis recharger les données avec un petit délai pour s'assurer que le cache est vidé
-      setTimeout(() => {
-        console.log('Rechargement des données après vidage du cache...');
-        fetchTasks();
-        fetchPanelCards();
-      }, 100);
-    }
-  }, [isSuperAdminView, superAdminCompanyInfo, currentCompanyId, lastViewTimestamp, forceReload, fetchTasks, fetchPanelCards]);
-
-  // Vérifier les changements d'entreprise quand la fenêtre reprend le focus
-  useEffect(() => {
-    if (!isSuperAdminView) return;
-
-    const handleFocus = () => {
-      const isSuperAdminReturn = localStorage.getItem('superAdminReturn');
-      const superAdminCompanyId = localStorage.getItem('superAdminCompanyId');
-      const superAdminCompanyName = localStorage.getItem('superAdminCompanyName');
-      
-      if (isSuperAdminReturn === 'true' && superAdminCompanyId && superAdminCompanyName) {
-        // Vérifier si l'entreprise a changé
-        if (currentCompanyId !== superAdminCompanyId) {
-          console.log('Changement d\'entreprise détecté au focus:', superAdminCompanyName);
-          setSuperAdminCompanyInfo({
-            companyId: superAdminCompanyId,
-            companyName: superAdminCompanyName
-          });
-          setCurrentCompanyId(superAdminCompanyId);
-          
-          // Vider le cache des données précédentes
-          setTasks([]);
-          setPanelCards([]);
-          setTasksAddedFromPanel([]);
+      const loadData = async () => {
+        try {
+          await fetchTasks();
+          await fetchPanelCards();
+        } finally {
+          setIsLoadingCompanyData(false);
         }
-      }
-    };
+      };
+      
+      loadData();
+    }
+  }, [isSuperAdminView, superAdminCompanyInfo, fetchTasks, fetchPanelCards]);
 
-    window.addEventListener('focus', handleFocus);
-    return () => window.removeEventListener('focus', handleFocus);
-  }, [isSuperAdminView, currentCompanyId]);
 
+  // Charger les données pour les utilisateurs normaux (pas super admin)
   useEffect(() => {
-    fetchTasks();
-    fetchPanelCards();
-    
-    // Suppression de l'intervalle automatique qui causait des boucles infinies
-    // Les données seront mises à jour manuellement quand nécessaire
-    
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (!isSuperAdminView) {
+      fetchTasks();
+      fetchPanelCards();
+    }
+  }, [isSuperAdminView, fetchTasks, fetchPanelCards]);
 
   // Log des changements de tasksAddedFromPanel pour le débogage
   useEffect(() => {
