@@ -86,6 +86,29 @@ function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  // Fonction pour retourner à la gestion des utilisateurs de l'entreprise
+  const handleReturnToSuperAdmin = () => {
+    // Restaurer la session du super admin
+    const originalToken = localStorage.getItem('superAdminOriginalToken');
+    const originalRole = localStorage.getItem('superAdminOriginalRole');
+    const companyId = searchParams.get('companyId');
+    
+    if (originalToken && originalRole) {
+      localStorage.setItem('token', originalToken);
+      localStorage.setItem('role', originalRole);
+    }
+    
+    // Nettoyer les données de retour
+    localStorage.removeItem('superAdminOriginalToken');
+    localStorage.removeItem('superAdminOriginalRole');
+    
+    // Retourner à la page de gestion des utilisateurs de l'entreprise
+    if (companyId) {
+      router.push(`/superadmin/companies/${companyId}/dashboard`);
+    } else {
+      router.push('/superadmin');
+    }
+  };
 
   // Charger les tâches depuis l'API
   const fetchTasks = useCallback(async () => {
@@ -842,8 +865,15 @@ function DashboardContent() {
                 )}
               </p>
             </div>
-
-          </div>
+            <button
+              onClick={handleReturnToSuperAdmin}
+              disabled={isLoadingCompanyData}
+              className="px-6 py-2 bg-yellow-600 text-black font-semibold rounded-lg hover:bg-yellow-700 transition-all duration-300 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span>←</span>
+              <span>Retour à la gestion des utilisateurs</span>
+            </button>
+            </div>
         </div>
       )}
       
