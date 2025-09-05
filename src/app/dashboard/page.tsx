@@ -83,6 +83,7 @@ export default function Home() {
   const [isSuperAdminView, setIsSuperAdminView] = useState(false);
   const [superAdminCompanyInfo, setSuperAdminCompanyInfo] = useState<{ companyId: string; companyName: string } | null>(null);
   const [currentCompanyId, setCurrentCompanyId] = useState<string | null>(null);
+  const [lastViewTimestamp, setLastViewTimestamp] = useState<string | null>(null);
   const router = useRouter();
 
   // Fonction pour retourner à la gestion des utilisateurs de l'entreprise
@@ -243,6 +244,7 @@ export default function Home() {
       const isSuperAdminReturn = localStorage.getItem('superAdminReturn');
       const superAdminCompanyId = localStorage.getItem('superAdminCompanyId');
       const superAdminCompanyName = localStorage.getItem('superAdminCompanyName');
+      const viewTimestamp = localStorage.getItem('superAdminViewTimestamp');
       
       if (!token) {
         router.push('/login');
@@ -251,16 +253,22 @@ export default function Home() {
 
       // Si c'est un super admin en mode "vue", autoriser l'accès
       if (isSuperAdminReturn === 'true' && superAdminCompanyId && superAdminCompanyName) {
+        console.log('Mode super admin détecté - Entreprise:', superAdminCompanyName, 'ID:', superAdminCompanyId);
+        console.log('Current company ID:', currentCompanyId);
+        
         setIsSuperAdminView(true);
         setSuperAdminCompanyInfo({
           companyId: superAdminCompanyId,
           companyName: superAdminCompanyName
         });
         
-        // Vérifier si l'entreprise a changé
-        if (currentCompanyId !== superAdminCompanyId) {
-          console.log('Changement d\'entreprise détecté:', superAdminCompanyName);
+        // Vérifier si c'est une nouvelle vue (nouvelle entreprise ou nouveau timestamp)
+        const isNewView = currentCompanyId !== superAdminCompanyId || lastViewTimestamp !== viewTimestamp;
+        
+        if (isNewView) {
+          console.log('Nouvelle vue détectée:', superAdminCompanyName, 'Timestamp:', viewTimestamp);
           setCurrentCompanyId(superAdminCompanyId);
+          setLastViewTimestamp(viewTimestamp);
           
           // Vider le cache des données précédentes
           setTasks([]);
@@ -311,16 +319,18 @@ export default function Home() {
       }
       // Les cartes de panel sont maintenant chargées depuis l'API via fetchPanelCards()
     }
-  }, [router, currentCompanyId]);
+  }, [router, currentCompanyId, lastViewTimestamp]);
 
   // Recharger les données quand on change d'entreprise (mode super admin)
   useEffect(() => {
     if (isSuperAdminView && superAdminCompanyInfo && currentCompanyId) {
-      console.log('Chargement des données pour l\'entreprise:', superAdminCompanyInfo.companyName, 'ID:', currentCompanyId);
+      console.log('Chargement des données pour l\'entreprise:', superAdminCompanyInfo.companyName, 'ID:', currentCompanyId, 'Timestamp:', lastViewTimestamp);
+      
+      // Puis recharger les données
       fetchTasks();
       fetchPanelCards();
     }
-  }, [isSuperAdminView, superAdminCompanyInfo, currentCompanyId, fetchTasks, fetchPanelCards]);
+  }, [isSuperAdminView, superAdminCompanyInfo, currentCompanyId, lastViewTimestamp, fetchTasks, fetchPanelCards]);
 
   // Vérifier les changements d'entreprise quand la fenêtre reprend le focus
   useEffect(() => {

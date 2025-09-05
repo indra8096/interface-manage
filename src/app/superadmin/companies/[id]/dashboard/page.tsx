@@ -273,6 +273,9 @@ export default function CompanyDashboardPage() {
       localStorage.setItem('superAdminOriginalToken', token);
       localStorage.setItem('superAdminOriginalRole', 'SUPER_ADMIN');
       
+      // Ajouter un timestamp pour forcer le rechargement
+      localStorage.setItem('superAdminViewTimestamp', Date.now().toString());
+      
       // Simuler la session de l'administrateur principal
       localStorage.setItem('role', 'COMPANY_ADMIN');
       localStorage.setItem('companyId', companyId as string);
