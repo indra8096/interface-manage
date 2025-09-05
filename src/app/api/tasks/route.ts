@@ -25,22 +25,50 @@ export async function GET(req: NextRequest) {
 
     // Si c'est un Super Admin, il peut voir toutes les tâches
     if (user.role === 'SUPER_ADMIN') {
-      const tasksRaw = await prisma.task.findMany({
-        include: {
-          company: {
-            select: { id: true, name: true }
+      // Vérifier si c'est un super admin en mode simulation (via localStorage)
+      const isSuperAdminSimulation = req.headers.get('x-super-admin-simulation') === 'true';
+      const simulatedCompanyId = req.headers.get('x-simulated-company-id');
+      
+      if (isSuperAdminSimulation && simulatedCompanyId) {
+        // En mode simulation, filtrer par l'entreprise simulée
+        const tasksRaw = await prisma.task.findMany({
+          where: {
+            companyId: parseInt(simulatedCompanyId)
           },
-          assignedBy: { select: { email: true, name: true, itRole: true } }
-        },
-        orderBy: {
-          createdAt: 'desc'
-        }
-      });
-      const tasks = tasksRaw.map(t => ({
-        ...t,
-        assignedBy: t.assignedBy ? `${t.assignedBy.name || t.assignedBy.email}${t.assignedBy.itRole ? ' — ' + mapItRoleToLabel(t.assignedBy.itRole) : ''}` : undefined,
-      }));
-      return NextResponse.json(tasks);
+          include: {
+            company: {
+              select: { id: true, name: true }
+            },
+            assignedBy: { select: { email: true, name: true, itRole: true } }
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
+        });
+        const tasks = tasksRaw.map(t => ({
+          ...t,
+          assignedBy: t.assignedBy ? `${t.assignedBy.name || t.assignedBy.email}${t.assignedBy.itRole ? ' — ' + mapItRoleToLabel(t.assignedBy.itRole) : ''}` : undefined,
+        }));
+        return NextResponse.json(tasks);
+      } else {
+        // Mode super admin normal - voir toutes les tâches
+        const tasksRaw = await prisma.task.findMany({
+          include: {
+            company: {
+              select: { id: true, name: true }
+            },
+            assignedBy: { select: { email: true, name: true, itRole: true } }
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
+        });
+        const tasks = tasksRaw.map(t => ({
+          ...t,
+          assignedBy: t.assignedBy ? `${t.assignedBy.name || t.assignedBy.email}${t.assignedBy.itRole ? ' — ' + mapItRoleToLabel(t.assignedBy.itRole) : ''}` : undefined,
+        }));
+        return NextResponse.json(tasks);
+      }
     }
 
     // Si c'est un admin ou utilisateur de société, il ne peut voir que les tâches de sa société

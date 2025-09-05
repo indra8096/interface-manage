@@ -123,10 +123,19 @@ export default function Home() {
         return;
       }
 
+      // Préparer les headers pour le mode super admin simulation
+      const headers: Record<string, string> = {
+        'Authorization': `Bearer ${token}`
+      };
+
+      // Si c'est un super admin en mode simulation, ajouter les headers spéciaux
+      if (isSuperAdminView && superAdminCompanyInfo) {
+        headers['x-super-admin-simulation'] = 'true';
+        headers['x-simulated-company-id'] = superAdminCompanyInfo.companyId;
+      }
+
       const response = await fetch('/api/tasks', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers
       });
       
       if (response.ok) {
@@ -140,7 +149,7 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  }, [router]);
+  }, [router, isSuperAdminView, superAdminCompanyInfo]);
 
   // Fonction pour synchroniser tasksAddedFromPanel avec les données mises à jour de panelCards
   const syncTasksAddedFromPanelWithData = useCallback((newPanelCards: Array<{
@@ -239,11 +248,20 @@ export default function Home() {
         return;
       }
 
+      // Préparer les headers pour le mode super admin simulation
+      const headers: Record<string, string> = {
+        'Authorization': `Bearer ${token}`
+      };
+
+      // Si c'est un super admin en mode simulation, ajouter les headers spéciaux
+      if (isSuperAdminView && superAdminCompanyInfo) {
+        headers['x-super-admin-simulation'] = 'true';
+        headers['x-simulated-company-id'] = superAdminCompanyInfo.companyId;
+      }
+
       console.log('fetchPanelCards: Récupération des cartes depuis l\'API...');
       const response = await fetch('/api/panel_cards', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers
       });
       
       if (response.ok) {
@@ -275,7 +293,7 @@ export default function Home() {
     } catch (error) {
       console.error('Erreur lors du chargement des cartes de panel:', error);
     }
-  }, [router, syncTasksAddedFromPanelWithData]);
+  }, [router, syncTasksAddedFromPanelWithData, isSuperAdminView, superAdminCompanyInfo]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
