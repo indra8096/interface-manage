@@ -263,13 +263,24 @@ export default function CompanyDashboardPage() {
   // Fonction pour accéder au dashboard de l'administrateur principal
   const handleViewAdminDashboard = () => {
     if (mainAdmin && company) {
-      // Stocker l'ID de l'entreprise et l'ID de l'admin pour le retour
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      // Stocker les informations de l'administrateur principal pour la session
       localStorage.setItem('superAdminReturn', 'true');
       localStorage.setItem('superAdminCompanyId', companyId as string);
       localStorage.setItem('superAdminCompanyName', company.name);
+      localStorage.setItem('superAdminOriginalToken', token);
+      localStorage.setItem('superAdminOriginalRole', 'SUPER_ADMIN');
       
-      // Rediriger vers le dashboard de l'administrateur
-      router.push(`/dashboard?adminId=${mainAdmin.id}`);
+      // Simuler la session de l'administrateur principal
+      localStorage.setItem('role', 'COMPANY_ADMIN');
+      localStorage.setItem('companyId', companyId as string);
+      localStorage.setItem('itRole', mainAdmin.itRole || 'IT_ADMIN');
+      localStorage.setItem('name', mainAdmin.name || mainAdmin.email);
+      
+      // Rediriger vers le dashboard
+      router.push('/dashboard');
     }
   };
 

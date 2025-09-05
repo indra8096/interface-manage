@@ -89,10 +89,21 @@ export default function Home() {
 
   // Fonction pour retourner au dashboard super admin
   const handleReturnToSuperAdmin = () => {
+    // Restaurer la session du super admin
+    const originalToken = localStorage.getItem('superAdminOriginalToken');
+    const originalRole = localStorage.getItem('superAdminOriginalRole');
+    
+    if (originalToken && originalRole) {
+      localStorage.setItem('token', originalToken);
+      localStorage.setItem('role', originalRole);
+    }
+    
     // Nettoyer les données de retour
     localStorage.removeItem('superAdminReturn');
     localStorage.removeItem('superAdminCompanyId');
     localStorage.removeItem('superAdminCompanyName');
+    localStorage.removeItem('superAdminOriginalToken');
+    localStorage.removeItem('superAdminOriginalRole');
     
     // Retourner au dashboard super admin
     router.push('/superadmin');
