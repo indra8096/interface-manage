@@ -85,6 +85,7 @@ export default function Home() {
   const [deleteConfirmation, setDeleteConfirmation] = useState<{ show: boolean; taskId?: number; taskName?: string; type: 'regular' | 'panel' }>({ show: false, type: 'regular' });
   const [isSuperAdminView, setIsSuperAdminView] = useState(false);
   const [superAdminCompanyInfo, setSuperAdminCompanyInfo] = useState<{ companyId: string; companyName: string } | null>(null);
+  const [companyViewKey, setCompanyViewKey] = useState(0);
   const router = useRouter();
 
   // Fonction pour retourner à la gestion des utilisateurs de l'entreprise
@@ -261,6 +262,9 @@ export default function Home() {
         setPanelCards([]);
         setTasksAddedFromPanel([]);
         
+        // Incrémenter la clé pour forcer le rechargement
+        setCompanyViewKey(prev => prev + 1);
+        
         // Ne pas rediriger vers /superadmin
       } else {
         // Vérification de sécurité : l'utilisateur ne peut accéder qu'à son entreprise
@@ -309,10 +313,36 @@ export default function Home() {
   // Recharger les données quand on change d'entreprise (mode super admin)
   useEffect(() => {
     if (isSuperAdminView && superAdminCompanyInfo) {
-      console.log('Chargement des données pour l\'entreprise:', superAdminCompanyInfo.companyName);
+      console.log('Chargement des données pour l\'entreprise:', superAdminCompanyInfo.companyName, 'Key:', companyViewKey);
       fetchTasks();
       fetchPanelCards();
     }
+  }, [isSuperAdminView, superAdminCompanyInfo, companyViewKey]);
+
+  // Vérifier les changements d'entreprise périodiquement
+  useEffect(() => {
+    if (!isSuperAdminView) return;
+
+    const checkCompanyChange = () => {
+      const isSuperAdminReturn = localStorage.getItem('superAdminReturn');
+      const superAdminCompanyId = localStorage.getItem('superAdminCompanyId');
+      const superAdminCompanyName = localStorage.getItem('superAdminCompanyName');
+      
+      if (isSuperAdminReturn === 'true' && superAdminCompanyId && superAdminCompanyName) {
+        // Vérifier si l'entreprise a changé
+        if (superAdminCompanyInfo?.companyId !== superAdminCompanyId) {
+          console.log('Changement d\'entreprise détecté:', superAdminCompanyName);
+          setSuperAdminCompanyInfo({
+            companyId: superAdminCompanyId,
+            companyName: superAdminCompanyName
+          });
+          setCompanyViewKey(prev => prev + 1);
+        }
+      }
+    };
+
+    const interval = setInterval(checkCompanyChange, 1000);
+    return () => clearInterval(interval);
   }, [isSuperAdminView, superAdminCompanyInfo]);
 
   useEffect(() => {

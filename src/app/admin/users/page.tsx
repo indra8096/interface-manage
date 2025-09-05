@@ -30,6 +30,7 @@ export default function AdminUsersPage() {
   const [editItRole, setEditItRole] = useState('IT_INTERN');
   const [editName, setEditName] = useState('');
   const [companyName, setCompanyName] = useState<string>('');
+  const [companyViewKey, setCompanyViewKey] = useState(0);
   const router = useRouter();
 
   const fetchUsers = useCallback(async () => {
