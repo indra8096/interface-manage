@@ -522,7 +522,6 @@ export default function CompanyDashboardPage() {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <div className="text-4xl mb-4">👤</div>
                   <p className="text-gray-400">Aucun employé</p>
                 </div>
               )}

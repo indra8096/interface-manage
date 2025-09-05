@@ -123,17 +123,34 @@ export default function Home() {
         return;
       }
 
-      const response = await fetch('/api/tasks', {
-        headers: {
-          'Authorization': `Bearer ${token}`
+      // Si c'est un super admin en mode "vue", utiliser l'API super admin
+      if (isSuperAdminView && superAdminCompanyInfo) {
+        const response = await fetch(`/api/superadmin/companies/${superAdminCompanyInfo.companyId}/tasks`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setTasks(data.tasks || data);
+        } else if (response.status === 401) {
+          router.push('/login');
         }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setTasks(data);
-      } else if (response.status === 401) {
-        router.push('/login');
+      } else {
+        // API normale pour les utilisateurs de l'entreprise
+        const response = await fetch('/api/tasks', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setTasks(data);
+        } else if (response.status === 401) {
+          router.push('/login');
+        }
       }
     } catch (error) {
       console.error('Erreur lors du chargement des tâches:', error);
@@ -152,37 +169,61 @@ export default function Home() {
       }
 
       console.log('fetchPanelCards: Récupération des cartes depuis l\'API...');
-      const response = await fetch('/api/panel_cards', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
       
-      if (response.ok) {
-        const data = await response.json();
-        console.log('fetchPanelCards: Données reçues:', data);
-        console.log('fetchPanelCards: panelCards reçus:', data.panelCards);
+      // Si c'est un super admin en mode "vue", utiliser l'API super admin
+      if (isSuperAdminView && superAdminCompanyInfo) {
+        const response = await fetch(`/api/superadmin/companies/${superAdminCompanyInfo.companyId}/panel_cards`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         
-        // Vérifier les données de progression
-        if (data.panelCards && Array.isArray(data.panelCards)) {
-          data.panelCards.forEach((card: any, index: number) => {
-            console.log(`fetchPanelCards: Carte ${index + 1}:`, {
-              name: card.name,
-              total: card.total,
-              completed: card.completed,
-              type: card.type
-            });
-          });
+        if (response.ok) {
+          const data = await response.json();
+          console.log('fetchPanelCards (Super Admin): Données reçues:', data);
+          
+          // Mettre à jour l'état panelCards
+          setPanelCards(data.panelCards || data);
+          
+          // Synchroniser tasksAddedFromPanel avec les nouvelles données
+          syncTasksAddedFromPanelWithData(data.panelCards || data);
+        } else if (response.status === 401) {
+          router.push('/login');
         }
+      } else {
+        // API normale pour les utilisateurs de l'entreprise
+        const response = await fetch('/api/panel_cards', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         
-        // Mettre à jour l'état panelCards
-        setPanelCards(data.panelCards);
-        
-        // Synchroniser tasksAddedFromPanel avec les nouvelles données
-        // Appeler directement avec les nouvelles données au lieu d'utiliser setTimeout
-        syncTasksAddedFromPanelWithData(data.panelCards);
-      } else if (response.status === 401) {
-        router.push('/login');
+        if (response.ok) {
+          const data = await response.json();
+          console.log('fetchPanelCards: Données reçues:', data);
+          console.log('fetchPanelCards: panelCards reçus:', data.panelCards);
+          
+          // Vérifier les données de progression
+          if (data.panelCards && Array.isArray(data.panelCards)) {
+            data.panelCards.forEach((card: any, index: number) => {
+              console.log(`fetchPanelCards: Carte ${index + 1}:`, {
+                name: card.name,
+                total: card.total,
+                completed: card.completed,
+                type: card.type
+              });
+            });
+          }
+          
+          // Mettre à jour l'état panelCards
+          setPanelCards(data.panelCards);
+          
+          // Synchroniser tasksAddedFromPanel avec les nouvelles données
+          // Appeler directement avec les nouvelles données au lieu d'utiliser setTimeout
+          syncTasksAddedFromPanelWithData(data.panelCards);
+        } else if (response.status === 401) {
+          router.push('/login');
+        }
       }
     } catch (error) {
       console.error('Erreur lors du chargement des cartes de panel:', error);
