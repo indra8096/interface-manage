@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,6 +12,8 @@ interface User {
   role: string;
   createdAt: string;
   updatedAt: string;
+  itRole?: string;
+  name?: string;
 }
 
 interface Company {
@@ -59,28 +61,7 @@ export default function CompanyDashboardPage() {
   const params = useParams();
   const companyId = params.id;
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
-      const role = localStorage.getItem('role');
-      
-      if (!token) {
-        router.push('/login');
-        return;
-      }
-      
-      if (role !== 'SUPER_ADMIN') {
-        router.push('/dashboard');
-        return;
-      }
-      
-      if (companyId) {
-        fetchCompanyDetails(token, companyId);
-      }
-    }
-  }, [router, companyId]);
-
-  const fetchCompanyDetails = async (token: string, id: string | string[]) => {
+  const fetchCompanyDetails = useCallback(async (token: string, id: string | string[]) => {
     try {
       const companyIdStr = Array.isArray(id) ? id[0] : id;
       const response = await fetch(`/api/superadmin/companies/${companyIdStr}`, {
@@ -104,7 +85,28 @@ export default function CompanyDashboardPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      const role = localStorage.getItem('role');
+      
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+      
+      if (role !== 'SUPER_ADMIN') {
+        router.push('/dashboard');
+        return;
+      }
+      
+      if (companyId) {
+        fetchCompanyDetails(token, companyId);
+      }
+    }
+  }, [router, companyId, fetchCompanyDetails]);
 
   // Fonction pour créer un utilisateur
   const handleCreateUser = async (e: React.FormEvent) => {
@@ -246,8 +248,8 @@ export default function CompanyDashboardPage() {
     setEditUserData({
       email: user.email,
       role: user.role,
-      itRole: (user as any).itRole || 'IT_INTERN',
-      name: (user as any).name || ''
+      itRole: user.itRole || 'IT_INTERN',
+      name: user.name || ''
     });
     setShowEditUserForm(true);
   };
@@ -389,6 +391,15 @@ export default function CompanyDashboardPage() {
                 <div className="space-y-4">
                   {admins.map((admin) => (
                     <div key={admin.id} className="bg-gray-900/30 rounded-lg p-4 border border-gray-700">
+                      {/* Bouton Vue aligné à gauche */}
+                      <div className="flex justify-start mb-3">
+                        <button
+                          className="px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all duration-300"
+                          title="Voir les détails"
+                        >
+                          Vue
+                        </button>
+                      </div>
                                              <div className="flex items-center justify-between">
                          <div>
                            <h3 className="text-white font-semibold text-lg">
@@ -623,7 +634,7 @@ export default function CompanyDashboardPage() {
           <div className="bg-black/90 backdrop-blur-md rounded-2xl p-8 border border-gray-800 max-w-md w-full">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold" style={{ color: '#9933FF' }}>
-                Modifier l'utilisateur
+                Modifier l&apos;utilisateur
               </h2>
               <button
                 onClick={() => setShowEditUserForm(false)}
@@ -726,7 +737,7 @@ export default function CompanyDashboardPage() {
                  </div>
                </div>
                <h2 className="text-2xl font-bold text-white mb-2">
-                 Supprimer l'utilisateur
+                                   Supprimer l&apos;utilisateur
                </h2>
                <p className="text-gray-400 mb-6">
                  Êtes-vous sûr de vouloir supprimer <span className="text-red-400 font-bold">{selectedUser.email}</span> ?
