@@ -83,7 +83,20 @@ export default function Home() {
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false); // Nouvel état pour la popup d'historique
   const [deleteConfirmation, setDeleteConfirmation] = useState<{ show: boolean; taskId?: number; taskName?: string; type: 'regular' | 'panel' }>({ show: false, type: 'regular' });
+  const [isSuperAdminView, setIsSuperAdminView] = useState(false);
+  const [superAdminCompanyInfo, setSuperAdminCompanyInfo] = useState<{ companyId: string; companyName: string } | null>(null);
   const router = useRouter();
+
+  // Fonction pour retourner au dashboard super admin
+  const handleReturnToSuperAdmin = () => {
+    // Nettoyer les données de retour
+    localStorage.removeItem('superAdminReturn');
+    localStorage.removeItem('superAdminCompanyId');
+    localStorage.removeItem('superAdminCompanyName');
+    
+    // Retourner au dashboard super admin
+    router.push('/superadmin');
+  };
 
   // Charger les tâches depuis l'API
   const fetchTasks = async () => {
@@ -168,23 +181,38 @@ export default function Home() {
       const userCompanyId = localStorage.getItem('userCompanyId');
       const savedTasksFromPanel = localStorage.getItem(`tasksAddedFromPanel_${companyId}`);
       
+      // Vérifier si c'est un super admin en mode "vue"
+      const isSuperAdminReturn = localStorage.getItem('superAdminReturn');
+      const superAdminCompanyId = localStorage.getItem('superAdminCompanyId');
+      const superAdminCompanyName = localStorage.getItem('superAdminCompanyName');
+      
       if (!token) {
         router.push('/login');
         return;
       }
 
-      // Vérification de sécurité : l'utilisateur ne peut accéder qu'à son entreprise
-      if (companyId && userCompanyId && companyId !== userCompanyId) {
-        console.error('Tentative d\'accès non autorisé à une autre entreprise');
-        localStorage.removeItem('token');
-        router.push('/login');
-        return;
-      }
+      // Si c'est un super admin en mode "vue", autoriser l'accès
+      if (isSuperAdminReturn === 'true' && superAdminCompanyId && superAdminCompanyName) {
+        setIsSuperAdminView(true);
+        setSuperAdminCompanyInfo({
+          companyId: superAdminCompanyId,
+          companyName: superAdminCompanyName
+        });
+        // Ne pas rediriger vers /superadmin
+      } else {
+        // Vérification de sécurité : l'utilisateur ne peut accéder qu'à son entreprise
+        if (companyId && userCompanyId && companyId !== userCompanyId) {
+          console.error('Tentative d\'accès non autorisé à une autre entreprise');
+          localStorage.removeItem('token');
+          router.push('/login');
+          return;
+        }
 
-      // Vérification du rôle : seuls COMPANY_ADMIN et COMPANY_USER peuvent accéder
-      if (role === 'SUPER_ADMIN') {
-        router.push('/superadmin');
-        return;
+        // Vérification du rôle : seuls COMPANY_ADMIN et COMPANY_USER peuvent accéder
+        if (role === 'SUPER_ADMIN') {
+          router.push('/superadmin');
+          return;
+        }
       }
 
       if (role) {
@@ -713,6 +741,32 @@ export default function Home() {
   return (
     <div className="min-h-screen transition-all duration-300" style={{ background: 'var(--bg-primary)' }}>
       <Header />
+      
+      {/* Bouton retour pour Super Admin */}
+      {isSuperAdminView && superAdminCompanyInfo && (
+        <div className="bg-yellow-900/20 border-l-4 border-yellow-500 p-4">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="text-yellow-400 text-lg">🔍</div>
+              <div>
+                <p className="text-yellow-300 font-semibold">
+                  Mode Super Admin - Vue de l&apos;entreprise
+                </p>
+                <p className="text-yellow-400 text-sm">
+                  Vous consultez le dashboard de l&apos;entreprise : <span className="font-bold">{superAdminCompanyInfo.companyName}</span>
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleReturnToSuperAdmin}
+              className="px-6 py-2 bg-yellow-600 text-black font-semibold rounded-lg hover:bg-yellow-700 transition-all duration-300 flex items-center space-x-2"
+            >
+              <span>←</span>
+              <span>Retour au Dashboard Super Admin</span>
+            </button>
+          </div>
+        </div>
+      )}
       
       <main className="p-8">
         <div className="max-w-7xl mx-auto">

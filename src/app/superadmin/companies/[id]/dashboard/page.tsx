@@ -260,6 +260,19 @@ export default function CompanyDashboardPage() {
     setShowDeleteUserModal(true);
   };
 
+  // Fonction pour accéder au dashboard de l'administrateur principal
+  const handleViewAdminDashboard = () => {
+    if (mainAdmin && company) {
+      // Stocker l'ID de l'entreprise et l'ID de l'admin pour le retour
+      localStorage.setItem('superAdminReturn', 'true');
+      localStorage.setItem('superAdminCompanyId', companyId as string);
+      localStorage.setItem('superAdminCompanyName', company.name);
+      
+      // Rediriger vers le dashboard de l'administrateur
+      router.push(`/dashboard?adminId=${mainAdmin.id}`);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white font-karla flex items-center justify-center">
@@ -291,6 +304,9 @@ export default function CompanyDashboardPage() {
 
   const admins = company.users.filter(user => user.role === 'COMPANY_ADMIN');
   const employees = company.users.filter(user => user.role === 'COMPANY_USER');
+  
+  // Identifier l'administrateur principal (le plus ancien)
+  const mainAdmin = admins.length > 0 ? admins.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())[0] : null;
 
   return (
     <div className="min-h-screen bg-black text-white font-karla">
@@ -383,23 +399,28 @@ export default function CompanyDashboardPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Administrateurs */}
             <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800">
-              <h2 className="text-2xl font-bold mb-6" style={{ color: '#CCFF00' }}>
-                Administrateurs ({admins.length})
-              </h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold" style={{ color: '#CCFF00' }}>
+                  Administrateurs ({admins.length})
+                </h2>
+                <button
+                  onClick={handleViewAdminDashboard}
+                  disabled={!mainAdmin}
+                  className={`px-4 py-2 text-white text-sm font-medium rounded-lg transition-all duration-300 ${
+                    mainAdmin 
+                      ? 'bg-blue-600 hover:bg-blue-700' 
+                      : 'bg-gray-600 cursor-not-allowed opacity-50'
+                  }`}
+                  title={mainAdmin ? "Voir le dashboard de l'administrateur principal" : "Aucun administrateur disponible"}
+                >
+                  Vue
+                </button>
+              </div>
               
               {admins.length > 0 ? (
                 <div className="space-y-4">
                   {admins.map((admin) => (
                     <div key={admin.id} className="bg-gray-900/30 rounded-lg p-4 border border-gray-700">
-                      {/* Bouton Vue aligné à gauche */}
-                      <div className="flex justify-start mb-3">
-                        <button
-                          className="px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all duration-300"
-                          title="Voir les détails"
-                        >
-                          Vue
-                        </button>
-                      </div>
                                              <div className="flex items-center justify-between">
                          <div>
                            <h3 className="text-white font-semibold text-lg">
