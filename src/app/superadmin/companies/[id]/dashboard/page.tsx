@@ -276,8 +276,8 @@ export default function CompanyDashboardPage() {
       localStorage.setItem('itRole', mainAdmin.itRole || 'IT_ADMIN');
       localStorage.setItem('name', mainAdmin.name || mainAdmin.email);
       
-      // Rediriger vers le dashboard avec les paramètres d'URL
-      router.push(`/dashboard?superadmin=true&companyId=${companyId}&companyName=${encodeURIComponent(company.name)}`);
+      // Rediriger vers le dashboard avec les paramètres d'URL et forcer le rechargement
+      window.location.href = `/dashboard?superadmin=true&companyId=${companyId}&companyName=${encodeURIComponent(company.name)}&t=${Date.now()}`;
     }
   };
 

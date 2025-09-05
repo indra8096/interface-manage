@@ -121,7 +121,7 @@ function DashboardContent() {
 
       // Si c'est un super admin en mode "vue", utiliser l'API super admin
       if (isSuperAdminView && superAdminCompanyInfo) {
-        console.log('Fetching tasks for company:', superAdminCompanyInfo.companyId, 'Company name:', superAdminCompanyInfo.companyName);
+        console.log('🔍 FETCH TASKS - Company ID:', superAdminCompanyInfo.companyId, 'Company name:', superAdminCompanyInfo.companyName);
         const response = await fetch(`/api/superadmin/companies/${superAdminCompanyInfo.companyId}/tasks`, {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -130,7 +130,8 @@ function DashboardContent() {
         
         if (response.ok) {
           const data = await response.json();
-          console.log('Tasks loaded for company:', superAdminCompanyInfo.companyName, data.length || data.tasks?.length || 0, 'tasks');
+          console.log('✅ TASKS LOADED - Company:', superAdminCompanyInfo.companyName, 'Tasks count:', data.length || data.tasks?.length || 0);
+          console.log('📊 Tasks data:', data);
           setTasks(data.tasks || data);
         } else if (response.status === 401) {
           router.push('/login');
@@ -170,7 +171,7 @@ function DashboardContent() {
       
       // Si c'est un super admin en mode "vue", utiliser l'API super admin
       if (isSuperAdminView && superAdminCompanyInfo) {
-        console.log('Fetching panel cards for company:', superAdminCompanyInfo.companyId, 'Company name:', superAdminCompanyInfo.companyName);
+        console.log('🔍 FETCH PANEL CARDS - Company ID:', superAdminCompanyInfo.companyId, 'Company name:', superAdminCompanyInfo.companyName);
         const response = await fetch(`/api/superadmin/companies/${superAdminCompanyInfo.companyId}/panel_cards`, {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -179,7 +180,8 @@ function DashboardContent() {
         
         if (response.ok) {
           const data = await response.json();
-          console.log('Panel cards loaded for company:', superAdminCompanyInfo.companyName, data.panelCards?.length || 0, 'cards');
+          console.log('✅ PANEL CARDS LOADED - Company:', superAdminCompanyInfo.companyName, 'Cards count:', data.panelCards?.length || 0);
+          console.log('📊 Panel cards data:', data);
           
           // Mettre à jour l'état panelCards
           setPanelCards(data.panelCards || data);
@@ -314,8 +316,14 @@ function DashboardContent() {
     if (isSuperAdminView && superAdminCompanyInfo) {
       console.log('Chargement des données pour l\'entreprise:', superAdminCompanyInfo.companyName);
       
+      // Vider complètement le cache
+      setTasks([]);
+      setPanelCards([]);
+      setTasksAddedFromPanel([]);
+      
       const loadData = async () => {
         try {
+          console.log('Rechargement des données pour:', superAdminCompanyInfo.companyName);
           await fetchTasks();
           await fetchPanelCards();
         } finally {
@@ -323,7 +331,8 @@ function DashboardContent() {
         }
       };
       
-      loadData();
+      // Petit délai pour s'assurer que le cache est vidé
+      setTimeout(loadData, 100);
     }
   }, [isSuperAdminView, superAdminCompanyInfo, fetchTasks, fetchPanelCards]);
 
