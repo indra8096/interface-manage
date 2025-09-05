@@ -1,7 +1,7 @@
 'use client';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import Header from '@/components/Header';
 import TaskColumn from '@/components/TaskColumn';
 
@@ -41,7 +41,7 @@ interface ServiceCard {
 
 
 
-export default function Home() {
+function DashboardContent() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<string>('user');
@@ -1481,5 +1481,23 @@ export default function Home() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center transition-all duration-300" style={{ background: 'var(--bg-primary)' }}>
+        <div className="text-center">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center animate-pulse">
+            <div className="w-16 h-16 rounded-full bg-black"></div>
+          </div>
+          <div className="text-[#CCFF00] text-xl font-karla-semibold mb-2">Chargement...</div>
+          <div className="text-gray-400 text-sm font-karla-regular">Initialisation du dashboard</div>
+        </div>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   );
 }
