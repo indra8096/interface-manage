@@ -255,6 +255,12 @@ export default function Home() {
           companyId: superAdminCompanyId,
           companyName: superAdminCompanyName
         });
+        
+        // Vider le cache des données précédentes
+        setTasks([]);
+        setPanelCards([]);
+        setTasksAddedFromPanel([]);
+        
         // Ne pas rediriger vers /superadmin
       } else {
         // Vérification de sécurité : l'utilisateur ne peut accéder qu'à son entreprise
@@ -299,6 +305,15 @@ export default function Home() {
       // Les cartes de panel sont maintenant chargées depuis l'API via fetchPanelCards()
     }
   }, [router]);
+
+  // Recharger les données quand on change d'entreprise (mode super admin)
+  useEffect(() => {
+    if (isSuperAdminView && superAdminCompanyInfo) {
+      console.log('Chargement des données pour l\'entreprise:', superAdminCompanyInfo.companyName);
+      fetchTasks();
+      fetchPanelCards();
+    }
+  }, [isSuperAdminView, superAdminCompanyInfo]);
 
   useEffect(() => {
     fetchTasks();

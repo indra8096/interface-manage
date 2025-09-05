@@ -40,11 +40,26 @@ export default function AdminUsersPage() {
         return;
       }
 
-      const res = await fetch('/api/users', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      // Vérifier si c'est un super admin en mode "vue"
+      const isSuperAdminReturn = localStorage.getItem('superAdminReturn');
+      const superAdminCompanyId = localStorage.getItem('superAdminCompanyId');
+
+      let res;
+      if (isSuperAdminReturn === 'true' && superAdminCompanyId) {
+        // Utiliser l'API super admin pour récupérer les utilisateurs de l'entreprise spécifique
+        res = await fetch(`/api/superadmin/companies/${superAdminCompanyId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+      } else {
+        // API normale pour les utilisateurs de l'entreprise
+        res = await fetch('/api/users', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+      }
 
       if (res.status === 401) {
         console.log('❌ 401 Unauthorized, redirection vers login');
@@ -53,7 +68,16 @@ export default function AdminUsersPage() {
       }
 
       if (res.ok) {
-        const usersData = await res.json();
+        const data = await res.json();
+        let usersData;
+        
+        if (isSuperAdminReturn === 'true' && superAdminCompanyId) {
+          // Extraire les utilisateurs des données de l'entreprise
+          usersData = data.company.users || [];
+        } else {
+          usersData = data;
+        }
+        
         console.log('✅ Users data received:', usersData);
         setUsers(usersData);
       } else {
@@ -95,6 +119,17 @@ export default function AdminUsersPage() {
     }
     fetchUsers();
   }, [router, fetchUsers]);
+
+  // Recharger les utilisateurs quand on change d'entreprise (mode super admin)
+  useEffect(() => {
+    const isSuperAdminReturn = localStorage.getItem('superAdminReturn');
+    const superAdminCompanyId = localStorage.getItem('superAdminCompanyId');
+    
+    if (isSuperAdminReturn === 'true' && superAdminCompanyId) {
+      console.log('Rechargement des utilisateurs pour l\'entreprise:', superAdminCompanyId);
+      fetchUsers();
+    }
+  }, [fetchUsers]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
