@@ -1,10 +1,7 @@
 'use client';
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Header from '@/components/Header';
 import TaskColumn from '@/components/TaskColumn';
 
@@ -116,7 +113,7 @@ export default function Home() {
   };
 
   // Charger les tâches depuis l'API
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -160,10 +157,10 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isSuperAdminView, superAdminCompanyInfo, router]);
 
   // Charger les cartes de panel depuis l'API
-  const fetchPanelCards = async () => {
+  const fetchPanelCards = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -232,7 +229,7 @@ export default function Home() {
     } catch (error) {
       console.error('Erreur lors du chargement des cartes de panel:', error);
     }
-  };
+  }, [isSuperAdminView, superAdminCompanyInfo, router]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -314,7 +311,7 @@ export default function Home() {
       }
       // Les cartes de panel sont maintenant chargées depuis l'API via fetchPanelCards()
     }
-  }, [router]);
+  }, [router, currentCompanyId]);
 
   // Recharger les données quand on change d'entreprise (mode super admin)
   useEffect(() => {
@@ -323,7 +320,7 @@ export default function Home() {
       fetchTasks();
       fetchPanelCards();
     }
-  }, [isSuperAdminView, superAdminCompanyInfo, currentCompanyId]);
+  }, [isSuperAdminView, superAdminCompanyInfo, currentCompanyId, fetchTasks, fetchPanelCards]);
 
   // Vérifier les changements d'entreprise quand la fenêtre reprend le focus
   useEffect(() => {
