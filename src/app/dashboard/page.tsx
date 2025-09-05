@@ -87,11 +87,12 @@ export default function Home() {
   const [superAdminCompanyInfo, setSuperAdminCompanyInfo] = useState<{ companyId: string; companyName: string } | null>(null);
   const router = useRouter();
 
-  // Fonction pour retourner au dashboard super admin
+  // Fonction pour retourner à la gestion des utilisateurs de l'entreprise
   const handleReturnToSuperAdmin = () => {
     // Restaurer la session du super admin
     const originalToken = localStorage.getItem('superAdminOriginalToken');
     const originalRole = localStorage.getItem('superAdminOriginalRole');
+    const companyId = localStorage.getItem('superAdminCompanyId');
     
     if (originalToken && originalRole) {
       localStorage.setItem('token', originalToken);
@@ -105,8 +106,12 @@ export default function Home() {
     localStorage.removeItem('superAdminOriginalToken');
     localStorage.removeItem('superAdminOriginalRole');
     
-    // Retourner au dashboard super admin
-    router.push('/superadmin');
+    // Retourner à la page de gestion des utilisateurs de l'entreprise
+    if (companyId) {
+      router.push(`/superadmin/companies/${companyId}/dashboard`);
+    } else {
+      router.push('/superadmin');
+    }
   };
 
   // Charger les tâches depuis l'API
@@ -757,23 +762,20 @@ export default function Home() {
       {isSuperAdminView && superAdminCompanyInfo && (
         <div className="bg-yellow-900/20 border-l-4 border-yellow-500 p-4">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="text-yellow-400 text-lg">🔍</div>
-              <div>
-                <p className="text-yellow-300 font-semibold">
-                  Mode Super Admin - Vue de l&apos;entreprise
-                </p>
-                <p className="text-yellow-400 text-sm">
-                  Vous consultez le dashboard de l&apos;entreprise : <span className="font-bold">{superAdminCompanyInfo.companyName}</span>
-                </p>
-              </div>
+            <div>
+              <p className="text-yellow-300 font-semibold">
+                Mode Super Admin - Vue de l&apos;entreprise
+              </p>
+              <p className="text-yellow-400 text-sm">
+                Vous consultez le dashboard de l&apos;entreprise : <span className="font-bold">{superAdminCompanyInfo.companyName}</span>
+              </p>
             </div>
             <button
               onClick={handleReturnToSuperAdmin}
               className="px-6 py-2 bg-yellow-600 text-black font-semibold rounded-lg hover:bg-yellow-700 transition-all duration-300 flex items-center space-x-2"
             >
               <span>←</span>
-              <span>Retour au Dashboard Super Admin</span>
+              <span>Retour à la gestion des utilisateurs</span>
             </button>
           </div>
         </div>
