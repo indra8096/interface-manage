@@ -267,17 +267,21 @@ export default function CompanyDashboardPage() {
       if (!token) return;
 
       // Stocker les informations de l'administrateur principal pour la session
+      localStorage.setItem('superAdminReturn', 'true');
+      localStorage.setItem('superAdminCompanyId', companyId as string);
+      localStorage.setItem('superAdminCompanyName', company.name);
       localStorage.setItem('superAdminOriginalToken', token);
       localStorage.setItem('superAdminOriginalRole', 'SUPER_ADMIN');
       
       // Simuler la session de l'administrateur principal
       localStorage.setItem('role', 'COMPANY_ADMIN');
       localStorage.setItem('companyId', companyId as string);
+      localStorage.setItem('userCompanyId', companyId as string); // Ajouter userCompanyId pour la cohérence
       localStorage.setItem('itRole', mainAdmin.itRole || 'IT_ADMIN');
       localStorage.setItem('name', mainAdmin.name || mainAdmin.email);
       
-      // Rediriger vers le dashboard avec les paramètres d'URL et forcer le rechargement
-      window.location.href = `/dashboard?superadmin=true&companyId=${companyId}&companyName=${encodeURIComponent(company.name)}&t=${Date.now()}`;
+      // Rediriger vers le dashboard
+      router.push('/dashboard');
     }
   };
 
