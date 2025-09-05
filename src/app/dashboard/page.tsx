@@ -84,6 +84,7 @@ export default function Home() {
   const [superAdminCompanyInfo, setSuperAdminCompanyInfo] = useState<{ companyId: string; companyName: string } | null>(null);
   const [currentCompanyId, setCurrentCompanyId] = useState<string | null>(null);
   const [lastViewTimestamp, setLastViewTimestamp] = useState<string | null>(null);
+  const [forceReload, setForceReload] = useState(0);
   const router = useRouter();
 
   // Fonction pour retourner à la gestion des utilisateurs de l'entreprise
@@ -262,19 +263,16 @@ export default function Home() {
           companyName: superAdminCompanyName
         });
         
-        // Vérifier si c'est une nouvelle vue (nouvelle entreprise ou nouveau timestamp)
-        const isNewView = currentCompanyId !== superAdminCompanyId || lastViewTimestamp !== viewTimestamp;
+        // TOUJOURS vider le cache et forcer le rechargement pour le super admin
+        console.log('Mode super admin - FORCE RELOAD des données pour:', superAdminCompanyName);
+        setCurrentCompanyId(superAdminCompanyId);
+        setLastViewTimestamp(viewTimestamp);
+        setForceReload(prev => prev + 1);
         
-        if (isNewView) {
-          console.log('Nouvelle vue détectée:', superAdminCompanyName, 'Timestamp:', viewTimestamp);
-          setCurrentCompanyId(superAdminCompanyId);
-          setLastViewTimestamp(viewTimestamp);
-          
-          // Vider le cache des données précédentes
-          setTasks([]);
-          setPanelCards([]);
-          setTasksAddedFromPanel([]);
-        }
+        // Vider IMMÉDIATEMENT le cache des données précédentes
+        setTasks([]);
+        setPanelCards([]);
+        setTasksAddedFromPanel([]);
         
         // Ne pas rediriger vers /superadmin
       } else {
@@ -324,13 +322,21 @@ export default function Home() {
   // Recharger les données quand on change d'entreprise (mode super admin)
   useEffect(() => {
     if (isSuperAdminView && superAdminCompanyInfo && currentCompanyId) {
-      console.log('Chargement des données pour l\'entreprise:', superAdminCompanyInfo.companyName, 'ID:', currentCompanyId, 'Timestamp:', lastViewTimestamp);
+      console.log('FORCE RELOAD - Chargement des données pour l\'entreprise:', superAdminCompanyInfo.companyName, 'ID:', currentCompanyId, 'ForceReload:', forceReload);
       
-      // Puis recharger les données
-      fetchTasks();
-      fetchPanelCards();
+      // Vider d'abord le cache pour s'assurer qu'on part de zéro
+      setTasks([]);
+      setPanelCards([]);
+      setTasksAddedFromPanel([]);
+      
+      // Puis recharger les données avec un petit délai pour s'assurer que le cache est vidé
+      setTimeout(() => {
+        console.log('Rechargement des données après vidage du cache...');
+        fetchTasks();
+        fetchPanelCards();
+      }, 100);
     }
-  }, [isSuperAdminView, superAdminCompanyInfo, currentCompanyId, lastViewTimestamp, fetchTasks, fetchPanelCards]);
+  }, [isSuperAdminView, superAdminCompanyInfo, currentCompanyId, lastViewTimestamp, forceReload, fetchTasks, fetchPanelCards]);
 
   // Vérifier les changements d'entreprise quand la fenêtre reprend le focus
   useEffect(() => {

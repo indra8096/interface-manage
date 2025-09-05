@@ -273,8 +273,10 @@ export default function CompanyDashboardPage() {
       localStorage.setItem('superAdminOriginalToken', token);
       localStorage.setItem('superAdminOriginalRole', 'SUPER_ADMIN');
       
-      // Ajouter un timestamp pour forcer le rechargement
-      localStorage.setItem('superAdminViewTimestamp', Date.now().toString());
+      // Ajouter un timestamp unique pour forcer le rechargement à chaque clic
+      const uniqueTimestamp = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      localStorage.setItem('superAdminViewTimestamp', uniqueTimestamp);
+      console.log('Nouveau timestamp généré:', uniqueTimestamp);
       
       // Simuler la session de l'administrateur principal
       localStorage.setItem('role', 'COMPANY_ADMIN');
