@@ -266,23 +266,9 @@ export default function CompanyDashboardPage() {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      // Nettoyer d'abord toutes les données de vue précédentes
-      localStorage.removeItem('superAdminReturn');
-      localStorage.removeItem('superAdminCompanyId');
-      localStorage.removeItem('superAdminCompanyName');
-      localStorage.removeItem('superAdminViewTimestamp');
-      
       // Stocker les informations de l'administrateur principal pour la session
-      localStorage.setItem('superAdminReturn', 'true');
-      localStorage.setItem('superAdminCompanyId', companyId as string);
-      localStorage.setItem('superAdminCompanyName', company.name);
       localStorage.setItem('superAdminOriginalToken', token);
       localStorage.setItem('superAdminOriginalRole', 'SUPER_ADMIN');
-      
-      // Ajouter un timestamp unique pour forcer le rechargement à chaque clic
-      const uniqueTimestamp = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      localStorage.setItem('superAdminViewTimestamp', uniqueTimestamp);
-      console.log('Nouveau timestamp généré pour', company.name, ':', uniqueTimestamp);
       
       // Simuler la session de l'administrateur principal
       localStorage.setItem('role', 'COMPANY_ADMIN');
@@ -290,8 +276,8 @@ export default function CompanyDashboardPage() {
       localStorage.setItem('itRole', mainAdmin.itRole || 'IT_ADMIN');
       localStorage.setItem('name', mainAdmin.name || mainAdmin.email);
       
-      // Rediriger vers le dashboard
-      router.push('/dashboard');
+      // Rediriger vers le dashboard avec les paramètres d'URL
+      router.push(`/dashboard?superadmin=true&companyId=${companyId}&companyName=${encodeURIComponent(company.name)}`);
     }
   };
 

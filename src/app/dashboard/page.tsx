@@ -8,7 +8,7 @@ import TaskColumn from '@/components/TaskColumn';
 import ServicesSidebar from '@/components/ServicesSidebar';
 import CategoryDetailsPanel from '@/components/CategoryDetailsPanel';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Footer from '@/components/Footer';
 import PanelCard from '../../components/PanelCard';
 import { AnimatePresence } from 'framer-motion';
@@ -84,13 +84,14 @@ export default function Home() {
   const [superAdminCompanyInfo, setSuperAdminCompanyInfo] = useState<{ companyId: string; companyName: string } | null>(null);
   const [isLoadingCompanyData, setIsLoadingCompanyData] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // Fonction pour retourner à la gestion des utilisateurs de l'entreprise
   const handleReturnToSuperAdmin = () => {
     // Restaurer la session du super admin
     const originalToken = localStorage.getItem('superAdminOriginalToken');
     const originalRole = localStorage.getItem('superAdminOriginalRole');
-    const companyId = localStorage.getItem('superAdminCompanyId');
+    const companyId = searchParams.get('companyId');
     
     if (originalToken && originalRole) {
       localStorage.setItem('token', originalToken);
@@ -98,9 +99,6 @@ export default function Home() {
     }
     
     // Nettoyer les données de retour
-    localStorage.removeItem('superAdminReturn');
-    localStorage.removeItem('superAdminCompanyId');
-    localStorage.removeItem('superAdminCompanyName');
     localStorage.removeItem('superAdminOriginalToken');
     localStorage.removeItem('superAdminOriginalRole');
     
@@ -122,25 +120,20 @@ export default function Home() {
       }
 
       // Si c'est un super admin en mode "vue", utiliser l'API super admin
-      if (isSuperAdminView) {
-        const superAdminCompanyId = localStorage.getItem('superAdminCompanyId');
-        const superAdminCompanyName = localStorage.getItem('superAdminCompanyName');
-        
-        if (superAdminCompanyId) {
-          console.log('Fetching tasks for company:', superAdminCompanyId, 'Company name:', superAdminCompanyName);
-          const response = await fetch(`/api/superadmin/companies/${superAdminCompanyId}/tasks`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          
-          if (response.ok) {
-            const data = await response.json();
-            console.log('Tasks loaded for company:', superAdminCompanyName, data.length || data.tasks?.length || 0, 'tasks');
-            setTasks(data.tasks || data);
-          } else if (response.status === 401) {
-            router.push('/login');
+      if (isSuperAdminView && superAdminCompanyInfo) {
+        console.log('Fetching tasks for company:', superAdminCompanyInfo.companyId, 'Company name:', superAdminCompanyInfo.companyName);
+        const response = await fetch(`/api/superadmin/companies/${superAdminCompanyInfo.companyId}/tasks`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
           }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Tasks loaded for company:', superAdminCompanyInfo.companyName, data.length || data.tasks?.length || 0, 'tasks');
+          setTasks(data.tasks || data);
+        } else if (response.status === 401) {
+          router.push('/login');
         }
       } else {
         // API normale pour les utilisateurs de l'entreprise
@@ -162,7 +155,7 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  }, [isSuperAdminView, router]);
+  }, [isSuperAdminView, superAdminCompanyInfo, router]);
 
   // Charger les cartes de panel depuis l'API
   const fetchPanelCards = useCallback(async () => {
@@ -176,30 +169,25 @@ export default function Home() {
       console.log('fetchPanelCards: Récupération des cartes depuis l\'API...');
       
       // Si c'est un super admin en mode "vue", utiliser l'API super admin
-      if (isSuperAdminView) {
-        const superAdminCompanyId = localStorage.getItem('superAdminCompanyId');
-        const superAdminCompanyName = localStorage.getItem('superAdminCompanyName');
-        
-        if (superAdminCompanyId) {
-          console.log('Fetching panel cards for company:', superAdminCompanyId, 'Company name:', superAdminCompanyName);
-          const response = await fetch(`/api/superadmin/companies/${superAdminCompanyId}/panel_cards`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          
-          if (response.ok) {
-            const data = await response.json();
-            console.log('Panel cards loaded for company:', superAdminCompanyName, data.panelCards?.length || 0, 'cards');
-            
-            // Mettre à jour l'état panelCards
-            setPanelCards(data.panelCards || data);
-            
-            // Synchroniser tasksAddedFromPanel avec les nouvelles données
-            syncTasksAddedFromPanelWithData(data.panelCards || data);
-          } else if (response.status === 401) {
-            router.push('/login');
+      if (isSuperAdminView && superAdminCompanyInfo) {
+        console.log('Fetching panel cards for company:', superAdminCompanyInfo.companyId, 'Company name:', superAdminCompanyInfo.companyName);
+        const response = await fetch(`/api/superadmin/companies/${superAdminCompanyInfo.companyId}/panel_cards`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
           }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Panel cards loaded for company:', superAdminCompanyInfo.companyName, data.panelCards?.length || 0, 'cards');
+          
+          // Mettre à jour l'état panelCards
+          setPanelCards(data.panelCards || data);
+          
+          // Synchroniser tasksAddedFromPanel avec les nouvelles données
+          syncTasksAddedFromPanelWithData(data.panelCards || data);
+        } else if (response.status === 401) {
+          router.push('/login');
         }
       } else {
         // API normale pour les utilisateurs de l'entreprise
@@ -239,7 +227,7 @@ export default function Home() {
     } catch (error) {
       console.error('Erreur lors du chargement des cartes de panel:', error);
     }
-  }, [isSuperAdminView, router]);
+  }, [isSuperAdminView, superAdminCompanyInfo, router]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -249,25 +237,23 @@ export default function Home() {
       const userCompanyId = localStorage.getItem('userCompanyId');
       const savedTasksFromPanel = localStorage.getItem(`tasksAddedFromPanel_${companyId}`);
       
-      // Vérifier si c'est un super admin en mode "vue"
-      const isSuperAdminReturn = localStorage.getItem('superAdminReturn');
-      const superAdminCompanyId = localStorage.getItem('superAdminCompanyId');
-      const superAdminCompanyName = localStorage.getItem('superAdminCompanyName');
-      const viewTimestamp = localStorage.getItem('superAdminViewTimestamp');
-      
       if (!token) {
         router.push('/login');
         return;
       }
 
-      // Si c'est un super admin en mode "vue", autoriser l'accès
-      if (isSuperAdminReturn === 'true' && superAdminCompanyId && superAdminCompanyName) {
+      // Vérifier si c'est un super admin en mode "vue" via les paramètres d'URL
+      const isSuperAdminMode = searchParams.get('superadmin') === 'true';
+      const superAdminCompanyId = searchParams.get('companyId');
+      const superAdminCompanyName = searchParams.get('companyName');
+      
+      if (isSuperAdminMode && superAdminCompanyId && superAdminCompanyName) {
         console.log('Mode super admin détecté - Entreprise:', superAdminCompanyName, 'ID:', superAdminCompanyId);
         
         setIsSuperAdminView(true);
         setSuperAdminCompanyInfo({
           companyId: superAdminCompanyId,
-          companyName: superAdminCompanyName
+          companyName: decodeURIComponent(superAdminCompanyName)
         });
         
         // Activer l'indicateur de chargement
@@ -321,7 +307,7 @@ export default function Home() {
       }
       // Les cartes de panel sont maintenant chargées depuis l'API via fetchPanelCards()
     }
-  }, [router]);
+  }, [router, searchParams]);
 
   // Recharger les données quand on est en mode super admin
   useEffect(() => {
