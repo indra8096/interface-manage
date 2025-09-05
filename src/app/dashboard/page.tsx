@@ -85,6 +85,7 @@ export default function Home() {
   const [currentCompanyId, setCurrentCompanyId] = useState<string | null>(null);
   const [lastViewTimestamp, setLastViewTimestamp] = useState<string | null>(null);
   const [forceReload, setForceReload] = useState(0);
+  const [isLoadingCompanyData, setIsLoadingCompanyData] = useState(false);
   const router = useRouter();
 
   // Fonction pour retourner à la gestion des utilisateurs de l'entreprise
@@ -125,8 +126,12 @@ export default function Home() {
 
       // Si c'est un super admin en mode "vue", utiliser l'API super admin
       if (isSuperAdminView && superAdminCompanyInfo) {
-        console.log('Fetching tasks for company:', superAdminCompanyInfo.companyId);
-        const response = await fetch(`/api/superadmin/companies/${superAdminCompanyInfo.companyId}/tasks`, {
+        // Récupérer l'ID de l'entreprise depuis localStorage pour s'assurer d'avoir la bonne
+        const currentCompanyIdFromStorage = localStorage.getItem('superAdminCompanyId');
+        const companyIdToUse = currentCompanyIdFromStorage || superAdminCompanyInfo.companyId;
+        
+        console.log('Fetching tasks for company:', companyIdToUse, 'Company name:', superAdminCompanyInfo.companyName);
+        const response = await fetch(`/api/superadmin/companies/${companyIdToUse}/tasks`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -134,7 +139,7 @@ export default function Home() {
         
         if (response.ok) {
           const data = await response.json();
-          console.log('Tasks loaded for company:', superAdminCompanyInfo.companyName, data.length, 'tasks');
+          console.log('Tasks loaded for company:', superAdminCompanyInfo.companyName, data.length || data.tasks?.length || 0, 'tasks');
           setTasks(data.tasks || data);
         } else if (response.status === 401) {
           router.push('/login');
@@ -174,8 +179,12 @@ export default function Home() {
       
       // Si c'est un super admin en mode "vue", utiliser l'API super admin
       if (isSuperAdminView && superAdminCompanyInfo) {
-        console.log('Fetching panel cards for company:', superAdminCompanyInfo.companyId);
-        const response = await fetch(`/api/superadmin/companies/${superAdminCompanyInfo.companyId}/panel_cards`, {
+        // Récupérer l'ID de l'entreprise depuis localStorage pour s'assurer d'avoir la bonne
+        const currentCompanyIdFromStorage = localStorage.getItem('superAdminCompanyId');
+        const companyIdToUse = currentCompanyIdFromStorage || superAdminCompanyInfo.companyId;
+        
+        console.log('Fetching panel cards for company:', companyIdToUse, 'Company name:', superAdminCompanyInfo.companyName);
+        const response = await fetch(`/api/superadmin/companies/${companyIdToUse}/panel_cards`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -265,14 +274,31 @@ export default function Home() {
         
         // TOUJOURS vider le cache et forcer le rechargement pour le super admin
         console.log('Mode super admin - FORCE RELOAD des données pour:', superAdminCompanyName);
-        setCurrentCompanyId(superAdminCompanyId);
-        setLastViewTimestamp(viewTimestamp);
-        setForceReload(prev => prev + 1);
+        
+        // Activer l'indicateur de chargement
+        setIsLoadingCompanyData(true);
         
         // Vider IMMÉDIATEMENT le cache des données précédentes
         setTasks([]);
         setPanelCards([]);
         setTasksAddedFromPanel([]);
+        
+        // Mettre à jour les états
+        setCurrentCompanyId(superAdminCompanyId);
+        setLastViewTimestamp(viewTimestamp);
+        setForceReload(prev => prev + 1);
+        
+        // Forcer le rechargement immédiat des données
+        setTimeout(async () => {
+          console.log('Rechargement immédiat des données pour:', superAdminCompanyName);
+          try {
+            await fetchTasks();
+            await fetchPanelCards();
+          } finally {
+            // Désactiver l'indicateur de chargement
+            setIsLoadingCompanyData(false);
+          }
+        }, 50);
         
         // Ne pas rediriger vers /superadmin
       } else {
@@ -878,11 +904,18 @@ export default function Home() {
               </p>
               <p className="text-yellow-400 text-sm">
                 Vous consultez le dashboard de l&apos;entreprise : <span className="font-bold">{superAdminCompanyInfo.companyName}</span>
+                {isLoadingCompanyData && (
+                  <span className="ml-2 text-yellow-300">
+                    <span className="inline-block animate-spin mr-1">⟳</span>
+                    Chargement des données...
+                  </span>
+                )}
               </p>
             </div>
             <button
               onClick={handleReturnToSuperAdmin}
-              className="px-6 py-2 bg-yellow-600 text-black font-semibold rounded-lg hover:bg-yellow-700 transition-all duration-300 flex items-center space-x-2"
+              disabled={isLoadingCompanyData}
+              className="px-6 py-2 bg-yellow-600 text-black font-semibold rounded-lg hover:bg-yellow-700 transition-all duration-300 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span>←</span>
               <span>Retour à la gestion des utilisateurs</span>
@@ -891,7 +924,26 @@ export default function Home() {
         </div>
       )}
       
-      <main className="p-8">
+      <main className="p-8 relative">
+        {/* Overlay de chargement pour le super admin */}
+        {isSuperAdminView && isLoadingCompanyData && (
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+            <div className="bg-gray-900 border border-gray-700 rounded-xl p-8 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center animate-pulse">
+                <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center">
+                  <span className="text-2xl animate-spin">⟳</span>
+                </div>
+              </div>
+              <div className="text-[#CCFF00] text-xl font-karla-semibold mb-2">
+                Chargement des données
+              </div>
+              <div className="text-gray-400 text-sm font-karla-regular">
+                Mise à jour du dashboard pour {superAdminCompanyInfo?.companyName}...
+              </div>
+            </div>
+          </div>
+        )}
+        
         <div className="max-w-7xl mx-auto">
           {/* Header futuriste */}
           <div className="mb-16">

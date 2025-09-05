@@ -266,6 +266,12 @@ export default function CompanyDashboardPage() {
       const token = localStorage.getItem('token');
       if (!token) return;
 
+      // Nettoyer d'abord toutes les données de vue précédentes
+      localStorage.removeItem('superAdminReturn');
+      localStorage.removeItem('superAdminCompanyId');
+      localStorage.removeItem('superAdminCompanyName');
+      localStorage.removeItem('superAdminViewTimestamp');
+      
       // Stocker les informations de l'administrateur principal pour la session
       localStorage.setItem('superAdminReturn', 'true');
       localStorage.setItem('superAdminCompanyId', companyId as string);
@@ -276,7 +282,7 @@ export default function CompanyDashboardPage() {
       // Ajouter un timestamp unique pour forcer le rechargement à chaque clic
       const uniqueTimestamp = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       localStorage.setItem('superAdminViewTimestamp', uniqueTimestamp);
-      console.log('Nouveau timestamp généré:', uniqueTimestamp);
+      console.log('Nouveau timestamp généré pour', company.name, ':', uniqueTimestamp);
       
       // Simuler la session de l'administrateur principal
       localStorage.setItem('role', 'COMPANY_ADMIN');
