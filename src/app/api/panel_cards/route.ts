@@ -14,27 +14,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Token invalide' }, { status: 401 });
     }
 
-    // Déterminer le companyId à utiliser
-    let targetCompanyId = user.companyId;
-    
-    // Si c'est un super admin en mode simulation
-    if (user.role === 'SUPER_ADMIN') {
-      const isSuperAdminSimulation = request.headers.get('x-super-admin-simulation') === 'true';
-      const simulatedCompanyId = request.headers.get('x-simulated-company-id');
-      
-      if (isSuperAdminSimulation && simulatedCompanyId) {
-        targetCompanyId = parseInt(simulatedCompanyId);
-      }
-    }
-
-    if (!targetCompanyId) {
-      return NextResponse.json({ error: 'Aucune société associée' }, { status: 403 });
-    }
-
-    // Récupérer les instances de cartes pour l'entreprise cible
+    // Récupérer les instances de cartes pour l'entreprise de l'utilisateur
     const instances = await prisma.panelCardInstance.findMany({
       where: { 
-        companyId: targetCompanyId,
+        companyId: user.companyId,
         isActive: true
       },
       include: {

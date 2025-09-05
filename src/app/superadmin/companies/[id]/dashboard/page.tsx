@@ -261,27 +261,50 @@ export default function CompanyDashboardPage() {
   };
 
   // Fonction pour accéder au dashboard de l'administrateur principal
-  const handleViewAdminDashboard = () => {
+  const handleViewAdminDashboard = async () => {
     if (mainAdmin && company) {
-      const token = localStorage.getItem('token');
-      if (!token) return;
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
 
-      // Stocker les informations de l'administrateur principal pour la session
-      localStorage.setItem('superAdminReturn', 'true');
-      localStorage.setItem('superAdminCompanyId', companyId as string);
-      localStorage.setItem('superAdminCompanyName', company.name);
-      localStorage.setItem('superAdminOriginalToken', token);
-      localStorage.setItem('superAdminOriginalRole', 'SUPER_ADMIN');
-      
-      // Simuler la session de l'administrateur principal
-      localStorage.setItem('role', 'COMPANY_ADMIN');
-      localStorage.setItem('companyId', companyId as string);
-      localStorage.setItem('userCompanyId', companyId as string); // Ajouter userCompanyId pour la cohérence
-      localStorage.setItem('itRole', mainAdmin.itRole || 'IT_ADMIN');
-      localStorage.setItem('name', mainAdmin.name || mainAdmin.email);
-      
-      // Rediriger vers le dashboard
-      router.push('/dashboard');
+        // Créer un token d'authentification pour l'administrateur de l'entreprise
+        const response = await fetch('/api/superadmin/companies/impersonate', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            adminId: mainAdmin.id,
+            companyId: companyId
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          
+          // Stocker les informations pour le retour
+          localStorage.setItem('superAdminReturn', 'true');
+          localStorage.setItem('superAdminCompanyId', companyId as string);
+          localStorage.setItem('superAdminCompanyName', company.name);
+          localStorage.setItem('superAdminOriginalToken', token);
+          localStorage.setItem('superAdminOriginalRole', 'SUPER_ADMIN');
+          
+          // Remplacer complètement la session par celle de l'administrateur
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('role', 'COMPANY_ADMIN');
+          localStorage.setItem('companyId', companyId as string);
+          localStorage.setItem('itRole', mainAdmin.itRole || 'IT_ADMIN');
+          localStorage.setItem('name', mainAdmin.name || mainAdmin.email);
+          
+          // Forcer un rechargement complet pour charger les bonnes données
+          window.location.href = '/dashboard';
+        } else {
+          console.error('Erreur lors de l\'impersonation:', await response.text());
+        }
+      } catch (error) {
+        console.error('Erreur lors de l\'accès au dashboard:', error);
+      }
     }
   };
 

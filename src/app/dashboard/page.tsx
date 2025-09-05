@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import TaskColumn from '@/components/TaskColumn';
 
@@ -115,7 +115,7 @@ export default function Home() {
   };
 
   // Charger les tâches depuis l'API
-  const fetchTasks = useCallback(async () => {
+  const fetchTasks = async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -123,19 +123,10 @@ export default function Home() {
         return;
       }
 
-      // Préparer les headers pour le mode super admin simulation
-      const headers: Record<string, string> = {
-        'Authorization': `Bearer ${token}`
-      };
-
-      // Si c'est un super admin en mode simulation, ajouter les headers spéciaux
-      if (isSuperAdminView && superAdminCompanyInfo) {
-        headers['x-super-admin-simulation'] = 'true';
-        headers['x-simulated-company-id'] = superAdminCompanyInfo.companyId;
-      }
-
       const response = await fetch('/api/tasks', {
-        headers
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
       
       if (response.ok) {
@@ -149,98 +140,10 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  }, [router, isSuperAdminView, superAdminCompanyInfo]);
-
-  // Fonction pour synchroniser tasksAddedFromPanel avec les données mises à jour de panelCards
-  const syncTasksAddedFromPanelWithData = useCallback((newPanelCards: Array<{
-    id: number;
-    name: string;
-    type: string;
-    category: string;
-    description: string;
-    priority: string;
-    total?: number;
-    completed?: number;
-    equipmentCount?: number;
-    status?: string;
-    certificationDate?: string;
-    nextAudit?: string;
-    deadline?: string;
-    isActive: boolean;
-  }>) => {
-    const companyId = localStorage.getItem('companyId');
-    if (!companyId) {
-      console.log('syncTasksAddedFromPanelWithData: Pas de companyId trouvé');
-      return;
-    }
-
-    // Récupérer les tâches actuelles depuis localStorage
-    const storedTasks = localStorage.getItem(`tasksAddedFromPanel_${companyId}`);
-    if (!storedTasks) {
-      console.log('syncTasksAddedFromPanelWithData: Pas de tâches stockées dans localStorage');
-      return;
-    }
-
-    try {
-      const currentTasks = JSON.parse(storedTasks);
-      console.log('syncTasksAddedFromPanelWithData: Tâches actuelles:', currentTasks);
-      console.log('syncTasksAddedFromPanelWithData: PanelCards disponibles:', newPanelCards);
-      
-      // Vérifier si les données ont réellement changé pour éviter les re-rendus inutiles
-      let hasChanges = false;
-      
-      // Mettre à jour chaque tâche avec les données les plus récentes de panelCards
-      const updatedTasks = currentTasks.map((task: any) => {
-        console.log(`syncTasksAddedFromPanelWithData: Traitement de la tâche:`, task);
-        
-        const updatedCardData = newPanelCards.find(card => card.id === task.id);
-        if (updatedCardData) {
-          console.log(`syncTasksAddedFromPanelWithData: Carte trouvée pour ID ${task.id}:`, updatedCardData);
-          
-          // Vérifier si les données de progression ont changé
-          if (task.total !== updatedCardData.total || 
-              task.completed !== updatedCardData.completed ||
-              task.description !== updatedCardData.description) {
-            hasChanges = true;
-          }
-          
-          return {
-            ...task,
-            name: updatedCardData.name, // Mettre à jour le nom
-            description: updatedCardData.description || task.description,
-            // Mettre à jour les données de progression pour la barre de progression
-            total: updatedCardData.total,
-            completed: updatedCardData.completed,
-            equipmentCount: updatedCardData.equipmentCount,
-            status: updatedCardData.status,
-            certificationDate: updatedCardData.certificationDate,
-            nextAudit: updatedCardData.nextAudit,
-            deadline: updatedCardData.deadline,
-            // Garder les autres propriétés spécifiques à la tâche (importance, score, etc.)
-          };
-        } else {
-          console.log(`syncTasksAddedFromPanelWithData: Aucune carte trouvée pour ID ${task.id}`);
-        }
-        return task;
-      });
-
-      console.log('syncTasksAddedFromPanelWithData: Tâches mises à jour:', updatedTasks);
-
-      // Ne mettre à jour l'état que si des changements ont été détectés
-      if (hasChanges) {
-        setTasksAddedFromPanel(updatedTasks);
-        localStorage.setItem(`tasksAddedFromPanel_${companyId}`, JSON.stringify(updatedTasks));
-        console.log('TasksAddedFromPanel synchronisé avec les données mises à jour');
-      } else {
-        console.log('Aucun changement détecté, pas de mise à jour nécessaire');
-      }
-    } catch (error) {
-      console.error('Erreur lors de la synchronisation de tasksAddedFromPanel:', error);
-    }
-  }, []);
+  };
 
   // Charger les cartes de panel depuis l'API
-  const fetchPanelCards = useCallback(async () => {
+  const fetchPanelCards = async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -248,20 +151,11 @@ export default function Home() {
         return;
       }
 
-      // Préparer les headers pour le mode super admin simulation
-      const headers: Record<string, string> = {
-        'Authorization': `Bearer ${token}`
-      };
-
-      // Si c'est un super admin en mode simulation, ajouter les headers spéciaux
-      if (isSuperAdminView && superAdminCompanyInfo) {
-        headers['x-super-admin-simulation'] = 'true';
-        headers['x-simulated-company-id'] = superAdminCompanyInfo.companyId;
-      }
-
       console.log('fetchPanelCards: Récupération des cartes depuis l\'API...');
       const response = await fetch('/api/panel_cards', {
-        headers
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
       
       if (response.ok) {
@@ -293,7 +187,7 @@ export default function Home() {
     } catch (error) {
       console.error('Erreur lors du chargement des cartes de panel:', error);
     }
-  }, [router, syncTasksAddedFromPanelWithData, isSuperAdminView, superAdminCompanyInfo]);
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -320,13 +214,6 @@ export default function Home() {
           companyId: superAdminCompanyId,
           companyName: superAdminCompanyName
         });
-        
-        // S'assurer que le companyId est correctement défini pour les APIs
-        if (superAdminCompanyId) {
-          localStorage.setItem('companyId', superAdminCompanyId);
-          localStorage.setItem('userCompanyId', superAdminCompanyId);
-        }
-        
         // Ne pas rediriger vers /superadmin
       } else {
         // Vérification de sécurité : l'utilisateur ne peut accéder qu'à son entreprise
@@ -371,23 +258,6 @@ export default function Home() {
       // Les cartes de panel sont maintenant chargées depuis l'API via fetchPanelCards()
     }
   }, [router]);
-
-  // Recharger les données quand le contexte super admin change
-  useEffect(() => {
-    if (isSuperAdminView && superAdminCompanyInfo) {
-      console.log(' Rechargement des données pour l\'entreprise:', superAdminCompanyInfo.companyName);
-      console.log(' CompanyId utilisé:', localStorage.getItem('companyId'));
-      
-      // Vider les tâches actuelles pour forcer le rechargement
-      setTasks([]);
-      setPanelCards([]);
-      setTasksAddedFromPanel([]);
-      
-      // Recharger les données
-      fetchTasks();
-      fetchPanelCards();
-    }
-  }, [isSuperAdminView, superAdminCompanyInfo, fetchTasks, fetchPanelCards]);
 
   useEffect(() => {
     fetchTasks();
@@ -695,6 +565,93 @@ export default function Home() {
     }
   };
 
+  // Fonction pour synchroniser tasksAddedFromPanel avec les données mises à jour de panelCards
+  const syncTasksAddedFromPanelWithData = (newPanelCards: Array<{
+    id: number;
+    name: string;
+    type: string;
+    category: string;
+    description: string;
+    priority: string;
+    total?: number;
+    completed?: number;
+    equipmentCount?: number;
+    status?: string;
+    certificationDate?: string;
+    nextAudit?: string;
+    deadline?: string;
+    isActive: boolean;
+  }>) => {
+    const companyId = localStorage.getItem('companyId');
+    if (!companyId) {
+      console.log('syncTasksAddedFromPanelWithData: Pas de companyId trouvé');
+      return;
+    }
+
+    // Récupérer les tâches actuelles depuis localStorage
+    const storedTasks = localStorage.getItem(`tasksAddedFromPanel_${companyId}`);
+    if (!storedTasks) {
+      console.log('syncTasksAddedFromPanelWithData: Pas de tâches stockées dans localStorage');
+      return;
+    }
+
+    try {
+      const currentTasks = JSON.parse(storedTasks);
+      console.log('syncTasksAddedFromPanelWithData: Tâches actuelles:', currentTasks);
+      console.log('syncTasksAddedFromPanelWithData: PanelCards disponibles:', newPanelCards);
+      
+      // Vérifier si les données ont réellement changé pour éviter les re-rendus inutiles
+      let hasChanges = false;
+      
+      // Mettre à jour chaque tâche avec les données les plus récentes de panelCards
+      const updatedTasks = currentTasks.map((task: any) => {
+        console.log(`syncTasksAddedFromPanelWithData: Traitement de la tâche:`, task);
+        
+        const updatedCardData = newPanelCards.find(card => card.id === task.id);
+        if (updatedCardData) {
+          console.log(`syncTasksAddedFromPanelWithData: Carte trouvée pour ID ${task.id}:`, updatedCardData);
+          
+          // Vérifier si les données de progression ont changé
+          if (task.total !== updatedCardData.total || 
+              task.completed !== updatedCardData.completed ||
+              task.description !== updatedCardData.description) {
+            hasChanges = true;
+          }
+          
+          return {
+            ...task,
+            name: updatedCardData.name, // Mettre à jour le nom
+            description: updatedCardData.description || task.description,
+            // Mettre à jour les données de progression pour la barre de progression
+            total: updatedCardData.total,
+            completed: updatedCardData.completed,
+            equipmentCount: updatedCardData.equipmentCount,
+            status: updatedCardData.status,
+            certificationDate: updatedCardData.certificationDate,
+            nextAudit: updatedCardData.nextAudit,
+            deadline: updatedCardData.deadline,
+            // Garder les autres propriétés spécifiques à la tâche (importance, score, etc.)
+          };
+        } else {
+          console.log(`syncTasksAddedFromPanelWithData: Aucune carte trouvée pour ID ${task.id}`);
+        }
+        return task;
+      });
+
+      console.log('syncTasksAddedFromPanelWithData: Tâches mises à jour:', updatedTasks);
+
+      // Ne mettre à jour l'état que si des changements ont été détectés
+      if (hasChanges) {
+        setTasksAddedFromPanel(updatedTasks);
+        localStorage.setItem(`tasksAddedFromPanel_${companyId}`, JSON.stringify(updatedTasks));
+        console.log('TasksAddedFromPanel synchronisé avec les données mises à jour');
+      } else {
+        console.log('Aucun changement détecté, pas de mise à jour nécessaire');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la synchronisation de tasksAddedFromPanel:', error);
+    }
+  };
 
   // Fonction pour récupérer les tâches terminées
   const getCompletedTasks = () => {
