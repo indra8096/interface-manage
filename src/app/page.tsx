@@ -175,7 +175,7 @@ export default function Home() {
                   fill
                   className="object-cover" 
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center p-6">
                   </div>
                 </div>
@@ -199,7 +199,7 @@ export default function Home() {
                   fill
                   className="object-cover" 
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center p-6">
                   </div>
                 </div>
@@ -223,7 +223,7 @@ export default function Home() {
                   fill
                   className="object-cover" 
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center p-6">
                   </div>
                 </div>
@@ -247,7 +247,7 @@ export default function Home() {
                   fill
                   className="object-cover" 
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center p-6">
                   </div>
                 </div>
