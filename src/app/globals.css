@@ -16,60 +16,88 @@
   /* Le thème est maintenant isolé par utilisateur */
 }
 
+/* Variables CSS par défaut pour le thème sombre - TOUTES LES PAGES */
+:root {
+  --bg-primary-dark: #000000;
+  --bg-secondary-dark: #111111;
+  --bg-card-dark: #1a1a1a;
+  --text-primary-dark: #FFFFFF;
+  --text-secondary-dark: #CCCCCC;
+  --text-muted-dark: #888888;
+  --border-primary-dark: #333333;
+  --border-secondary-dark: #444444;
+  --theme-primary-dark: #CCFF00;
+  --theme-secondary-dark: #9933FF;
+}
+
+/* Variables CSS pour le thème clair - DASHBOARD PRINCIPAL UNIQUEMENT */
+:root {
+  --bg-primary-light: #FFFFFF;
+  --bg-secondary-light: #FFFFFF;
+  --bg-card-light: #F8F9FA;
+  --text-primary-light: #000000;
+  --text-secondary-light: #000000;
+  --text-muted-light: #000000;
+  --border-primary-light: #9933FF;
+  --border-secondary-light: #9933FF;
+  --theme-primary-light: #9933FF;
+  --theme-secondary-light: #9933FF;
+}
+
 /* Règles pour le thème clair avec isolation par utilisateur - DASHBOARD PRINCIPAL UNIQUEMENT */
 [data-theme="light"][data-user-id] .dashboard-main {
-  --bg-primary: #FFFFFF;
-  --bg-secondary: #FFFFFF;
-  --bg-card: #F8F9FA;
-  --text-primary: #000000;
-  --text-secondary: #000000;
-  --text-muted: #000000;
-  --border-primary: #9933FF;
-  --border-secondary: #9933FF;
-  --theme-primary: #9933FF;
-  --theme-secondary: #9933FF;
+  --bg-primary: var(--bg-primary-light);
+  --bg-secondary: var(--bg-secondary-light);
+  --bg-card: var(--bg-card-light);
+  --text-primary: var(--text-primary-light);
+  --text-secondary: var(--text-secondary-light);
+  --text-muted: var(--text-muted-light);
+  --border-primary: var(--border-primary-light);
+  --border-secondary: var(--border-secondary-light);
+  --theme-primary: var(--theme-primary-light);
+  --theme-secondary: var(--theme-secondary-light);
 }
 
 /* Règles pour le thème sombre avec isolation par utilisateur */
 [data-theme="dark"][data-user-id] {
-  --bg-primary: #000000;
-  --bg-secondary: #111111;
-  --bg-card: #1a1a1a;
-  --text-primary: #FFFFFF;
-  --text-secondary: #CCCCCC;
-  --text-muted: #888888;
-  --border-primary: #333333;
-  --border-secondary: #444444;
-  --theme-primary: #CCFF00;
-  --theme-secondary: #9933FF;
+  --bg-primary: var(--bg-primary-dark);
+  --bg-secondary: var(--bg-secondary-dark);
+  --bg-card: var(--bg-card-dark);
+  --text-primary: var(--text-primary-dark);
+  --text-secondary: var(--text-secondary-dark);
+  --text-muted: var(--text-muted-dark);
+  --border-primary: var(--border-primary-dark);
+  --border-secondary: var(--border-secondary-dark);
+  --theme-primary: var(--theme-primary-dark);
+  --theme-secondary: var(--theme-secondary-dark);
 }
 
 /* Thème sombre (par défaut) - Règles de fallback pour les pages publiques */
 [data-theme="dark"]:not([data-user-id]) {
-  --bg-primary: #000000;
-  --bg-secondary: #111111;
-  --bg-card: #1a1a1a;
-  --text-primary: #FFFFFF;
-  --text-secondary: #CCCCCC;
-  --text-muted: #888888;
-  --border-primary: #333333;
-  --border-secondary: #444444;
-  --theme-primary: #CCFF00;
-  --theme-secondary: #9933FF;
+  --bg-primary: var(--bg-primary-dark);
+  --bg-secondary: var(--bg-secondary-dark);
+  --bg-card: var(--bg-card-dark);
+  --text-primary: var(--text-primary-dark);
+  --text-secondary: var(--text-secondary-dark);
+  --text-muted: var(--text-muted-dark);
+  --border-primary: var(--border-primary-dark);
+  --border-secondary: var(--border-secondary-dark);
+  --theme-primary: var(--theme-primary-dark);
+  --theme-secondary: var(--theme-secondary-dark);
 }
 
 /* Thème clair - Règles de fallback pour les pages publiques - DASHBOARD PRINCIPAL UNIQUEMENT */
 [data-theme="light"]:not([data-user-id]) .dashboard-main {
-  --bg-primary: #FFFFFF;
-  --bg-secondary: #FFFFFF;
-  --bg-card: #F8F9FA;
-  --text-primary: #000000;
-  --text-secondary: #000000;
-  --text-muted: #000000;
-  --border-primary: #9933FF;
-  --border-secondary: #9933FF;
-  --theme-primary: #9933FF;
-  --theme-secondary: #9933FF;
+  --bg-primary: var(--bg-primary-light);
+  --bg-secondary: var(--bg-secondary-light);
+  --bg-card: var(--bg-card-light);
+  --text-primary: var(--text-primary-light);
+  --text-secondary: var(--text-secondary-light);
+  --text-muted: var(--text-muted-light);
+  --border-primary: var(--border-primary-light);
+  --border-secondary: var(--border-secondary-light);
+  --theme-primary: var(--theme-primary-light);
+  --theme-secondary: var(--theme-secondary-light);
 }
 
 /* Règles spécifiques pour le thème clair avec isolation par utilisateur - DASHBOARD PRINCIPAL UNIQUEMENT */
@@ -143,34 +171,60 @@
 }
 
 /* Règles pour maintenir le thème sombre sur les autres pages */
-/* Super Admin Dashboard - Force le thème sombre */
-[data-theme="light"][data-user-id] .superadmin-dashboard,
-[data-theme="light"][data-user-id] .superadmin-dashboard * {
-  --bg-primary: #000000 !important;
-  --bg-secondary: #111111 !important;
-  --bg-card: #1a1a1a !important;
-  --text-primary: #FFFFFF !important;
-  --text-secondary: #CCCCCC !important;
-  --text-muted: #888888 !important;
-  --border-primary: #333333 !important;
-  --border-secondary: #444444 !important;
-  --theme-primary: #CCFF00 !important;
-  --theme-secondary: #9933FF !important;
+/* Super Admin Dashboard - Utilise toujours les variables sombres */
+.superadmin-dashboard {
+  --bg-primary: var(--bg-primary-dark);
+  --bg-secondary: var(--bg-secondary-dark);
+  --bg-card: var(--bg-card-dark);
+  --text-primary: var(--text-primary-dark);
+  --text-secondary: var(--text-secondary-dark);
+  --text-muted: var(--text-muted-dark);
+  --border-primary: var(--border-primary-dark);
+  --border-secondary: var(--border-secondary-dark);
+  --theme-primary: var(--theme-primary-dark);
+  --theme-secondary: var(--theme-secondary-dark);
 }
 
-/* Pages publiques - Force le thème sombre */
-[data-theme="light"][data-user-id] .public-page,
-[data-theme="light"][data-user-id] .public-page * {
-  --bg-primary: #000000 !important;
-  --bg-secondary: #111111 !important;
-  --bg-card: #1a1a1a !important;
-  --text-primary: #FFFFFF !important;
-  --text-secondary: #CCCCCC !important;
-  --text-muted: #888888 !important;
-  --border-primary: #333333 !important;
-  --border-secondary: #444444 !important;
-  --theme-primary: #CCFF00 !important;
-  --theme-secondary: #9933FF !important;
+/* Pages publiques - Utilise toujours les variables sombres */
+.public-page {
+  --bg-primary: var(--bg-primary-dark);
+  --bg-secondary: var(--bg-secondary-dark);
+  --bg-card: var(--bg-card-dark);
+  --text-primary: var(--text-primary-dark);
+  --text-secondary: var(--text-secondary-dark);
+  --text-muted: var(--text-muted-dark);
+  --border-primary: var(--border-primary-dark);
+  --border-secondary: var(--border-secondary-dark);
+  --theme-primary: var(--theme-primary-dark);
+  --theme-secondary: var(--theme-secondary-dark);
+}
+
+/* Force le thème sombre sur les pages publiques même en mode clair */
+[data-theme="light"] .public-page {
+  --bg-primary: var(--bg-primary-dark) !important;
+  --bg-secondary: var(--bg-secondary-dark) !important;
+  --bg-card: var(--bg-card-dark) !important;
+  --text-primary: var(--text-primary-dark) !important;
+  --text-secondary: var(--text-secondary-dark) !important;
+  --text-muted: var(--text-muted-dark) !important;
+  --border-primary: var(--border-primary-dark) !important;
+  --border-secondary: var(--border-secondary-dark) !important;
+  --theme-primary: var(--theme-primary-dark) !important;
+  --theme-secondary: var(--theme-secondary-dark) !important;
+}
+
+/* Force le thème sombre sur le super admin même en mode clair */
+[data-theme="light"] .superadmin-dashboard {
+  --bg-primary: var(--bg-primary-dark) !important;
+  --bg-secondary: var(--bg-secondary-dark) !important;
+  --bg-card: var(--bg-card-dark) !important;
+  --text-primary: var(--text-primary-dark) !important;
+  --text-secondary: var(--text-secondary-dark) !important;
+  --text-muted: var(--text-muted-dark) !important;
+  --border-primary: var(--border-primary-dark) !important;
+  --border-secondary: var(--border-secondary-dark) !important;
+  --theme-primary: var(--theme-primary-dark) !important;
+  --theme-secondary: var(--theme-secondary-dark) !important;
 }
 
 /* Règles pour les titres en thème clair avec isolation par utilisateur */
