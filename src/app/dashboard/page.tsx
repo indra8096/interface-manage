@@ -453,6 +453,11 @@ export default function Home() {
     
     // Filtrage par utilisateur assigné
     const filteredByUser = byCategory.filter(task => {
+      // Les admins voient toutes les tâches
+      if (userRole === 'admin') {
+        return true;
+      }
+      // Pour les autres utilisateurs: filtrage par assignation
       // Si la tâche n'est assignée à personne, elle s'affiche pour tous
       if (!task.assignedTo || task.assignedTo === '') {
         return true;
@@ -468,6 +473,11 @@ export default function Home() {
   // Fonction pour calculer les statistiques filtrées par utilisateur
   const getFilteredStats = () => {
     const filteredTasks = tasks.filter(task => {
+      // Les admins voient toutes les tâches
+      if (userRole === 'admin') {
+        return true;
+      }
+      // Pour les autres utilisateurs: filtrage par assignation
       // Si la tâche n'est assignée à personne, elle compte pour tous
       if (!task.assignedTo || task.assignedTo === '') {
         return true;
@@ -689,7 +699,11 @@ export default function Home() {
     const completedTasks = tasks.filter(task => {
       if (task.status !== 'completed') return false;
       
-      // Filtrage par utilisateur assigné
+      // Les admins voient toutes les tâches terminées
+      if (userRole === 'admin') {
+        return true;
+      }
+      // Pour les autres utilisateurs: filtrage par assignation
       if (!task.assignedTo || task.assignedTo === '') {
         return true;
       }
@@ -702,7 +716,11 @@ export default function Home() {
         const isCompleted = cardData.total && cardData.completed && cardData.completed >= cardData.total;
         if (!isCompleted) return false;
         
-        // Filtrage par utilisateur assigné
+        // Les admins voient toutes les tâches terminées
+        if (userRole === 'admin') {
+          return true;
+        }
+        // Pour les autres utilisateurs: filtrage par assignation
         if (!task.assignedTo || task.assignedTo === '') {
           return true;
         }
@@ -991,6 +1009,11 @@ export default function Home() {
               
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
                 {tasksAddedFromPanel.filter(task => {
+                  // Les admins voient toutes les tâches
+                  if (userRole === 'admin') {
+                    return true;
+                  }
+                  // Pour les autres utilisateurs: filtrage par assignation
                   // Si la tâche n'est assignée à personne, elle s'affiche pour tous
                   if (!task.assignedTo || task.assignedTo === '') {
                     return true;

@@ -360,15 +360,6 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
       }}
     >
       {children}
-      {tasksAddedFromPanel.some(task => task.name === taskName) && (
-        <div className="mt-3 pt-2 border-t" style={{ borderColor: 'var(--border-secondary)' }}>
-          <div className="text-center">
-            <span className="px-2 py-1 rounded-full text-xs font-karla-bold" style={{ background: '#10b981', color: 'black' }}>
-              AFFICHÉ
-            </span>
-          </div>
-        </div>
-      )}
     </div>
   );
 
