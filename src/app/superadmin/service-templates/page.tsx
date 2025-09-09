@@ -186,8 +186,8 @@ export default function ServiceTemplatesPage() {
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center animate-pulse">
             <div className="w-16 h-16 rounded-full bg-black"></div>
           </div>
-          <div className="text-xl font-bold mb-2" style={{ color: 'var(--theme-primary)' }}>Chargement...</div>
-          <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>Récupération des templates</div>
+          <div className="text-[#CCFF00] text-xl font-bold mb-2">Chargement...</div>
+          <div className="text-gray-400 text-sm">Récupération des templates</div>
         </div>
       </div>
     );
@@ -200,8 +200,8 @@ export default function ServiceTemplatesPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <span className="text-xl font-bold" style={{ color: 'var(--theme-primary)' }}>drelto</span>
-              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Gestionnaire de Templates</span>
+              <span className="text-xl font-bold text-[#CCFF00]">drelto</span>
+              <span className="text-sm text-gray-400">Gestionnaire de Templates</span>
             </div>
             
             <div className="flex space-x-4">
@@ -238,10 +238,10 @@ export default function ServiceTemplatesPage() {
           <div className="mb-16">
             <div className="flex items-center justify-between mb-12">
               <div>
-                <h1 className="text-5xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
+                <h1 className="text-5xl font-bold mb-4 text-white">
                   Gestion des Templates de Services
                 </h1>
-                <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
+                <p className="text-lg text-gray-400">
                   Interface de contrôle des templates de services de cybersécurité
                 </p>
               </div>
@@ -255,8 +255,8 @@ export default function ServiceTemplatesPage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>TEMPLATES ACTIFS</div>
-                    <div className="text-6xl font-bold" style={{ color: 'var(--theme-primary)' }}>{serviceTemplates.filter(s => s.isActive).length}</div>
+                    <div className="font-medium text-sm mb-2 text-gray-400">TEMPLATES ACTIFS</div>
+                    <div className="text-6xl font-bold text-[#CCFF00]">{serviceTemplates.filter(s => s.isActive).length}</div>
                   </div>
                   <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
                     background: 'linear-gradient(135deg, #9933FF, #7c3aed)'
@@ -272,8 +272,8 @@ export default function ServiceTemplatesPage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>TOTAL TEMPLATES</div>
-                    <div className="text-6xl font-bold" style={{ color: 'var(--theme-secondary)' }}>{serviceTemplates.length}</div>
+                    <div className="font-medium text-sm mb-2 text-gray-400">TOTAL TEMPLATES</div>
+                    <div className="text-6xl font-bold text-[#9933FF]">{serviceTemplates.length}</div>
                   </div>
                   <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
                     background: 'linear-gradient(135deg, #9933FF, #7c3aed)'
@@ -291,10 +291,10 @@ export default function ServiceTemplatesPage() {
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
+                  <div className="text-3xl font-bold mb-2 text-[#CCFF00]">
                     {serviceTemplates.filter(s => s.category === 'defensive').length}
                   </div>
-                  <div className="font-medium text-sm" style={{ color: 'var(--text-secondary)' }}>DÉFENSIF</div>
+                  <div className="font-medium text-sm text-gray-400">DÉFENSIF</div>
                 </div>
               </motion.div>
               
@@ -303,10 +303,10 @@ export default function ServiceTemplatesPage() {
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
+                  <div className="text-3xl font-bold mb-2 text-[#CCFF00]">
                     {serviceTemplates.filter(s => s.category === 'general').length}
                   </div>
-                  <div className="font-medium text-sm" style={{ color: 'var(--text-secondary)' }}>GÉNÉRAL</div>
+                  <div className="font-medium text-sm text-gray-400">GÉNÉRAL</div>
                 </div>
               </motion.div>
               
@@ -315,10 +315,10 @@ export default function ServiceTemplatesPage() {
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
+                  <div className="text-3xl font-bold mb-2 text-[#9933FF]">
                     {serviceTemplates.filter(s => s.category === 'offensive').length}
                   </div>
-                  <div className="font-medium text-sm" style={{ color: 'var(--text-secondary)' }}>OFFENSIF</div>
+                  <div className="font-medium text-sm text-gray-400">OFFENSIF</div>
                 </div>
               </motion.div>
             </div>
@@ -338,9 +338,9 @@ export default function ServiceTemplatesPage() {
                    className="mb-8 p-8 rounded-2xl bg-black border border-gray-700"
                  >
                    <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                      {editingTemplate ? 'Modifier le template' : 'Nouveau template Défensif'}
-                    </h2>
+                     <h2 className="text-2xl font-bold text-white">
+                       {editingTemplate ? 'Modifier le template' : 'Nouveau template Défensif'}
+                     </h2>
                      <button
                        onClick={() => {
                          setShowAddForm(null);
@@ -354,8 +354,7 @@ export default function ServiceTemplatesPage() {
                            defaultImportance: 'Moyenne'
                          });
                        }}
-                       className="transition-colors"
-                       style={{ color: 'var(--text-secondary)' }}
+                       className="text-gray-400 hover:text-white transition-colors"
                      >
                        ✕
                      </button>
@@ -364,7 +363,7 @@ export default function ServiceTemplatesPage() {
                    <form onSubmit={handleSubmit} className="space-y-6">
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                        <div>
-                         <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                         <label className="block text-sm font-semibold text-white mb-2">
                            Nom du service *
                          </label>
                          <input
@@ -372,30 +371,20 @@ export default function ServiceTemplatesPage() {
                            required
                            value={formData.name}
                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
-                           style={{ 
-                             color: 'var(--text-primary)',
-                             backgroundColor: 'var(--bg-card)',
-                             borderColor: 'var(--border-primary)'
-                           }}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                            placeholder="Nom du service"
                          />
                        </div>
 
                        <div>
-                         <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                         <label className="block text-sm font-semibold text-white mb-2">
                            Catégorie *
                          </label>
                          <select
                            required
                            value={formData.category}
                            onChange={(e) => setFormData({ ...formData, category: e.target.value as 'defensive' | 'general' | 'offensive' })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
-                           style={{ 
-                             color: 'var(--text-primary)',
-                             backgroundColor: 'var(--bg-card)',
-                             borderColor: 'var(--border-primary)'
-                           }}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          >
                            <option value="defensive">Défensif</option>
                            <option value="general">Général</option>
@@ -419,7 +408,7 @@ export default function ServiceTemplatesPage() {
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                        <div>
-                         <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                         <label className="block text-sm font-semibold text-white mb-2">
                            Score par défaut (1-10)
                          </label>
                          <input
@@ -428,28 +417,18 @@ export default function ServiceTemplatesPage() {
                            max="10"
                            value={formData.defaultScore}
                            onChange={(e) => setFormData({ ...formData, defaultScore: parseInt(e.target.value) })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
-                           style={{ 
-                             color: 'var(--text-primary)',
-                             backgroundColor: 'var(--bg-card)',
-                             borderColor: 'var(--border-primary)'
-                           }}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          />
                        </div>
 
                        <div>
-                         <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                         <label className="block text-sm font-semibold text-white mb-2">
                            Importance par défaut
                          </label>
                          <select
                            value={formData.defaultImportance}
                            onChange={(e) => setFormData({ ...formData, defaultImportance: e.target.value })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
-                           style={{ 
-                             color: 'var(--text-primary)',
-                             backgroundColor: 'var(--bg-card)',
-                             borderColor: 'var(--border-primary)'
-                           }}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          >
                            <option value="Faible">Faible</option>
                            <option value="Moyenne">Moyenne</option>
@@ -491,7 +470,7 @@ export default function ServiceTemplatesPage() {
                <div className="flex items-center justify-between mb-6">
                  <div className="flex items-center gap-4">
                    <div className="w-1 h-8 bg-blue-500 rounded-full"></div>
-                   <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Défensif</h2>
+                   <h2 className="text-2xl font-bold text-white">Défensif</h2>
                    <span className="px-3 py-1 bg-blue-900/30 text-blue-300 rounded-full text-sm font-medium">
                      {serviceTemplates.filter(t => t.category === 'defensive').length} template{serviceTemplates.filter(t => t.category === 'defensive').length > 1 ? 's' : ''}
                    </span>
@@ -550,10 +529,10 @@ export default function ServiceTemplatesPage() {
                             </button>
                           </div>
 
-                          <h3 className="font-karla-bold mb-1 transition-colors pr-20" style={{ color: 'var(--text-primary)' }}>
+                          <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors pr-20">
                             {template.name}
                           </h3>
-                          <p className="text-sm mb-3 font-karla-regular" style={{ color: 'var(--text-secondary)' }}>
+                          <p className="text-sm text-gray-400 mb-3 font-karla-regular">
                             {template.description}
                           </p>
                           <div className="flex items-center justify-between">
@@ -584,7 +563,7 @@ export default function ServiceTemplatesPage() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8" style={{ color: 'var(--text-secondary)' }}>
+                <div className="text-center py-8 text-gray-400">
                   Aucun template défensif. Cliquez sur &quot;Ajouter Défensif&quot; pour en créer un.
                 </div>
               )}
@@ -600,7 +579,7 @@ export default function ServiceTemplatesPage() {
                    className="mb-8 p-8 rounded-2xl bg-black border border-gray-700"
                  >
                    <div className="flex justify-between items-center mb-6">
-                     <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                     <h2 className="text-2xl font-bold text-white">
                        {editingTemplate ? 'Modifier le template' : 'Nouveau template Général'}
                      </h2>
                      <button
@@ -616,8 +595,7 @@ export default function ServiceTemplatesPage() {
                            defaultImportance: 'Moyenne'
                          });
                        }}
-                       className="transition-colors"
-                       style={{ color: 'var(--text-secondary)' }}
+                       className="text-gray-400 hover:text-white transition-colors"
                      >
                        ✕
                      </button>
@@ -626,7 +604,7 @@ export default function ServiceTemplatesPage() {
                    <form onSubmit={handleSubmit} className="space-y-6">
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                        <div>
-                         <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                         <label className="block text-sm font-semibold text-white mb-2">
                            Nom du service *
                          </label>
                          <input
@@ -634,30 +612,20 @@ export default function ServiceTemplatesPage() {
                            required
                            value={formData.name}
                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
-                           style={{ 
-                             color: 'var(--text-primary)',
-                             backgroundColor: 'var(--bg-card)',
-                             borderColor: 'var(--border-primary)'
-                           }}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                            placeholder="Nom du service"
                          />
                        </div>
 
                        <div>
-                         <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                         <label className="block text-sm font-semibold text-white mb-2">
                            Catégorie *
                          </label>
                          <select
                            required
                            value={formData.category}
                            onChange={(e) => setFormData({ ...formData, category: e.target.value as 'defensive' | 'general' | 'offensive' })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
-                           style={{ 
-                             color: 'var(--text-primary)',
-                             backgroundColor: 'var(--bg-card)',
-                             borderColor: 'var(--border-primary)'
-                           }}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          >
                            <option value="defensive">Défensif</option>
                            <option value="general">Général</option>
@@ -681,7 +649,7 @@ export default function ServiceTemplatesPage() {
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                        <div>
-                         <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                         <label className="block text-sm font-semibold text-white mb-2">
                            Score par défaut (1-10)
                          </label>
                          <input
@@ -690,28 +658,18 @@ export default function ServiceTemplatesPage() {
                            max="10"
                            value={formData.defaultScore}
                            onChange={(e) => setFormData({ ...formData, defaultScore: parseInt(e.target.value) })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
-                           style={{ 
-                             color: 'var(--text-primary)',
-                             backgroundColor: 'var(--bg-card)',
-                             borderColor: 'var(--border-primary)'
-                           }}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          />
                        </div>
 
                        <div>
-                         <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                         <label className="block text-sm font-semibold text-white mb-2">
                            Importance par défaut
                          </label>
                          <select
                            value={formData.defaultImportance}
                            onChange={(e) => setFormData({ ...formData, defaultImportance: e.target.value })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
-                           style={{ 
-                             color: 'var(--text-primary)',
-                             backgroundColor: 'var(--bg-card)',
-                             borderColor: 'var(--border-primary)'
-                           }}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          >
                            <option value="Faible">Faible</option>
                            <option value="Moyenne">Moyenne</option>
@@ -753,7 +711,7 @@ export default function ServiceTemplatesPage() {
                <div className="flex items-center justify-between mb-6">
                  <div className="flex items-center gap-4">
                    <div className="w-1 h-8 bg-gray-500 rounded-full"></div>
-                   <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Général</h2>
+                   <h2 className="text-2xl font-bold text-white">Général</h2>
                    <span className="px-3 py-1 bg-gray-700/30 text-gray-300 rounded-full text-sm font-medium">
                      {serviceTemplates.filter(t => t.category === 'general').length} template{serviceTemplates.filter(t => t.category === 'general').length > 1 ? 's' : ''}
                    </span>
@@ -812,10 +770,10 @@ export default function ServiceTemplatesPage() {
                             </button>
                           </div>
 
-                          <h3 className="font-karla-bold mb-1 transition-colors pr-20" style={{ color: 'var(--text-primary)' }}>
+                          <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors pr-20">
                             {template.name}
                           </h3>
-                          <p className="text-sm mb-3 font-karla-regular" style={{ color: 'var(--text-secondary)' }}>
+                          <p className="text-sm text-gray-400 mb-3 font-karla-regular">
                             {template.description}
                           </p>
                           <div className="flex items-center justify-between">
@@ -878,8 +836,7 @@ export default function ServiceTemplatesPage() {
                            defaultImportance: 'Moyenne'
                          });
                        }}
-                       className="transition-colors"
-                       style={{ color: 'var(--text-secondary)' }}
+                       className="text-gray-400 hover:text-white transition-colors"
                      >
                        ✕
                      </button>
@@ -888,7 +845,7 @@ export default function ServiceTemplatesPage() {
                    <form onSubmit={handleSubmit} className="space-y-6">
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                        <div>
-                         <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                         <label className="block text-sm font-semibold text-white mb-2">
                            Nom du service *
                          </label>
                          <input
@@ -896,30 +853,20 @@ export default function ServiceTemplatesPage() {
                            required
                            value={formData.name}
                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
-                           style={{ 
-                             color: 'var(--text-primary)',
-                             backgroundColor: 'var(--bg-card)',
-                             borderColor: 'var(--border-primary)'
-                           }}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                            placeholder="Nom du service"
                          />
                        </div>
 
                        <div>
-                         <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                         <label className="block text-sm font-semibold text-white mb-2">
                            Catégorie *
                          </label>
                          <select
                            required
                            value={formData.category}
                            onChange={(e) => setFormData({ ...formData, category: e.target.value as 'defensive' | 'general' | 'offensive' })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
-                           style={{ 
-                             color: 'var(--text-primary)',
-                             backgroundColor: 'var(--bg-card)',
-                             borderColor: 'var(--border-primary)'
-                           }}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          >
                            <option value="defensive">Défensif</option>
                            <option value="general">Général</option>
@@ -943,7 +890,7 @@ export default function ServiceTemplatesPage() {
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                        <div>
-                         <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                         <label className="block text-sm font-semibold text-white mb-2">
                            Score par défaut (1-10)
                          </label>
                          <input
@@ -952,28 +899,18 @@ export default function ServiceTemplatesPage() {
                            max="10"
                            value={formData.defaultScore}
                            onChange={(e) => setFormData({ ...formData, defaultScore: parseInt(e.target.value) })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
-                           style={{ 
-                             color: 'var(--text-primary)',
-                             backgroundColor: 'var(--bg-card)',
-                             borderColor: 'var(--border-primary)'
-                           }}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          />
                        </div>
 
                        <div>
-                         <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                         <label className="block text-sm font-semibold text-white mb-2">
                            Importance par défaut
                          </label>
                          <select
                            value={formData.defaultImportance}
                            onChange={(e) => setFormData({ ...formData, defaultImportance: e.target.value })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
-                           style={{ 
-                             color: 'var(--text-primary)',
-                             backgroundColor: 'var(--bg-card)',
-                             borderColor: 'var(--border-primary)'
-                           }}
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          >
                            <option value="Faible">Faible</option>
                            <option value="Moyenne">Moyenne</option>
@@ -1074,10 +1011,10 @@ export default function ServiceTemplatesPage() {
                             </button>
                           </div>
 
-                          <h3 className="font-karla-bold mb-1 transition-colors pr-20" style={{ color: 'var(--text-primary)' }}>
+                          <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors pr-20">
                             {template.name}
                           </h3>
-                          <p className="text-sm mb-3 font-karla-regular" style={{ color: 'var(--text-secondary)' }}>
+                          <p className="text-sm text-gray-400 mb-3 font-karla-regular">
                             {template.description}
                           </p>
                           <div className="flex items-center justify-between">

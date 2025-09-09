@@ -226,10 +226,10 @@ export default function SuperAdminDashboard() {
     return (
       <div className="min-h-screen bg-black text-white font-karla flex items-center justify-center">
         <div className="text-center">
-          <div className="text-2xl font-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
+          <div className="text-2xl font-bold mb-4" style={{ color: '#CCFF00' }}>
             Chargement...
           </div>
-          <div style={{ color: 'var(--text-secondary)' }}>Récupération des entreprises</div>
+          <div className="text-gray-400">Récupération des entreprises</div>
         </div>
       </div>
     );
@@ -242,10 +242,10 @@ export default function SuperAdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <span className="text-xl font-bold" style={{ color: 'var(--theme-primary)' }}>
+              <span className="text-xl font-bold" style={{ color: '#CCFF00' }}>
                 drelto
               </span>
-              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Super Admin</span>
+              <span className="text-sm text-gray-400">Super Admin</span>
             </div>
             
             <div className="flex space-x-4">
@@ -277,7 +277,7 @@ export default function SuperAdminDashboard() {
       <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6" style={{ color: 'var(--theme-primary)' }}>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6" style={{ color: '#CCFF00' }}>
               Dashboard Global
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
@@ -289,28 +289,28 @@ export default function SuperAdminDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#CCFF00] transition-all duration-300">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
+                <div className="text-3xl font-bold mb-2" style={{ color: '#CCFF00' }}>
                   {companies.length}
                 </div>
-                <div className="font-medium" style={{ color: 'var(--text-secondary)' }}>Entreprises</div>
+                <div className="text-gray-400 font-medium">Entreprises</div>
               </div>
             </div>
             
             <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#9933FF] transition-all duration-300">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
+                <div className="text-3xl font-bold mb-2" style={{ color: '#9933FF' }}>
                   {companies.reduce((total, company) => total + company._count.users, 0)}
                 </div>
-                <div className="font-medium" style={{ color: 'var(--text-secondary)' }}>Utilisateurs Total</div>
+                <div className="text-gray-400 font-medium">Utilisateurs Total</div>
               </div>
             </div>
             
             <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#CCFF00] transition-all duration-300">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
+                <div className="text-3xl font-bold mb-2" style={{ color: '#CCFF00' }}>
                   {companies.reduce((total, company) => total + company._count.tasks, 0)}
                 </div>
-                <div className="font-medium" style={{ color: 'var(--text-secondary)' }}>Tâches Total</div>
+                <div className="text-gray-400 font-medium">Tâches Total</div>
               </div>
             </div>
           </div>
@@ -323,10 +323,10 @@ export default function SuperAdminDashboard() {
           <div className="mb-8">
             <div className="flex justify-between items-center mb-4">
               <div>
-                <h2 className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
+                <h2 className="text-3xl font-bold mb-2" style={{ color: '#9933FF' }}>
                   Entreprises
                 </h2>
-                <p style={{ color: 'var(--text-secondary)' }}>Sélectionnez une entreprise pour accéder à son dashboard spécifique</p>
+                <p className="text-gray-400">Sélectionnez une entreprise pour accéder à son dashboard spécifique</p>
               </div>
               
               <div className="flex gap-4">
@@ -361,36 +361,36 @@ export default function SuperAdminDashboard() {
                 </button>
 
                 <div className="mb-4">
-                  <h3 className="text-xl font-bold transition-colors" style={{ color: 'var(--text-primary)' }}>
+                  <h3 className="text-xl font-bold text-white group-hover:text-[#CCFF00] transition-colors">
                     {company.name}
                   </h3>
                 </div>
                 
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span style={{ color: 'var(--text-secondary)' }}>Administrateur:</span>
-                    <span className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>
+                    <span className="text-gray-400">Administrateur:</span>
+                    <span className="text-white font-semibold text-sm">
                       {company.admin ? company.admin.email : 'Non assigné'}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span style={{ color: 'var(--text-secondary)' }}>Utilisateurs:</span>
-                    <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{company._count.users}</span>
+                    <span className="text-gray-400">Utilisateurs:</span>
+                    <span className="text-white font-semibold">{company._count.users}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span style={{ color: 'var(--text-secondary)' }}>Tâches:</span>
-                    <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{company._count.tasks}</span>
+                    <span className="text-gray-400">Tâches:</span>
+                    <span className="text-white font-semibold">{company._count.tasks}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span style={{ color: 'var(--text-secondary)' }}>Créée le:</span>
-                    <span className="text-sm" style={{ color: 'var(--text-primary)' }}>
+                    <span className="text-gray-400">Créée le:</span>
+                    <span className="text-white text-sm">
                       {new Date(company.createdAt).toLocaleDateString('fr-FR')}
                     </span>
                   </div>
                 </div>
                 
                 <div className="mt-4 pt-4 border-t border-gray-700">
-                  <div className="text-sm font-medium" style={{ color: 'var(--theme-primary)' }}>
+                  <div className="text-[#CCFF00] text-sm font-medium">
                     Cliquer pour accéder →
                   </div>
                 </div>
@@ -401,8 +401,8 @@ export default function SuperAdminDashboard() {
           {companies.length === 0 && (
             <div className="text-center py-16">
               <div className="bg-black/50 backdrop-blur-md rounded-xl p-12 border border-gray-800">
-                <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Aucune entreprise</h3>
-                <p style={{ color: 'var(--text-secondary)' }}>Créez votre première entreprise pour commencer</p>
+                <h3 className="text-xl font-bold text-white mb-2">Aucune entreprise</h3>
+                <p className="text-gray-400">Créez votre première entreprise pour commencer</p>
               </div>
             </div>
           )}
@@ -415,13 +415,12 @@ export default function SuperAdminDashboard() {
           <div className="max-w-4xl mx-auto">
             <div className="bg-black/50 backdrop-blur-md rounded-xl p-8 border border-gray-800">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold" style={{ color: 'var(--theme-secondary)' }}>
+                <h2 className="text-2xl font-bold" style={{ color: '#9933FF' }}>
                   Créer une nouvelle société
                 </h2>
                 <button
                   onClick={() => setShowCreateCompanyForm(false)}
-                  className="transition-colors"
-                  style={{ color: 'var(--text-secondary)' }}
+                  className="text-gray-400 hover:text-white transition-colors"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -432,7 +431,7 @@ export default function SuperAdminDashboard() {
               <form onSubmit={handleCreateCompany} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                    <label className="block text-sm font-semibold text-white mb-2">
                       Nom de la société *
                     </label>
                     <input
@@ -440,18 +439,13 @@ export default function SuperAdminDashboard() {
                       required
                       value={createCompanyData.name}
                       onChange={(e) => setCreateCompanyData({ ...createCompanyData, name: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
-                      style={{ 
-                        color: 'var(--text-primary)',
-                        backgroundColor: 'var(--bg-card)',
-                        borderColor: 'var(--border-primary)'
-                      }}
+                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                       placeholder="Nom de la société"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                    <label className="block text-sm font-semibold text-white mb-2">
                       Email de l&apos;administrateur *
                     </label>
                     <input
@@ -459,12 +453,7 @@ export default function SuperAdminDashboard() {
                       required
                       value={createCompanyData.adminEmail}
                       onChange={(e) => setCreateCompanyData({ ...createCompanyData, adminEmail: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
-                      style={{ 
-                        color: 'var(--text-primary)',
-                        backgroundColor: 'var(--bg-card)',
-                        borderColor: 'var(--border-primary)'
-                      }}
+                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                       placeholder="admin@societe.com"
                     />
                   </div>
@@ -472,36 +461,26 @@ export default function SuperAdminDashboard() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                    <label className="block text-sm font-semibold text-white mb-2">
                       Nom de l&apos;administrateur
                     </label>
                     <input
                       type="text"
                       value={createCompanyData.adminName}
                       onChange={(e) => setCreateCompanyData({ ...createCompanyData, adminName: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
-                      style={{ 
-                        color: 'var(--text-primary)',
-                        backgroundColor: 'var(--bg-card)',
-                        borderColor: 'var(--border-primary)'
-                      }}
+                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                       placeholder="Jean Dupont"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                    <label className="block text-sm font-semibold text-white mb-2">
                       Rôle IT de l&apos;administrateur *
                     </label>
                     <select
                       value={createCompanyData.adminItRole}
                       onChange={(e) => setCreateCompanyData({ ...createCompanyData, adminItRole: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
-                      style={{ 
-                        color: 'var(--text-primary)',
-                        backgroundColor: 'var(--bg-card)',
-                        borderColor: 'var(--border-primary)'
-                      }}
+                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                     >
                       <option value="IT_INTERN">Stagiaire IT</option>
                       <option value="IT_SUPPORT">Technicien support IT</option>
@@ -515,7 +494,7 @@ export default function SuperAdminDashboard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                  <label className="block text-sm font-semibold text-white mb-2">
                     Mot de passe de l&apos;administrateur *
                   </label>
                   <input
@@ -661,7 +640,7 @@ export default function SuperAdminDashboard() {
       <footer className="py-8 px-4 sm:px-6 lg:px-8 border-t border-gray-800">
         <div className="max-w-7xl mx-auto text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <span className="text-lg font-bold" style={{ color: 'var(--theme-primary)' }}>
+            <span className="text-lg font-bold" style={{ color: '#CCFF00' }}>
               drelto
             </span>
           </div>

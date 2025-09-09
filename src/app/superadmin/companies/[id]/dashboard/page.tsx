@@ -388,7 +388,7 @@ export default function CompanyDashboardPage() {
       <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6" style={{ color: 'var(--theme-primary)' }}>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6" style={{ color: '#CCFF00' }}>
               {company.name}
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
@@ -400,7 +400,7 @@ export default function CompanyDashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#CCFF00] transition-all duration-300">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
+                <div className="text-3xl font-bold mb-2" style={{ color: '#CCFF00' }}>
                   {company._count.users}
                 </div>
                 <div className="text-gray-400 font-medium">Utilisateurs Total</div>
@@ -409,7 +409,7 @@ export default function CompanyDashboardPage() {
             
             <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#9933FF] transition-all duration-300">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
+                <div className="text-3xl font-bold mb-2" style={{ color: '#9933FF' }}>
                   {admins.length}
                 </div>
                 <div className="text-gray-400 font-medium">Administrateurs</div>
@@ -418,7 +418,7 @@ export default function CompanyDashboardPage() {
             
             <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#CCFF00] transition-all duration-300">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
+                <div className="text-3xl font-bold mb-2" style={{ color: '#CCFF00' }}>
                   {company._count.tasks}
                 </div>
                 <div className="text-gray-400 font-medium">Tâches Total</div>

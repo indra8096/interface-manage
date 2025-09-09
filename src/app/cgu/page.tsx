@@ -1,45 +1,22 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
 
 export default function CGU() {
-  const [theme, setTheme] = useState('dark');
-
-  useEffect(() => {
-    // Détecter le thème depuis localStorage ou les préférences système
-    const savedTheme = localStorage.getItem('theme');
-    const systemTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-    const currentTheme = savedTheme || systemTheme;
-    setTheme(currentTheme);
-    
-    // Appliquer le thème au body
-    document.body.setAttribute('data-theme', currentTheme);
-  }, []);
-
   return (
-    <div className="font-karla min-h-screen" style={{ 
-      backgroundColor: 'var(--bg-primary)', 
-      color: 'var(--text-primary)' 
-    }}>
+    <div className="bg-black text-white font-karla min-h-screen">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 glass-effect" style={{ 
-        backgroundColor: 'var(--bg-card)', 
-        borderBottom: '1px solid var(--border-primary)' 
-      }}>
+      <nav className="fixed top-0 w-full z-50 glass-effect border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <Link href="/" className="text-xl font-karla-bold" style={{ color: 'var(--theme-primary)' }}>
+              <Link href="/" className="text-xl font-karla-bold" style={{ color: '#CCFF00' }}>
                 Drelto
               </Link>
             </div>
             
             <div className="flex space-x-4">
-              <Link href="/" className="px-6 py-2 font-karla-bold rounded-lg transition-all duration-300" style={{ 
-                background: 'var(--theme-primary)', 
-                color: 'var(--bg-primary)' 
-              }}>
+              <Link href="/" className="px-6 py-2 text-black font-karla-bold rounded-lg transition-all duration-300" style={{ background: '#CCFF00' }}>
                 RETOUR
               </Link>
             </div>
@@ -51,20 +28,17 @@ export default function CGU() {
       <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-karla-bold mb-6" style={{ color: 'var(--theme-primary)' }}>
+            <h1 className="text-4xl md:text-5xl font-karla-bold mb-6 gradient-text">
               Conditions Générales d&apos;Utilisation
             </h1>
-            <p className="text-xl" style={{ color: 'var(--text-secondary)' }}>
+            <p className="text-xl text-gray-300">
               CGU de la plateforme Drelto Interface manage
             </p>
           </div>
 
-          <div className="glass-effect rounded-2xl p-8 space-y-8" style={{ 
-            backgroundColor: 'var(--bg-card)', 
-            border: '1px solid var(--border-primary)' 
-          }}>
+          <div className="glass-effect rounded-2xl p-8 border border-gray-700 space-y-8">
             <div>
-              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
+              <p className="text-gray-300 leading-relaxed">
                 Les présentes Conditions Générales d&apos;Utilisation (ci-après « CGU ») régissent l&apos;accès et
                 l&apos;utilisation de la plateforme Drelto Interface manage par
                 tout utilisateur. En accédant à la Plateforme et en l&apos;utilisant, l&apos;utilisateur reconnaît
@@ -73,16 +47,16 @@ export default function CGU() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Objet
               </h2>
-              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
+              <p className="text-gray-300 leading-relaxed">
                 La Plateforme a pour objet d&apos;accompagner les PME dans la gestion sécurisée de leurs tâches et événements. Elle permet d&apos;assigner des missions aux employés, de suivre leur exécution et d&apos;organiser les projets tout en intégrant des bonnes pratiques de cybersécurité. Les entreprises bénéficient ainsi d&apos;une meilleure visibilité sur leur structure, d&apos;une organisation optimisée et d&apos;une protection renforcée contre les risques numériques.
               </p>
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Obligations de l&apos;utilisateur
               </h2>
               <p className="text-gray-300 mb-3">
@@ -101,10 +75,10 @@ export default function CGU() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Propriété intellectuelle
               </h2>
-              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
+              <p className="text-gray-300 leading-relaxed">
                 L&apos;ensemble des éléments de la Plateforme, y compris les textes, images, graphismes,
                 logos, icônes, sons, logiciels, sont la propriété de l&apos;éditeur ou de ses partenaires et
                 sont protégés par les lois belges et internationales relatives à la propriété
@@ -115,10 +89,10 @@ export default function CGU() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Limitation de responsabilité
               </h2>
-              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
+              <p className="text-gray-300 leading-relaxed">
                 L&apos;éditeur s&apos;efforce d&apos;assurer le bon fonctionnement et la sécurité de la Plateforme.
                 Toutefois, l&apos;éditeur ne saurait être tenu responsable des interruptions de service, des
                 erreurs, des omissions, de l&apos;indisponibilité des informations et/ou de la présence de
@@ -130,10 +104,10 @@ export default function CGU() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Liens hypertextes
               </h2>
-              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
+              <p className="text-gray-300 leading-relaxed">
                 La Plateforme peut contenir des liens hypertextes vers d&apos;autres sites internet. L&apos;éditeur
                 ne dispose d&apos;aucun moyen de contrôler ces sites et n&apos;assume aucune responsabilité
                 quant à leur contenu.
@@ -141,10 +115,10 @@ export default function CGU() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Modification des CGU
               </h2>
-              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
+              <p className="text-gray-300 leading-relaxed">
                 L&apos;éditeur se réserve le droit de modifier les présentes CGU à tout moment. Les
                 modifications prendront effet dès leur publication sur la Plateforme. Il est conseillé à
                 l&apos;utilisateur de consulter régulièrement les CGU afin de prendre connaissance des
@@ -153,20 +127,20 @@ export default function CGU() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Durée
               </h2>
-              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
+              <p className="text-gray-300 leading-relaxed">
                 Les présentes CGU sont conclues pour une durée indéterminée à compter de la
                 première utilisation de la Plateforme par l&apos;utilisateur.
               </p>
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Droit applicable et juridiction compétente
               </h2>
-              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
+              <p className="text-gray-300 leading-relaxed">
                 Les présentes CGU sont régies par le droit belge. En cas de litige, et à défaut de
                 résolution amiable, les tribunaux belges seront seuls compétents.
               </p>
@@ -176,17 +150,14 @@ export default function CGU() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 sm:px-6 lg:px-8" style={{ 
-        backgroundColor: 'var(--bg-card)', 
-        borderTop: '1px solid var(--border-primary)' 
-      }}>
+      <footer className="py-8 px-4 sm:px-6 lg:px-8 bg-gray-900/50 border-t border-gray-800">
         <div className="max-w-7xl mx-auto text-center">
           <div className="flex justify-center space-x-6 mb-4">
-            <a href="/mentions-legales" className="transition-colors" style={{ color: 'var(--text-secondary)' }}>Mentions Légales</a>
-            <a href="/politique-confidentialite" className="transition-colors" style={{ color: 'var(--text-secondary)' }}>Politique de Confidentialité</a>
-            <a href="/cgu" className="transition-colors" style={{ color: 'var(--text-secondary)' }}>CGU</a>
+            <a href="/mentions-legales" className="text-gray-400 hover:text-[#CCFF00] transition-colors">Mentions Légales</a>
+            <a href="/politique-confidentialite" className="text-gray-400 hover:text-[#CCFF00] transition-colors">Politique de Confidentialité</a>
+            <a href="/cgu" className="text-gray-400 hover:text-[#CCFF00] transition-colors">CGU</a>
           </div>
-          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-sm text-gray-500">
             © 2025 Drelto. Tous droits réservés.
           </p>
         </div>
