@@ -14,16 +14,22 @@ export default function ThemeWrapper({ children }: ThemeWrapperProps) {
   const [isClient, setIsClient] = useState(false);
 
   // Pages qui ne doivent PAS être affectées par le thème (toujours en mode sombre)
-  const protectedFromTheme = ['/login', '/', '/vitrine', '/mentions-legales', '/superadmin'];
+  const protectedFromTheme = ['/login', '/', '/vitrine', '/mentions-legales'];
   
-  // Pages qui peuvent avoir le thème blanc (uniquement le dashboard principal)
+  // Pages qui peuvent avoir le thème blanc (dashboards des entreprises uniquement)
   const dashboardPages = ['/dashboard'];
+  
+  // Pages super admin qui doivent rester en thème sombre
+  const superAdminPages = ['/superadmin'];
   
   // Vérifier si la page actuelle doit être protégée du thème
   const shouldProtectFromTheme = protectedFromTheme.some(path => pathname.startsWith(path));
   
   // Vérifier si c'est une page dashboard qui peut avoir le thème blanc
   const isDashboardPage = dashboardPages.some(path => pathname.startsWith(path));
+  
+  // Vérifier si c'est une page super admin qui doit rester en thème sombre
+  const isSuperAdminPage = superAdminPages.some(path => pathname.startsWith(path));
 
   // Vérifier que nous sommes côté client
   useEffect(() => {
@@ -34,7 +40,7 @@ export default function ThemeWrapper({ children }: ThemeWrapperProps) {
   useEffect(() => {
     if (!isClient || !userId) return; // Ne rien faire si pas encore côté client ou pas d'userId
     
-    if (shouldProtectFromTheme) {
+    if (shouldProtectFromTheme || isSuperAdminPage) {
       // Forcer le thème sombre pour ces pages
       document.documentElement.setAttribute('data-theme', 'dark');
       // Supprimer l'ID utilisateur pour ces pages
@@ -48,7 +54,7 @@ export default function ThemeWrapper({ children }: ThemeWrapperProps) {
       document.documentElement.setAttribute('data-theme', 'dark');
       document.documentElement.removeAttribute('data-user-id');
     }
-  }, [pathname, theme, userId, shouldProtectFromTheme, isDashboardPage, isClient]);
+  }, [pathname, theme, userId, shouldProtectFromTheme, isDashboardPage, isSuperAdminPage, isClient]);
 
   return <>{children}</>;
 }
