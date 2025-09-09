@@ -410,6 +410,8 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                             onCheckedChange={(checked) => {
                               if (checked) {
                                 handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
+                              } else {
+                                handleRemoveFromDashboard(card.name);
                               }
                             }}
                           />
@@ -466,6 +468,8 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                             onCheckedChange={(checked) => {
                               if (checked) {
                                 handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
+                              } else {
+                                handleRemoveFromDashboard(card.name);
                               }
                             }}
                           />
