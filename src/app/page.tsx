@@ -17,7 +17,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2 animate-fade-in">
-              <span className="text-xl font-karla-bold" style={{ color: '#CCFF00' }}>
+              <span className="text-xl font-karla-bold" style={{ color: 'var(--theme-primary)' }}>
                 Drelto
               </span>
             </div>
@@ -30,7 +30,7 @@ export default function Home() {
             </div>
 
             <div className="animate-fade-in">
-              <a href="/login" className="px-6 py-2 text-black font-karla-bold rounded-lg hover-scale transition-all duration-300" style={{ background: '#CCFF00' }}>
+              <a href="/login" className="px-6 py-2 text-black font-karla-bold rounded-lg hover-scale transition-all duration-300" style={{ background: 'var(--theme-primary)' }}>
                 CONNEXION
               </a>
             </div>
@@ -42,35 +42,35 @@ export default function Home() {
       <section id="hero" className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
           <div className="mb-8 animate-slide-up">
-            <h1 className="text-5xl md:text-7xl font-karla-bold mb-6" style={{ color: '#CCFF00' }}>
+            <h1 className="text-5xl md:text-7xl font-karla-bold mb-6" style={{ color: 'var(--theme-primary)' }}>
               Drelto
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 font-karla-medium max-w-3xl mx-auto">
-              <span style={{ color: '#9933FF' }}>ClientConnect</span> est une plateforme de gestion d&apos;infrastructure moderne avec contrôle d&apos;accès avancé.
+              <span style={{ color: 'var(--theme-secondary)' }}>ClientConnect</span> est une plateforme de gestion d&apos;infrastructure moderne avec contrôle d&apos;accès avancé.
             </p>
           </div>
 
           <div className="flex justify-center items-center animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            <button onClick={() => scrollToSection('features')} className="px-8 py-4 border-2 font-karla-bold rounded-xl transition-all duration-300 text-lg" style={{ borderColor: '#CCFF00', color: '#CCFF00' }}>
+            <button onClick={() => scrollToSection('features')} className="px-8 py-4 border-2 font-karla-bold rounded-xl transition-all duration-300 text-lg" style={{ borderColor: 'var(--theme-primary)', color: 'var(--theme-primary)' }}>
               DÉCOUVRIR
             </button>
           </div>
 
           <div className="mt-16 animate-fade-in" style={{ animationDelay: '0.5s' }}>
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-[#CCFF00]/20 to-[#9933FF]/20 rounded-2xl blur-3xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-[var(--theme-primary)]/20 to-[var(--theme-secondary)]/20 rounded-2xl blur-3xl"></div>
               <div className="relative glass-effect rounded-2xl p-8 border border-gray-800">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <div className="text-center">
-                    <h3 className="text-xl font-karla-bold mb-2" style={{ color: '#CCFF00' }}>Performance</h3>
+                    <h3 className="text-xl font-karla-bold mb-2" style={{ color: 'var(--theme-primary)' }}>Performance</h3>
                     <p className="text-gray-400">Interface rapide, détaillée, simple et optimisée.</p>
                   </div>
                   <div className="text-center">
-                    <h3 className="text-xl font-karla-bold mb-2" style={{ color: '#CCFF00' }}>Sécurité</h3>
+                    <h3 className="text-xl font-karla-bold mb-2" style={{ color: 'var(--theme-primary)' }}>Sécurité</h3>
                     <p className="text-gray-400">Contrôle d&apos;accès basé sur les rôles</p>
                   </div>
                   <div className="text-center">
-                    <h3 className="text-xl font-karla-bold mb-2" style={{ color: '#CCFF00' }}>Design</h3>
+                    <h3 className="text-xl font-karla-bold mb-2" style={{ color: 'var(--theme-primary)' }}>Design</h3>
                     <p className="text-gray-400">Interface moderne et intuitive</p>
                   </div>
                 </div>
@@ -93,58 +93,58 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="glass-effect rounded-xl p-6 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up">
-              <h3 className="text-xl font-karla-bold mb-3" style={{ color: '#CCFF00' }}>Dashboard Interactif</h3>
+            <div className="glass-effect rounded-xl p-6 border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300 hover-scale animate-slide-up">
+              <h3 className="text-xl font-karla-bold mb-3" style={{ color: 'var(--theme-primary)' }}>Dashboard Interactif</h3>
               <p className="text-gray-400 mb-4">Tableau de bord moderne avec drag & drop pour la gestion des tâches</p>
               <ul className="space-y-2">
                 <li className="flex items-center text-sm text-gray-300">
-                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: '#CCFF00' }}></span>
+                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: 'var(--theme-primary)' }}></span>
                   Colonnes Kanban
                 </li>
                 <li className="flex items-center text-sm text-gray-300">
-                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: '#CCFF00' }}></span>
+                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: 'var(--theme-primary)' }}></span>
                   Drag & Drop
                 </li>
                 <li className="flex items-center text-sm text-gray-300">
-                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: '#CCFF00' }}></span>
+                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: 'var(--theme-primary)' }}></span>
                   Statistiques temps réel
                 </li>
               </ul>
             </div>
 
-            <div className="glass-effect rounded-xl p-6 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up" style={{ animationDelay: '0.1s' }}>
-              <h3 className="text-xl font-karla-bold mb-3" style={{ color: '#CCFF00' }}>Gestion des Utilisateurs</h3>
+            <div className="glass-effect rounded-xl p-6 border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300 hover-scale animate-slide-up" style={{ animationDelay: '0.1s' }}>
+              <h3 className="text-xl font-karla-bold mb-3" style={{ color: 'var(--theme-primary)' }}>Gestion des Utilisateurs</h3>
               <p className="text-gray-400 mb-4">Administration complète des utilisateurs avec contrôle d&apos;accès</p>
               <ul className="space-y-2">
                 <li className="flex items-center text-sm text-gray-300">
-                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: '#CCFF00' }}></span>
+                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: 'var(--theme-primary)' }}></span>
                   Rôles Admin/User
                 </li>
                 <li className="flex items-center text-sm text-gray-300">
-                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: '#CCFF00' }}></span>
+                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: 'var(--theme-primary)' }}></span>
                   CRUD Utilisateurs
                 </li>
                 <li className="flex items-center text-sm text-gray-300">
-                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: '#CCFF00' }}></span>
+                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: 'var(--theme-primary)' }}></span>
                   Permissions granulaires
                 </li>
               </ul>
             </div>
 
-            <div className="glass-effect rounded-xl p-6 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up" style={{ animationDelay: '0.2s' }}>
-              <h3 className="text-xl font-karla-bold mb-3" style={{ color: '#CCFF00' }}>Services Prédéfinis</h3>
+            <div className="glass-effect rounded-xl p-6 border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300 hover-scale animate-slide-up" style={{ animationDelay: '0.2s' }}>
+              <h3 className="text-xl font-karla-bold mb-3" style={{ color: 'var(--theme-primary)' }}>Services Prédéfinis</h3>
               <p className="text-gray-400 mb-4">Bibliothèque de services configurables pour l&apos;infrastructure</p>
               <ul className="space-y-2">
                 <li className="flex items-center text-sm text-gray-300">
-                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: '#CCFF00' }}></span>
+                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: 'var(--theme-primary)' }}></span>
                   Services Défensifs
                 </li>
                 <li className="flex items-center text-sm text-gray-300">
-                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: '#CCFF00' }}></span>
+                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: 'var(--theme-primary)' }}></span>
                   Services Offensifs
                 </li>
                 <li className="flex items-center text-sm text-gray-300">
-                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: '#CCFF00' }}></span>
+                  <span className="w-2 h-2 rounded-full mr-3" style={{ background: 'var(--theme-primary)' }}></span>
                   Ajout personnalisé
                 </li>
               </ul>
@@ -167,7 +167,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Carte Interface de Connexion */}
-            <div className="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up">
+            <div className="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300 hover-scale animate-slide-up">
               <div className="aspect-video bg-gray-800 relative overflow-hidden">
                 <Image 
                   src="/connexion.png" 
@@ -181,7 +181,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="p-6">
-                <h4 className="font-karla-bold mb-2" style={{ color: '#CCFF00' }}>Fonctionnalités</h4>
+                <h4 className="font-karla-bold mb-2" style={{ color: 'var(--theme-primary)' }}>Fonctionnalités</h4>
                 <ul className="space-y-1 text-sm text-gray-300">
                   <li>• Design futuriste avec couleurs Drelto</li>
                   <li>• Authentification sécurisée</li>
@@ -191,7 +191,7 @@ export default function Home() {
             </div>
 
             {/* Carte Dashboard Principal */}
-            <div className="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up" style={{ animationDelay: '0.1s' }}>
+            <div className="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300 hover-scale animate-slide-up" style={{ animationDelay: '0.1s' }}>
               <div className="aspect-video bg-gray-800 relative overflow-hidden">
                 <Image 
                   src="/tableau.png" 
@@ -205,7 +205,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="p-6">
-                <h4 className="font-karla-bold mb-2" style={{ color: '#CCFF00' }}>Fonctionnalités</h4>
+                <h4 className="font-karla-bold mb-2" style={{ color: 'var(--theme-primary)' }}>Fonctionnalités</h4>
                 <ul className="space-y-1 text-sm text-gray-300">
                   <li>• Statistiques en temps réel</li>
                   <li>• Services actifs et terminés</li>
@@ -215,7 +215,7 @@ export default function Home() {
             </div>
 
             {/* Carte Gestion des Services */}
-            <div className="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up" style={{ animationDelay: '0.2s' }}>
+            <div className="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300 hover-scale animate-slide-up" style={{ animationDelay: '0.2s' }}>
               <div className="aspect-video bg-gray-800 relative overflow-hidden">
                 <Image 
                   src="/services.png" 
@@ -229,7 +229,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="p-6">
-                <h4 className="font-karla-bold mb-2" style={{ color: '#CCFF00' }}>Fonctionnalités</h4>
+                <h4 className="font-karla-bold mb-2" style={{ color: 'var(--theme-primary)' }}>Fonctionnalités</h4>
                 <ul className="space-y-1 text-sm text-gray-300">
                   <li>• Colonnes Défensif/Général/Offensif</li>
                   <li>• Drag & Drop interactif</li>
@@ -239,7 +239,7 @@ export default function Home() {
             </div>
 
             {/* Carte Services Prédéfinis */}
-            <div className="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale animate-slide-up" style={{ animationDelay: '0.3s' }}>
+            <div className="glass-effect rounded-xl overflow-hidden border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300 hover-scale animate-slide-up" style={{ animationDelay: '0.3s' }}>
               <div className="aspect-video bg-gray-800 relative overflow-hidden">
                 <Image 
                   src="/predefinis.png" 
@@ -253,7 +253,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="p-6">
-                <h4 className="font-karla-bold mb-2" style={{ color: '#CCFF00' }}>Fonctionnalités</h4>
+                <h4 className="font-karla-bold mb-2" style={{ color: 'var(--theme-primary)' }}>Fonctionnalités</h4>
                 <ul className="space-y-1 text-sm text-gray-300">
                   <li>• Catalogue de services</li>
                   <li>• Recherche et filtrage</li>
@@ -279,19 +279,19 @@ export default function Home() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center group animate-slide-up">
-              <h3 className="font-karla-bold text-lg" style={{ color: '#CCFF00' }}>Next.js 15</h3>
+              <h3 className="font-karla-bold text-lg" style={{ color: 'var(--theme-primary)' }}>Next.js 15</h3>
             </div>
 
             <div className="text-center group animate-slide-up" style={{ animationDelay: '0.1s' }}>
-              <h3 className="font-karla-bold text-lg" style={{ color: '#CCFF00' }}>TypeScript</h3>
+              <h3 className="font-karla-bold text-lg" style={{ color: 'var(--theme-primary)' }}>TypeScript</h3>
             </div>
 
             <div className="text-center group animate-slide-up" style={{ animationDelay: '0.2s' }}>
-              <h3 className="font-karla-bold text-lg" style={{ color: '#CCFF00' }}>Tailwind CSS</h3>
+              <h3 className="font-karla-bold text-lg" style={{ color: 'var(--theme-primary)' }}>Tailwind CSS</h3>
             </div>
 
             <div className="text-center group animate-slide-up" style={{ animationDelay: '0.3s' }}>
-              <h3 className="font-karla-bold text-lg" style={{ color: '#CCFF00' }}>Framer Motion</h3>
+              <h3 className="font-karla-bold text-lg" style={{ color: 'var(--theme-primary)' }}>Framer Motion</h3>
             </div>
           </div>
         </div>
@@ -318,33 +318,33 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className="text-center p-6 rounded-xl border border-gray-700 hover:border-[#CCFF00] transition-all duration-300">
-                <h3 className="text-xl font-karla-bold mb-3" style={{ color: '#CCFF00' }}>Collaboration</h3>
+              <div className="text-center p-6 rounded-xl border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300">
+                <h3 className="text-xl font-karla-bold mb-3" style={{ color: 'var(--theme-primary)' }}>Collaboration</h3>
                 <p className="text-gray-400">Facilite la collaboration entre Red et Blue Teams pour une approche unifiée</p>
               </div>
 
-              <div className="text-center p-6 rounded-xl border border-gray-700 hover:border-[#CCFF00] transition-all duration-300">
-                <h3 className="text-xl font-karla-bold mb-3" style={{ color: '#CCFF00' }}>Identification</h3>
+              <div className="text-center p-6 rounded-xl border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300">
+                <h3 className="text-xl font-karla-bold mb-3" style={{ color: 'var(--theme-primary)' }}>Identification</h3>
                 <p className="text-gray-400">Identifie les lacunes dans la détection et la réponse aux incidents</p>
               </div>
 
-              <div className="text-center p-6 rounded-xl border border-gray-700 hover:border-[#CCFF00] transition-all duration-300">
-                <h3 className="text-xl font-karla-bold mb-3" style={{ color: '#CCFF00' }}>Optimisation</h3>
+              <div className="text-center p-6 rounded-xl border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300">
+                <h3 className="text-xl font-karla-bold mb-3" style={{ color: 'var(--theme-primary)' }}>Optimisation</h3>
                 <p className="text-gray-400">Optimise les techniques offensives pour tester efficacement les défenses</p>
               </div>
 
-              <div className="text-center p-6 rounded-xl border border-gray-700 hover:border-[#CCFF00] transition-all duration-300">
-                <h3 className="text-xl font-karla-bold mb-3" style={{ color: '#CCFF00' }}>Amélioration</h3>
+              <div className="text-center p-6 rounded-xl border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300">
+                <h3 className="text-xl font-karla-bold mb-3" style={{ color: 'var(--theme-primary)' }}>Amélioration</h3>
                 <p className="text-gray-400">Améliore les règles de détection (SIEM, EDR, etc.)</p>
               </div>
 
-              <div className="text-center p-6 rounded-xl border border-gray-700 hover:border-[#CCFF00] transition-all duration-300">
-                <h3 className="text-xl font-karla-bold mb-3" style={{ color: '#CCFF00' }}>Documentation</h3>
+              <div className="text-center p-6 rounded-xl border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300">
+                <h3 className="text-xl font-karla-bold mb-3" style={{ color: 'var(--theme-primary)' }}>Documentation</h3>
                 <p className="text-gray-400">Documente les enseignements pour renforcer la sécurité</p>
               </div>
 
-              <div className="text-center p-6 rounded-xl border border-gray-700 hover:border-[#CCFF00] transition-all duration-300">
-                <h3 className="text-xl font-karla-bold mb-3" style={{ color: '#CCFF00' }}>Amélioration Continue</h3>
+              <div className="text-center p-6 rounded-xl border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300">
+                <h3 className="text-xl font-karla-bold mb-3" style={{ color: 'var(--theme-primary)' }}>Amélioration Continue</h3>
                 <p className="text-gray-400">Processus d&apos;amélioration continue basé sur les retours d&apos;expérience</p>
               </div>
             </div>
@@ -352,7 +352,7 @@ export default function Home() {
             {/* Section Drelto et Purple Team */}
             <div className="mt-12 p-8 bg-gray-900/50 rounded-xl border border-gray-700 animate-fade-in" style={{ animationDelay: '0.4s' }}>
               <div className="text-center">
-                <h3 className="text-xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>Comment Drelto facilite l&apos;approche Purple Team</h3>
+                <h3 className="text-xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>Comment Drelto facilite l&apos;approche Purple Team</h3>
                 <p className="text-gray-300 text-sm leading-relaxed max-w-4xl mx-auto">
                   Notre plateforme Drelto est conçue pour soutenir l&apos;approche Purple Team en permettant aux équipes Red et Blue de collaborer efficacement. 
                   Les services prédéfinis (défensifs et offensifs) facilitent le partage de connaissances, tandis que le système de gestion des tâches 
@@ -369,7 +369,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto text-center">
           <div className="animate-fade-in">
             <div className="flex items-center justify-center space-x-2 mb-6">
-              <span className="text-2xl font-karla-bold" style={{ color: '#CCFF00' }}>
+              <span className="text-2xl font-karla-bold" style={{ color: 'var(--theme-primary)' }}>
                 Drelto
               </span>
             </div>
@@ -377,24 +377,24 @@ export default function Home() {
               Plateforme moderne de gestion d&apos;infrastructure développée avec les dernières technologies
             </p>
             <div className="flex justify-center space-x-6 mb-4">
-              <a href="#interfaces" className="text-gray-400 hover:text-[#CCFF00] transition-colors">
+              <a href="#interfaces" className="text-gray-400 hover:text-[var(--theme-primary)] transition-colors">
                 Interfaces
               </a>
-              <a href="#tech" className="text-gray-400 hover:text-[#CCFF00] transition-colors">
+              <a href="#tech" className="text-gray-400 hover:text-[var(--theme-primary)] transition-colors">
                 Technologies
               </a>
-              <a href="#purple-team" className="text-gray-400 hover:text-[#CCFF00] transition-colors">
+              <a href="#purple-team" className="text-gray-400 hover:text-[var(--theme-primary)] transition-colors">
                 Purple Team
               </a>
             </div>
             <div className="flex justify-center space-x-6 mb-4">
-              <a href="/mentions-legales" className="text-gray-400 hover:text-[#CCFF00] transition-colors">
+              <a href="/mentions-legales" className="text-gray-400 hover:text-[var(--theme-primary)] transition-colors">
                 Mentions Légales
               </a>
-              <a href="/politique-confidentialite" className="text-gray-400 hover:text-[#CCFF00] transition-colors">
+              <a href="/politique-confidentialite" className="text-gray-400 hover:text-[var(--theme-primary)] transition-colors">
                 Politique de Confidentialité
               </a>
-              <a href="/cgu" className="text-gray-400 hover:text-[#CCFF00] transition-colors">
+              <a href="/cgu" className="text-gray-400 hover:text-[var(--theme-primary)] transition-colors">
                 CGU
               </a>
             </div>
