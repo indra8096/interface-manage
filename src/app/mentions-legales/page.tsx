@@ -10,7 +10,7 @@ export default function MentionsLegales() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <Link href="/" className="text-xl font-karla-bold" style={{ color: '#CCFF00' }}>
+              <Link href="/" className="text-xl font-karla-bold" style={{ color: 'var(--theme-primary)' }}>
                 Drelto
               </Link>
             </div>
@@ -28,7 +28,7 @@ export default function MentionsLegales() {
       <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-karla-bold mb-6 gradient-text">
+            <h1 className="text-4xl md:text-5xl font-karla-bold mb-6" style={{ color: 'var(--theme-primary)' }}>
               Mentions Légales
             </h1>
             <p className="text-xl text-gray-300">
@@ -38,7 +38,7 @@ export default function MentionsLegales() {
 
           <div className="glass-effect rounded-2xl p-8 border border-gray-700 space-y-8">
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
                 Qui est l&apos;éditeur du site ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -47,7 +47,7 @@ export default function MentionsLegales() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
                 Qui est l&apos;hébergeur du site ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -56,7 +56,7 @@ export default function MentionsLegales() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
                 Qui est le directeur de la publication ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -65,7 +65,7 @@ export default function MentionsLegales() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
                 Quels sont les droits liés à la propriété intellectuelle ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -74,7 +74,7 @@ export default function MentionsLegales() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
                 Le site est-il toujours disponible ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -83,7 +83,7 @@ export default function MentionsLegales() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
                 Quand Drelto ASBL n&apos;est-elle pas responsable de l&apos;utilisation du site ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -98,7 +98,7 @@ export default function MentionsLegales() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
                 Quel tribunal est compétent en cas de litige ?
               </h2>
               <p className="text-gray-300 leading-relaxed">

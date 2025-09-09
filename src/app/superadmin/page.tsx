@@ -226,7 +226,7 @@ export default function SuperAdminDashboard() {
     return (
       <div className="min-h-screen bg-black text-white font-karla flex items-center justify-center">
         <div className="text-center">
-          <div className="text-2xl font-bold mb-4" style={{ color: '#CCFF00' }}>
+          <div className="text-2xl font-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
             Chargement...
           </div>
           <div className="text-gray-400">Récupération des entreprises</div>
@@ -242,7 +242,7 @@ export default function SuperAdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <span className="text-xl font-bold" style={{ color: '#CCFF00' }}>
+              <span className="text-xl font-bold" style={{ color: 'var(--theme-primary)' }}>
                 drelto
               </span>
               <span className="text-sm text-gray-400">Super Admin</span>
@@ -277,7 +277,7 @@ export default function SuperAdminDashboard() {
       <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6" style={{ color: '#CCFF00' }}>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6" style={{ color: 'var(--theme-primary)' }}>
               Dashboard Global
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
@@ -289,7 +289,7 @@ export default function SuperAdminDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#CCFF00] transition-all duration-300">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2" style={{ color: '#CCFF00' }}>
+                <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
                   {companies.length}
                 </div>
                 <div className="text-gray-400 font-medium">Entreprises</div>
@@ -298,7 +298,7 @@ export default function SuperAdminDashboard() {
             
             <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#9933FF] transition-all duration-300">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2" style={{ color: '#9933FF' }}>
+                <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
                   {companies.reduce((total, company) => total + company._count.users, 0)}
                 </div>
                 <div className="text-gray-400 font-medium">Utilisateurs Total</div>
@@ -307,7 +307,7 @@ export default function SuperAdminDashboard() {
             
             <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#CCFF00] transition-all duration-300">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2" style={{ color: '#CCFF00' }}>
+                <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
                   {companies.reduce((total, company) => total + company._count.tasks, 0)}
                 </div>
                 <div className="text-gray-400 font-medium">Tâches Total</div>
@@ -323,7 +323,7 @@ export default function SuperAdminDashboard() {
           <div className="mb-8">
             <div className="flex justify-between items-center mb-4">
               <div>
-                <h2 className="text-3xl font-bold mb-2" style={{ color: '#9933FF' }}>
+                <h2 className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
                   Entreprises
                 </h2>
                 <p className="text-gray-400">Sélectionnez une entreprise pour accéder à son dashboard spécifique</p>
@@ -415,7 +415,7 @@ export default function SuperAdminDashboard() {
           <div className="max-w-4xl mx-auto">
             <div className="bg-black/50 backdrop-blur-md rounded-xl p-8 border border-gray-800">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold" style={{ color: '#9933FF' }}>
+                <h2 className="text-2xl font-bold" style={{ color: 'var(--theme-secondary)' }}>
                   Créer une nouvelle société
                 </h2>
                 <button
@@ -640,7 +640,7 @@ export default function SuperAdminDashboard() {
       <footer className="py-8 px-4 sm:px-6 lg:px-8 border-t border-gray-800">
         <div className="max-w-7xl mx-auto text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <span className="text-lg font-bold" style={{ color: '#CCFF00' }}>
+            <span className="text-lg font-bold" style={{ color: 'var(--theme-primary)' }}>
               drelto
             </span>
           </div>

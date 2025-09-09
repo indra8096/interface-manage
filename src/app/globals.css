@@ -240,6 +240,40 @@
   color: #FFFFFF !important;
 }
 
+/* Règles pour forcer les couleurs des titres en thème clair */
+[data-theme="light"] h1[style*="var(--theme-primary)"],
+[data-theme="light"] h2[style*="var(--theme-primary)"],
+[data-theme="light"] h3[style*="var(--theme-primary)"],
+[data-theme="light"] span[style*="var(--theme-primary)"],
+[data-theme="light"] div[style*="var(--theme-primary)"] {
+  color: #9933FF !important;
+}
+
+[data-theme="light"] h1[style*="var(--theme-secondary)"],
+[data-theme="light"] h2[style*="var(--theme-secondary)"],
+[data-theme="light"] h3[style*="var(--theme-secondary)"],
+[data-theme="light"] span[style*="var(--theme-secondary)"],
+[data-theme="light"] div[style*="var(--theme-secondary)"] {
+  color: #9933FF !important;
+}
+
+/* Règles pour les pages publiques (sans data-user-id) */
+[data-theme="light"]:not([data-user-id]) h1[style*="var(--theme-primary)"],
+[data-theme="light"]:not([data-user-id]) h2[style*="var(--theme-primary)"],
+[data-theme="light"]:not([data-user-id]) h3[style*="var(--theme-primary)"],
+[data-theme="light"]:not([data-user-id]) span[style*="var(--theme-primary)"],
+[data-theme="light"]:not([data-user-id]) div[style*="var(--theme-primary)"] {
+  color: #9933FF !important;
+}
+
+[data-theme="light"]:not([data-user-id]) h1[style*="var(--theme-secondary)"],
+[data-theme="light"]:not([data-user-id]) h2[style*="var(--theme-secondary)"],
+[data-theme="light"]:not([data-user-id]) h3[style*="var(--theme-secondary)"],
+[data-theme="light"]:not([data-user-id]) span[style*="var(--theme-secondary)"],
+[data-theme="light"]:not([data-user-id]) div[style*="var(--theme-secondary)"] {
+  color: #9933FF !important;
+}
+
 
 
 :root {
