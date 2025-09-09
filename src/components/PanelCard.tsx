@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Switch } from '@/components/ui/switch';
-import { motion, AnimatePresence } from 'framer-motion';
 
 interface PanelCardProps {
   name: string;
@@ -159,21 +158,21 @@ const PanelCard: React.FC<PanelCardProps> = ({
     }
   };
 
+  // Si la carte n'est pas visible, ne pas la rendre
+  if (!isVisible) {
+    return null;
+  }
+
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div 
-          initial={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: -20 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-          className={`p-4 rounded-lg border transition-all duration-300 hover:border-opacity-60 group relative panel-card ${
-            userRole === 'admin' && onDelete ? 'pr-12' : ''
-          }`}
-          style={{ 
-            background: 'var(--bg-card)', 
-            borderColor: 'var(--border-secondary)' 
-          }}
-        >
+    <div 
+      className={`p-4 rounded-lg border transition-all duration-300 hover:border-opacity-60 group relative panel-card ${
+        userRole === 'admin' && onDelete ? 'pr-12' : ''
+      }`}
+      style={{ 
+        background: 'var(--bg-card)', 
+        borderColor: 'var(--border-secondary)' 
+      }}
+    >
       {/* Icône corbeille - Toujours à droite */}
       {userRole === 'admin' && onDelete && (
         <button
@@ -238,9 +237,8 @@ const PanelCard: React.FC<PanelCardProps> = ({
           )}
         </div>
         {renderSpecificContent()}
-        </motion.div>
-      )}
-    </AnimatePresence>
+      </div>
+    </div>
   );
 };
 
