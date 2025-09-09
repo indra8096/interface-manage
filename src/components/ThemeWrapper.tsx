@@ -14,10 +14,16 @@ export default function ThemeWrapper({ children }: ThemeWrapperProps) {
   const [isClient, setIsClient] = useState(false);
 
   // Pages qui ne doivent PAS être affectées par le thème (toujours en mode sombre)
-  const protectedFromTheme = ['/login', '/', '/vitrine'];
+  const protectedFromTheme = ['/login', '/', '/vitrine', '/mentions-legales', '/superadmin'];
+  
+  // Pages qui peuvent avoir le thème blanc (uniquement le dashboard principal)
+  const dashboardPages = ['/dashboard'];
   
   // Vérifier si la page actuelle doit être protégée du thème
-  const shouldProtectFromTheme = protectedFromTheme.some(path => pathname === path);
+  const shouldProtectFromTheme = protectedFromTheme.some(path => pathname.startsWith(path));
+  
+  // Vérifier si c'est une page dashboard qui peut avoir le thème blanc
+  const isDashboardPage = dashboardPages.some(path => pathname.startsWith(path));
 
   // Vérifier que nous sommes côté client
   useEffect(() => {
@@ -33,12 +39,16 @@ export default function ThemeWrapper({ children }: ThemeWrapperProps) {
       document.documentElement.setAttribute('data-theme', 'dark');
       // Supprimer l'ID utilisateur pour ces pages
       document.documentElement.removeAttribute('data-user-id');
-    } else {
-      // Pour les autres pages, appliquer le thème normal avec l'ID utilisateur
+    } else if (isDashboardPage) {
+      // Pour les pages dashboard, appliquer le thème normal avec l'ID utilisateur
       document.documentElement.setAttribute('data-theme', theme);
       document.documentElement.setAttribute('data-user-id', userId);
+    } else {
+      // Pour toutes les autres pages, forcer le thème sombre
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.removeAttribute('data-user-id');
     }
-  }, [pathname, theme, userId, shouldProtectFromTheme, isClient]);
+  }, [pathname, theme, userId, shouldProtectFromTheme, isDashboardPage, isClient]);
 
   return <>{children}</>;
 }
