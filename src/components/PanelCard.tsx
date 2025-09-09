@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Switch } from '@/components/ui/switch';
 
 interface PanelCardProps {
@@ -57,9 +57,6 @@ const PanelCard: React.FC<PanelCardProps> = ({
   cardType,
   tasksAddedFromPanel = []
 }) => {
-  // État pour gérer l'affichage de la carte
-  const [isVisible, setIsVisible] = useState(true);
-  
   // Vérifier que les données de progression sont valides
   const hasValidProgressData = total !== undefined && total !== null && completed !== undefined && completed !== null;
   const percentage = hasValidProgressData ? Math.min(Math.round((completed / total) * 100), 100) : 0;
@@ -158,11 +155,6 @@ const PanelCard: React.FC<PanelCardProps> = ({
     }
   };
 
-  // Si la carte n'est pas visible, ne pas la rendre
-  if (!isVisible) {
-    return null;
-  }
-
   return (
     <div 
       className={`p-4 rounded-lg border transition-all duration-300 hover:border-opacity-60 group relative panel-card ${
@@ -222,22 +214,17 @@ const PanelCard: React.FC<PanelCardProps> = ({
           {userRole === 'admin' && onAddToDashboard && (
             <Switch 
               id={`switch-panelcard-${name}-${cardType}`}
-              checked={isAddedToDashboard && isVisible}
+              checked={isAddedToDashboard}
               onCheckedChange={(checked) => {
                 if (checked) {
-                  setIsVisible(true);
                   onAddToDashboard(name, description || '', importance || 'Moyenne');
-                } else {
-                  setIsVisible(false);
-                  // Optionnel : supprimer de la dashboard si nécessaire
-                  // onAddToDashboard(name, description || '', importance || 'Moyenne');
                 }
               }}
             />
           )}
         </div>
-        {renderSpecificContent()}
       </div>
+      {renderSpecificContent()}
     </div>
   );
 };

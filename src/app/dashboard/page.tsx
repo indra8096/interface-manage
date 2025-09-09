@@ -1076,6 +1076,7 @@ export default function Home() {
         categoryTitle="PANEL DE SUIVIS"
         userRole={userRole}
         onAddTask={handleAddTaskFromPanel}
+        onRemoveTaskFromPanel={removeTaskFromPanel}
         tasksAddedFromPanel={tasksAddedFromPanel}
         forceSyncPanelData={forceSyncPanelData}
         panelCards={panelCards || []}

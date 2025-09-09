@@ -71,7 +71,7 @@ const categoryDescriptions = {
 
 
 
-export default function CategoryDetailsPanel({ isOpen, onClose, category, categoryTitle, userRole = 'user', onAddTask, tasksAddedFromPanel = [], forceSyncPanelData, panelCards = [] }: CategoryDetailsPanelProps) {
+export default function CategoryDetailsPanel({ isOpen, onClose, category, categoryTitle, userRole = 'user', onAddTask, onRemoveTaskFromPanel, tasksAddedFromPanel = [], forceSyncPanelData, panelCards = [] }: CategoryDetailsPanelProps) {
   const [activeTab, setActiveTab] = useState<'coverage' | 'infrastructure' | 'compliance' | 'recommendations'>('coverage');
   const [editingCard, setEditingCard] = useState<string | null>(null);
   const [editFormData, setEditFormData] = useState<CardFormData>({} as CardFormData);
@@ -114,6 +114,12 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
         dueDate: new Date().toISOString().split('T')[0],
         assignedTo: 'Admin'
       });
+    }
+  };
+
+  const handleRemoveFromDashboard = (taskName: string) => {
+    if (onRemoveTaskFromPanel) {
+      onRemoveTaskFromPanel(taskName);
     }
   };
 
@@ -569,6 +575,8 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                           onCheckedChange={(checked) => {
                             if (checked) {
                               handleAddToDashboard(card.id, card.name, card.description || '', 'Moyenne');
+                            } else {
+                              handleRemoveFromDashboard(card.name);
                             }
                           }}
                         />
