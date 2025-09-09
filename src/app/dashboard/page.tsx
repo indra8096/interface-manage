@@ -450,8 +450,39 @@ export default function Home() {
 
   const getTasksByCategory = (category: string) => {
     const byCategory = tasks.filter(task => task.category === category);
+    
+    // Filtrage par utilisateur assigné
+    const filteredByUser = byCategory.filter(task => {
+      // Si la tâche n'est assignée à personne, elle s'affiche pour tous
+      if (!task.assignedTo || task.assignedTo === '') {
+        return true;
+      }
+      // Si la tâche est assignée à quelqu'un, elle ne s'affiche que pour cette personne
+      return task.assignedTo === userDisplayInfo.name;
+    });
+    
     // Pour les admins: n'afficher que les tâches non terminées dans les colonnes
-    return userRole === 'admin' ? byCategory.filter(t => t.status !== 'completed') : byCategory;
+    return userRole === 'admin' ? filteredByUser.filter(t => t.status !== 'completed') : filteredByUser;
+  };
+
+  // Fonction pour calculer les statistiques filtrées par utilisateur
+  const getFilteredStats = () => {
+    const filteredTasks = tasks.filter(task => {
+      // Si la tâche n'est assignée à personne, elle compte pour tous
+      if (!task.assignedTo || task.assignedTo === '') {
+        return true;
+      }
+      // Si la tâche est assignée à quelqu'un, elle ne compte que pour cette personne
+      return task.assignedTo === userDisplayInfo.name;
+    });
+    
+    return {
+      total: filteredTasks.length,
+      completed: filteredTasks.filter(t => t.status === 'completed').length,
+      defensive: filteredTasks.filter(t => t.category === 'defensive').length,
+      general: filteredTasks.filter(t => t.category === 'general').length,
+      offensive: filteredTasks.filter(t => t.category === 'offensive').length,
+    };
   };
 
   const getCardData = (taskName: string) => {
@@ -655,11 +686,27 @@ export default function Home() {
 
   // Fonction pour récupérer les tâches terminées
   const getCompletedTasks = () => {
-    const completedTasks = tasks.filter(task => task.status === 'completed');
+    const completedTasks = tasks.filter(task => {
+      if (task.status !== 'completed') return false;
+      
+      // Filtrage par utilisateur assigné
+      if (!task.assignedTo || task.assignedTo === '') {
+        return true;
+      }
+      return task.assignedTo === userDisplayInfo.name;
+    });
+    
     const completedPanelTasks = tasksAddedFromPanel.filter(task => {
       const cardData = getCardData(task.name);
       if (cardData?.type === 'coverage') {
-        return cardData.total && cardData.completed && cardData.completed >= cardData.total;
+        const isCompleted = cardData.total && cardData.completed && cardData.completed >= cardData.total;
+        if (!isCompleted) return false;
+        
+        // Filtrage par utilisateur assigné
+        if (!task.assignedTo || task.assignedTo === '') {
+          return true;
+        }
+        return task.assignedTo === userDisplayInfo.name;
       }
       return false; // Pour l'instant, on ne considère que les tâches de type coverage comme "terminées"
     });
@@ -823,7 +870,7 @@ export default function Home() {
                 <div className="flex items-center justify-between">
                   <div>
                                          <div className="font-karla-medium text-sm mb-2 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>SERVICES ACTIFS</div>
-                                         <div className="text-6xl font-karla-bold" style={{ color: 'var(--theme-primary)' }}>{tasks.length}</div>
+                                         <div className="text-6xl font-karla-bold" style={{ color: 'var(--theme-primary)' }}>{getFilteredStats().total}</div>
                   </div>
                                      <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
                      background: 'linear-gradient(135deg, #9933FF, #7c3aed)'
@@ -845,7 +892,7 @@ export default function Home() {
                   <div>
                                          <div className="font-karla-medium text-sm mb-2 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>TÂCHES TERMINÉES</div>
                                          <div className="text-6xl font-karla-bold" style={{ color: 'var(--theme-secondary)' }}>
-                       {Math.min(Math.round((tasks.filter(t => t.status === 'completed').length / Math.max(tasks.length, 1)) * 100), 100)}%
+                       {Math.min(Math.round((getFilteredStats().completed / Math.max(getFilteredStats().total, 1)) * 100), 100)}%
                      </div>
                   </div>
                                      <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
@@ -870,7 +917,7 @@ export default function Home() {
               >
                 <div className="text-center">
                                      <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
-                     {tasks.filter(t => t.category === 'defensive').length}
+                     {getFilteredStats().defensive}
                    </div>
                                         <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>DÉFENSIF</div>
                 </div>
@@ -887,7 +934,7 @@ export default function Home() {
               >
                 <div className="text-center">
                                      <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
-                     {tasks.filter(t => t.category === 'general').length}
+                     {getFilteredStats().general}
                    </div>
                                         <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>GÉNÉRAL</div>
                 </div>
@@ -900,7 +947,7 @@ export default function Home() {
               >
                 <div className="text-center">
                                      <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
-                     {tasks.filter(t => t.category === 'offensive').length}
+                     {getFilteredStats().offensive}
                    </div>
                                         <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>OFFENSIF</div>
                 </div>
@@ -916,7 +963,7 @@ export default function Home() {
               >
                 <div className="text-center">
                                      <div className="text-3xl font-karla-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
-                     {tasks.filter(t => t.status === 'completed').length}
+                     {getFilteredStats().completed}
                    </div>
                                         <div className="font-karla-medium text-sm transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>TERMINÉS</div>
                 </div>
@@ -943,7 +990,14 @@ export default function Home() {
                 </div>
               
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-                {tasksAddedFromPanel.map((task, index) => {
+                {tasksAddedFromPanel.filter(task => {
+                  // Si la tâche n'est assignée à personne, elle s'affiche pour tous
+                  if (!task.assignedTo || task.assignedTo === '') {
+                    return true;
+                  }
+                  // Si la tâche est assignée à quelqu'un, elle ne s'affiche que pour cette personne
+                  return task.assignedTo === userDisplayInfo.name;
+                }).map((task, index) => {
                   const cardData = getCardData(task.name);
                   const category = getCategoryFromTask(task.name);
                   
