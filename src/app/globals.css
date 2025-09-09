@@ -30,8 +30,8 @@
   --theme-secondary: #9933FF;
 }
 
-/* Règles pour le thème sombre avec isolation par utilisateur */
-[data-theme="dark"][data-user-id] {
+/* Règles pour le thème sombre avec isolation par utilisateur - DASHBOARD PRINCIPAL UNIQUEMENT */
+[data-theme="dark"][data-user-id] .dashboard-main {
   --bg-primary: #000000;
   --bg-secondary: #111111;
   --bg-card: #1a1a1a;
@@ -98,6 +98,20 @@
 
 /* Force le thème sombre par défaut pour toutes les pages */
 :root {
+  --bg-primary: #000000;
+  --bg-secondary: #111111;
+  --bg-card: #1a1a1a;
+  --text-primary: #FFFFFF;
+  --text-secondary: #CCCCCC;
+  --text-muted: #888888;
+  --border-primary: #333333;
+  --border-secondary: #444444;
+  --theme-primary: #CCFF00;
+  --theme-secondary: #9933FF;
+}
+
+/* Règles par défaut pour le dashboard - thème sombre */
+.dashboard-main {
   --bg-primary: #000000;
   --bg-secondary: #111111;
   --bg-card: #1a1a1a;

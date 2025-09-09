@@ -40,19 +40,31 @@ export default function ThemeWrapper({ children }: ThemeWrapperProps) {
   useEffect(() => {
     if (!isClient || !userId) return; // Ne rien faire si pas encore côté client ou pas d'userId
     
+    console.log('ThemeWrapper Debug:', {
+      pathname,
+      theme,
+      userId,
+      shouldProtectFromTheme,
+      isDashboardPage,
+      isSuperAdminPage
+    });
+    
     if (shouldProtectFromTheme || isSuperAdminPage) {
       // Forcer le thème sombre pour ces pages
       document.documentElement.setAttribute('data-theme', 'dark');
       // Supprimer l'ID utilisateur pour ces pages
       document.documentElement.removeAttribute('data-user-id');
+      console.log('Applied dark theme (protected/superadmin)');
     } else if (isDashboardPage) {
       // Pour les pages dashboard, appliquer le thème normal avec l'ID utilisateur
       document.documentElement.setAttribute('data-theme', theme);
       document.documentElement.setAttribute('data-user-id', userId);
+      console.log('Applied theme to dashboard:', theme);
     } else {
       // Pour toutes les autres pages, forcer le thème sombre
       document.documentElement.setAttribute('data-theme', 'dark');
       document.documentElement.removeAttribute('data-user-id');
+      console.log('Applied dark theme (fallback)');
     }
   }, [pathname, theme, userId, shouldProtectFromTheme, isDashboardPage, isSuperAdminPage, isClient]);
 
