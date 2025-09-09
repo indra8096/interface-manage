@@ -16,8 +16,8 @@
   /* Le thème est maintenant isolé par utilisateur */
 }
 
-/* Règles pour le thème clair avec isolation par utilisateur */
-[data-theme="light"][data-user-id] {
+/* Règles pour le thème clair avec isolation par utilisateur - DASHBOARD PRINCIPAL UNIQUEMENT */
+[data-theme="light"][data-user-id] .dashboard-main {
   --bg-primary: #FFFFFF;
   --bg-secondary: #FFFFFF;
   --bg-card: #F8F9FA;
@@ -58,8 +58,8 @@
   --theme-secondary: #9933FF;
 }
 
-/* Thème clair - Règles de fallback pour les pages publiques */
-[data-theme="light"]:not([data-user-id]) {
+/* Thème clair - Règles de fallback pour les pages publiques - DASHBOARD PRINCIPAL UNIQUEMENT */
+[data-theme="light"]:not([data-user-id]) .dashboard-main {
   --bg-primary: #FFFFFF;
   --bg-secondary: #FFFFFF;
   --bg-card: #F8F9FA;
@@ -140,6 +140,37 @@
 [data-theme="light"][data-user-id] .dashboard-main textarea[style*="var(--border-primary)"],
 [data-theme="light"][data-user-id] .dashboard-main select[style*="var(--border-primary)"] {
   border-color: #9933FF !important;
+}
+
+/* Règles pour maintenir le thème sombre sur les autres pages */
+/* Super Admin Dashboard - Force le thème sombre */
+[data-theme="light"][data-user-id] .superadmin-dashboard,
+[data-theme="light"][data-user-id] .superadmin-dashboard * {
+  --bg-primary: #000000 !important;
+  --bg-secondary: #111111 !important;
+  --bg-card: #1a1a1a !important;
+  --text-primary: #FFFFFF !important;
+  --text-secondary: #CCCCCC !important;
+  --text-muted: #888888 !important;
+  --border-primary: #333333 !important;
+  --border-secondary: #444444 !important;
+  --theme-primary: #CCFF00 !important;
+  --theme-secondary: #9933FF !important;
+}
+
+/* Pages publiques - Force le thème sombre */
+[data-theme="light"][data-user-id] .public-page,
+[data-theme="light"][data-user-id] .public-page * {
+  --bg-primary: #000000 !important;
+  --bg-secondary: #111111 !important;
+  --bg-card: #1a1a1a !important;
+  --text-primary: #FFFFFF !important;
+  --text-secondary: #CCCCCC !important;
+  --text-muted: #888888 !important;
+  --border-primary: #333333 !important;
+  --border-secondary: #444444 !important;
+  --theme-primary: #CCFF00 !important;
+  --theme-secondary: #9933FF !important;
 }
 
 /* Règles pour les titres en thème clair avec isolation par utilisateur */

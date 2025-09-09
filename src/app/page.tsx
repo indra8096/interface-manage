@@ -11,7 +11,7 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-black text-white font-karla min-h-screen">
+    <div className="public-page bg-black text-white font-karla min-h-screen">
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 glass-effect border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
