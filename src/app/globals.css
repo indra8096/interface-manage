@@ -274,6 +274,91 @@
   color: #9933FF !important;
 }
 
+/* Règles complètes pour tous les éléments du super admin en thème clair */
+[data-theme="light"] .font-medium[style*="var(--text-secondary)"],
+[data-theme="light"] .text-sm[style*="var(--text-secondary)"],
+[data-theme="light"] .text-xs[style*="var(--text-secondary)"],
+[data-theme="light"] .text-lg[style*="var(--text-secondary)"],
+[data-theme="light"] .text-xl[style*="var(--text-secondary)"],
+[data-theme="light"] .text-2xl[style*="var(--text-secondary)"],
+[data-theme="light"] .text-3xl[style*="var(--text-secondary)"],
+[data-theme="light"] .text-4xl[style*="var(--text-secondary)"],
+[data-theme="light"] .text-5xl[style*="var(--text-secondary)"],
+[data-theme="light"] .text-6xl[style*="var(--text-secondary)"] {
+  color: #000000 !important;
+}
+
+[data-theme="light"] .font-medium[style*="var(--text-primary)"],
+[data-theme="light"] .text-sm[style*="var(--text-primary)"],
+[data-theme="light"] .text-xs[style*="var(--text-primary)"],
+[data-theme="light"] .text-lg[style*="var(--text-primary)"],
+[data-theme="light"] .text-xl[style*="var(--text-primary)"],
+[data-theme="light"] .text-2xl[style*="var(--text-primary)"],
+[data-theme="light"] .text-3xl[style*="var(--text-primary)"],
+[data-theme="light"] .text-4xl[style*="var(--text-primary)"],
+[data-theme="light"] .text-5xl[style*="var(--text-primary)"],
+[data-theme="light"] .text-6xl[style*="var(--text-primary)"] {
+  color: #000000 !important;
+}
+
+/* Règles pour les inputs et labels en thème clair */
+[data-theme="light"] input[style*="var(--text-primary)"],
+[data-theme="light"] textarea[style*="var(--text-primary)"],
+[data-theme="light"] select[style*="var(--text-primary)"],
+[data-theme="light"] label[style*="var(--text-primary)"] {
+  color: #000000 !important;
+}
+
+[data-theme="light"] input[style*="var(--bg-card)"],
+[data-theme="light"] textarea[style*="var(--bg-card)"],
+[data-theme="light"] select[style*="var(--bg-card)"] {
+  background-color: #F8F9FA !important;
+}
+
+[data-theme="light"] input[style*="var(--border-primary)"],
+[data-theme="light"] textarea[style*="var(--border-primary)"],
+[data-theme="light"] select[style*="var(--border-primary)"] {
+  border-color: #9933FF !important;
+}
+
+/* Règles spécifiques pour les pages publiques (mentions légales, CGU, politique) */
+[data-theme="light"] .glass-effect {
+  background: rgba(248, 249, 250, 0.8) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid #9933FF !important;
+}
+
+/* Règles pour les liens dans les footers des pages publiques */
+[data-theme="light"] footer a[style*="var(--text-secondary)"]:hover {
+  color: #9933FF !important;
+}
+
+/* Règles pour les boutons RETOUR dans les pages publiques */
+[data-theme="light"] a[style*="var(--theme-primary)"][style*="var(--bg-primary)"] {
+  background: #9933FF !important;
+  color: #FFFFFF !important;
+}
+
+/* Règles pour les titres principaux des pages publiques */
+[data-theme="light"] h1[style*="var(--theme-primary)"] {
+  color: #9933FF !important;
+}
+
+/* Règles pour les sous-titres des pages publiques */
+[data-theme="light"] h2[style*="var(--theme-primary)"] {
+  color: #9933FF !important;
+}
+
+/* Règles pour les textes secondaires des pages publiques */
+[data-theme="light"] p[style*="var(--text-secondary)"] {
+  color: #000000 !important;
+}
+
+/* Règles pour les textes principaux des pages publiques */
+[data-theme="light"] p[style*="var(--text-primary)"] {
+  color: #000000 !important;
+}
+
 
 
 :root {

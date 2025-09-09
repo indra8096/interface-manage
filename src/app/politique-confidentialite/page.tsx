@@ -1,12 +1,32 @@
 'use client';
 
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
 export default function PolitiqueConfidentialite() {
+  const [theme, setTheme] = useState('dark');
+
+  useEffect(() => {
+    // Détecter le thème depuis localStorage ou les préférences système
+    const savedTheme = localStorage.getItem('theme');
+    const systemTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    const currentTheme = savedTheme || systemTheme;
+    setTheme(currentTheme);
+    
+    // Appliquer le thème au body
+    document.body.setAttribute('data-theme', currentTheme);
+  }, []);
+
   return (
-    <div className="bg-black text-white font-karla min-h-screen">
+    <div className="font-karla min-h-screen" style={{ 
+      backgroundColor: 'var(--bg-primary)', 
+      color: 'var(--text-primary)' 
+    }}>
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 glass-effect border-b border-gray-800">
+      <nav className="fixed top-0 w-full z-50 glass-effect" style={{ 
+        backgroundColor: 'var(--bg-card)', 
+        borderBottom: '1px solid var(--border-primary)' 
+      }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
@@ -16,7 +36,10 @@ export default function PolitiqueConfidentialite() {
             </div>
             
             <div className="flex space-x-4">
-              <Link href="/" className="px-6 py-2 text-black font-karla-bold rounded-lg transition-all duration-300" style={{ background: '#CCFF00' }}>
+              <Link href="/" className="px-6 py-2 font-karla-bold rounded-lg transition-all duration-300" style={{ 
+                background: 'var(--theme-primary)', 
+                color: 'var(--bg-primary)' 
+              }}>
                 RETOUR
               </Link>
             </div>
@@ -31,14 +54,17 @@ export default function PolitiqueConfidentialite() {
             <h1 className="text-4xl md:text-5xl font-karla-bold mb-6" style={{ color: 'var(--theme-primary)' }}>
               Politique de Confidentialité
             </h1>
-            <p className="text-xl text-gray-300">
+            <p className="text-xl" style={{ color: 'var(--text-secondary)' }}>
               Conformément au RGPD et à la législation belge en vigueur
             </p>
           </div>
 
-          <div className="glass-effect rounded-2xl p-8 border border-gray-700 space-y-8">
+          <div className="glass-effect rounded-2xl p-8 space-y-8" style={{ 
+            backgroundColor: 'var(--bg-card)', 
+            border: '1px solid var(--border-primary)' 
+          }}>
             <div>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
                 Chez Drelto ASBL, nous faisons tout pour protéger vos données personnelles. Nous respectons les dispositions du Règlement général sur la protection des données (RGPD).
               </p>
             </div>
@@ -47,7 +73,7 @@ export default function PolitiqueConfidentialite() {
               <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
                 Quel est l&apos;objectif de cette politique de confidentialité ?
               </h2>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
                 Cette politique explique comment nous collectons et utilisons vos données personnelles lorsque vous utilisez notre site web interface-managee-drelto.vercel.app et ses sous-domaines. Elle vous informe également sur la manière dont vos données personnelles sont traitées par Drelto ASBL.
               </p>
             </div>
@@ -83,7 +109,7 @@ export default function PolitiqueConfidentialite() {
               <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
                 Qui est le responsable de traitement ?
               </h2>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
                 Drelto ASBL est responsable de traitement de vos données personnelles.
               </p>
             </div>
@@ -92,7 +118,7 @@ export default function PolitiqueConfidentialite() {
               <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
                 Quelle est l&apos;adresse postale du responsable de traitement ?
               </h2>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
                 Drelto ASBL, Rue Cuesmes 199, 7012 MONS.
               </p>
             </div>
@@ -144,7 +170,7 @@ export default function PolitiqueConfidentialite() {
               <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
                 A qui sont transmises vos données personnelles ?
               </h2>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
                 Drelto ASBL peut partager vos données personnelles avec des tiers dans les situations suivantes :
               </p>
               
@@ -227,7 +253,7 @@ export default function PolitiqueConfidentialite() {
               <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
                 Comment exercer vos droits ?
               </h2>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
                 Pour exercer vos droits, envoyez-nous un courrier à : Drelto ASBL, Rue Cuesmes 199, 7012 MONS.
               </p>
               <p className="text-gray-300 mt-2">
@@ -242,7 +268,7 @@ export default function PolitiqueConfidentialite() {
               <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
                 Quel est notre délai de réponse ?
               </h2>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
                 Nous répondrons dans un délai d&apos;un mois. Si votre demande n&apos;est pas claire, nous pourrons vous demander plus d&apos;informations. Si vous avez des préoccupations sur la manière dont nous gérons vos données personnelles, vous pouvez contacter l&apos;Autorité de protection des données à :
               </p>
               <div className="mt-3 text-gray-300">
@@ -255,7 +281,7 @@ export default function PolitiqueConfidentialite() {
               <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
                 Comment protégeons-nous vos données personnelles ?
               </h2>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
                 Nous prenons la sécurité de vos données très au sérieux. Pour cela, nous avons mis en place des protections solides afin de prévenir tout accès non autorisé, modification, fuites ou destructions de vos données personnelles.
               </p>
               <p className="text-gray-300 mt-3">
@@ -267,7 +293,7 @@ export default function PolitiqueConfidentialite() {
               <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
                 La politique de confidentialité peut-elle évoluer ?
               </h2>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
                 Oui, nous pouvons modifier cette politique de confidentialité. Si des changements importants affectent vos droits, nous vous informerons et publierons la version mise à jour sur notre site web.
               </p>
             </div>
@@ -276,7 +302,7 @@ export default function PolitiqueConfidentialite() {
               <h2 className="text-2xl font-karla-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
                 Comment nous contacter ?
               </h2>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="leading-relaxed" style={{ color: 'var(--text-primary)' }}>
                 Si vous avez des questions sur cette politique de confidentialité, n&apos;hésitez pas à nous contacter :
               </p>
               <div className="mt-3 text-gray-300">
@@ -285,8 +311,8 @@ export default function PolitiqueConfidentialite() {
               </div>
             </div>
 
-            <div className="text-center pt-6 border-t border-gray-700">
-              <p className="text-sm text-gray-400">
+            <div className="text-center pt-6" style={{ borderTop: '1px solid var(--border-primary)' }}>
+              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                 <strong>Dernière mise à jour :</strong> 26 août 2025
               </p>
             </div>
@@ -295,14 +321,17 @@ export default function PolitiqueConfidentialite() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 sm:px-6 lg:px-8 bg-gray-900/50 border-t border-gray-800">
+      <footer className="py-8 px-4 sm:px-6 lg:px-8" style={{ 
+        backgroundColor: 'var(--bg-card)', 
+        borderTop: '1px solid var(--border-primary)' 
+      }}>
         <div className="max-w-7xl mx-auto text-center">
           <div className="flex justify-center space-x-6 mb-4">
-            <a href="/mentions-legales" className="text-gray-400 hover:text-[#CCFF00] transition-colors">Mentions Légales</a>
-            <a href="/politique-confidentialite" className="text-gray-400 hover:text-[#CCFF00] transition-colors">Politique de Confidentialité</a>
-            <a href="/cgu" className="text-gray-400 hover:text-[#CCFF00] transition-colors">CGU</a>
+            <a href="/mentions-legales" className="transition-colors" style={{ color: 'var(--text-secondary)' }}>Mentions Légales</a>
+            <a href="/politique-confidentialite" className="transition-colors" style={{ color: 'var(--text-secondary)' }}>Politique de Confidentialité</a>
+            <a href="/cgu" className="transition-colors" style={{ color: 'var(--text-secondary)' }}>CGU</a>
           </div>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
             © 2025 Drelto. Tous droits réservés.
           </p>
         </div>

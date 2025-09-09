@@ -237,22 +237,22 @@ export default function PanelTemplatesPage() {
                 </button>
               </div>
               
-              <h3 className="font-karla-bold text-white mb-2 group-hover:text-[#CCFF00] transition-colors pr-20">
+              <h3 className="font-karla-bold mb-2 transition-colors pr-20" style={{ color: 'var(--text-primary)' }}>
                 {template.name}
               </h3>
-              <p className="text-sm text-gray-400 mb-3 font-karla-regular">
+              <p className="text-sm mb-3 font-karla-regular" style={{ color: 'var(--text-secondary)' }}>
                 {template.description}
               </p>
               
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="text-center">
-                    <div className="text-lg font-karla-bold text-[#CCFF00]">{template.total}</div>
-                    <div className="text-xs text-gray-400">Total</div>
+                    <div className="text-lg font-karla-bold" style={{ color: 'var(--theme-primary)' }}>{template.total}</div>
+                    <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>Total</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg font-karla-bold text-[#CCFF00]">{template.completed}</div>
-                    <div className="text-xs text-gray-400">Terminé</div>
+                    <div className="text-lg font-karla-bold" style={{ color: 'var(--theme-primary)' }}>{template.completed}</div>
+                    <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>Terminé</div>
                   </div>
                 </div>
                 <span className="px-2 py-1 bg-blue-900 text-blue-300 text-xs rounded-full font-karla-medium">
@@ -288,18 +288,18 @@ export default function PanelTemplatesPage() {
                 </button>
               </div>
               
-              <h3 className="font-karla-bold text-white mb-2 group-hover:text-[#CCFF00] transition-colors pr-20">
+              <h3 className="font-karla-bold mb-2 transition-colors pr-20" style={{ color: 'var(--text-primary)' }}>
                 {template.name}
               </h3>
-              <p className="text-sm text-gray-400 mb-3 font-karla-regular">
+              <p className="text-sm mb-3 font-karla-regular" style={{ color: 'var(--text-secondary)' }}>
                 {template.description}
               </p>
               
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="text-center">
-                    <div className="text-lg font-karla-bold text-[#CCFF00]">{template.equipmentCount}</div>
-                    <div className="text-xs text-gray-400">Équipements</div>
+                    <div className="text-lg font-karla-bold" style={{ color: 'var(--theme-primary)' }}>{template.equipmentCount}</div>
+                    <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>Équipements</div>
                   </div>
                   <div className="text-center">
                     <div className={`text-sm font-karla-medium ${
@@ -345,16 +345,16 @@ export default function PanelTemplatesPage() {
                 </button>
               </div>
               
-              <h3 className="font-karla-bold text-white mb-2 group-hover:text-[#CCFF00] transition-colors pr-20">
+              <h3 className="font-karla-bold mb-2 transition-colors pr-20" style={{ color: 'var(--text-primary)' }}>
                 {template.name}
               </h3>
-              <p className="text-sm text-gray-400 mb-3 font-karla-regular">
+              <p className="text-sm mb-3 font-karla-regular" style={{ color: 'var(--text-secondary)' }}>
                 {template.description}
               </p>
               
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-400">Statut:</span>
+                  <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>Statut:</span>
                   <span className={`text-xs font-karla-medium ${
                     template.status === 'CONFORME' ? 'text-green-400' :
                     template.status === 'EN COURS' ? 'text-yellow-400' :
@@ -365,14 +365,14 @@ export default function PanelTemplatesPage() {
                 </div>
                 {template.certificationDate && (
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-400">Certification:</span>
-                    <span className="text-xs text-white">{template.certificationDate}</span>
+                    <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>Certification:</span>
+                    <span className="text-xs" style={{ color: 'var(--text-primary)' }}>{template.certificationDate}</span>
                   </div>
                 )}
                 {template.nextAudit && (
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-400">Prochain audit:</span>
-                    <span className="text-xs text-white">{template.nextAudit}</span>
+                    <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>Prochain audit:</span>
+                    <span className="text-xs" style={{ color: 'var(--text-primary)' }}>{template.nextAudit}</span>
                   </div>
                 )}
               </div>
@@ -411,10 +411,10 @@ export default function PanelTemplatesPage() {
                 </button>
               </div>
               
-              <h3 className="font-karla-bold text-white mb-2 group-hover:text-[#CCFF00] transition-colors pr-20">
+              <h3 className="font-karla-bold mb-2 transition-colors pr-20" style={{ color: 'var(--text-primary)' }}>
                 {template.name}
               </h3>
-              <p className="text-sm text-gray-400 mb-3 font-karla-regular">
+              <p className="text-sm mb-3 font-karla-regular" style={{ color: 'var(--text-secondary)' }}>
                 {template.description}
               </p>
               
@@ -428,12 +428,12 @@ export default function PanelTemplatesPage() {
                     }`}>
                       {template.priority}
                     </div>
-                    <div className="text-xs text-gray-400">Priorité</div>
+                    <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>Priorité</div>
                   </div>
                   {template.deadline && (
                     <div className="text-center">
-                      <div className="text-sm font-karla-medium text-white">{template.deadline}</div>
-                      <div className="text-xs text-gray-400">Échéance</div>
+                      <div className="text-sm font-karla-medium" style={{ color: 'var(--text-primary)' }}>{template.deadline}</div>
+                      <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>Échéance</div>
                     </div>
                   )}
                 </div>
@@ -457,8 +457,8 @@ export default function PanelTemplatesPage() {
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center animate-pulse">
             <div className="w-16 h-16 rounded-full bg-black"></div>
           </div>
-          <div className="text-[#CCFF00] text-xl font-bold mb-2">Chargement...</div>
-          <div className="text-gray-400 text-sm">Récupération des templates</div>
+          <div className="text-xl font-bold mb-2" style={{ color: 'var(--theme-primary)' }}>Chargement...</div>
+          <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>Récupération des templates</div>
         </div>
       </div>
     );
@@ -471,8 +471,8 @@ export default function PanelTemplatesPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <span className="text-xl font-bold text-[#CCFF00]">drelto</span>
-              <span className="text-sm text-gray-400">Gestionnaire de Templates Panel</span>
+              <span className="text-xl font-bold" style={{ color: 'var(--theme-primary)' }}>drelto</span>
+              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Gestionnaire de Templates Panel</span>
             </div>
             
             <div className="flex space-x-4">
@@ -509,10 +509,10 @@ export default function PanelTemplatesPage() {
           <div className="mb-16">
             <div className="flex items-center justify-between mb-12">
               <div>
-                <h1 className="text-5xl font-bold mb-4 text-white">
+                <h1 className="text-5xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
                   Gestion des Templates Panel de Suivi
                 </h1>
-                <p className="text-lg text-gray-400">
+                <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
                   Interface de contrôle des templates de cartes de suivi
                 </p>
               </div>
@@ -526,8 +526,8 @@ export default function PanelTemplatesPage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-sm mb-2 text-gray-400">TEMPLATES ACTIFS</div>
-                    <div className="text-6xl font-bold text-[#CCFF00]">{panelTemplates.filter(s => s.isActive).length}</div>
+                    <div className="font-medium text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>TEMPLATES ACTIFS</div>
+                    <div className="text-6xl font-bold" style={{ color: 'var(--theme-primary)' }}>{panelTemplates.filter(s => s.isActive).length}</div>
                   </div>
                   <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
                     background: 'linear-gradient(135deg, #9933FF, #7c3aed)'
@@ -543,8 +543,8 @@ export default function PanelTemplatesPage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-sm mb-2 text-gray-400">TOTAL TEMPLATES</div>
-                    <div className="text-6xl font-bold text-[#9933FF]">{panelTemplates.length}</div>
+                    <div className="font-medium text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>TOTAL TEMPLATES</div>
+                    <div className="text-6xl font-bold" style={{ color: 'var(--theme-secondary)' }}>{panelTemplates.length}</div>
                   </div>
                   <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
                     background: 'linear-gradient(135deg, #9933FF, #7c3aed)'
@@ -562,10 +562,10 @@ export default function PanelTemplatesPage() {
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-bold mb-2 text-[#CCFF00]">
+                  <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
                     {panelTemplates.filter(s => s.type === 'coverage').length}
                   </div>
-                  <div className="font-medium text-sm text-gray-400">COUVERTURE</div>
+                  <div className="font-medium text-sm" style={{ color: 'var(--text-secondary)' }}>COUVERTURE</div>
                 </div>
               </motion.div>
               
@@ -574,10 +574,10 @@ export default function PanelTemplatesPage() {
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-bold mb-2 text-[#CCFF00]">
+                  <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
                     {panelTemplates.filter(s => s.type === 'infrastructure').length}
                   </div>
-                  <div className="font-medium text-sm text-gray-400">INFRASTRUCTURE</div>
+                  <div className="font-medium text-sm" style={{ color: 'var(--text-secondary)' }}>INFRASTRUCTURE</div>
                 </div>
               </motion.div>
               
@@ -586,10 +586,10 @@ export default function PanelTemplatesPage() {
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-bold mb-2 text-[#CCFF00]">
+                  <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
                     {panelTemplates.filter(s => s.type === 'compliance').length}
                   </div>
-                  <div className="font-medium text-sm text-gray-400">CONFORMITÉ</div>
+                  <div className="font-medium text-sm" style={{ color: 'var(--text-secondary)' }}>CONFORMITÉ</div>
                 </div>
               </motion.div>
               
@@ -598,10 +598,10 @@ export default function PanelTemplatesPage() {
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-bold mb-2 text-[#9933FF]">
+                  <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
                     {panelTemplates.filter(s => s.type === 'recommendation').length}
                   </div>
-                  <div className="font-medium text-sm text-gray-400">RECOMMANDATION</div>
+                  <div className="font-medium text-sm" style={{ color: 'var(--text-secondary)' }}>RECOMMANDATION</div>
                 </div>
               </motion.div>
             </div>
@@ -615,7 +615,7 @@ export default function PanelTemplatesPage() {
               className="mb-8 p-8 rounded-2xl bg-black border border-gray-700"
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-white">
+                <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
                   {editingTemplate ? 'Modifier le template' : 'Nouveau template'}
                 </h2>
                 <button
@@ -636,7 +636,8 @@ export default function PanelTemplatesPage() {
                       deadline: ''
                     });
                   }}
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="transition-colors"
+                  style={{ color: 'var(--text-secondary)' }}
                 >
                   <FontAwesomeIcon icon={faTrash} className="w-6 h-6" />
                 </button>
@@ -645,7 +646,7 @@ export default function PanelTemplatesPage() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
-                    <label className="block text-sm font-semibold text-white mb-2">
+                    <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
                       Nom de la carte *
                     </label>
                     <input
@@ -653,13 +654,18 @@ export default function PanelTemplatesPage() {
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
+                      style={{ 
+                        color: 'var(--text-primary)',
+                        backgroundColor: 'var(--bg-card)',
+                        borderColor: 'var(--border-primary)'
+                      }}
                       placeholder="Nom de la carte"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-white mb-2">
+                    <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
                       Type de carte *
                     </label>
                     <select
@@ -695,7 +701,7 @@ export default function PanelTemplatesPage() {
                 {formData.type === 'coverage' && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-semibold text-white mb-2">
+                      <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
                         Total
                       </label>
                       <input
@@ -706,7 +712,7 @@ export default function PanelTemplatesPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-white mb-2">
+                      <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
                         Terminé
                       </label>
                       <input
@@ -722,7 +728,7 @@ export default function PanelTemplatesPage() {
                 {formData.type === 'infrastructure' && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-semibold text-white mb-2">
+                      <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
                         Nombre d'équipements
                       </label>
                       <input
@@ -733,7 +739,7 @@ export default function PanelTemplatesPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-white mb-2">
+                      <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
                         Statut
                       </label>
                       <select
@@ -754,7 +760,7 @@ export default function PanelTemplatesPage() {
                 {formData.type === 'compliance' && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-semibold text-white mb-2">
+                      <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
                         Statut
                       </label>
                       <select
@@ -769,26 +775,36 @@ export default function PanelTemplatesPage() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-white mb-2">
+                      <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
                         Date de certification
                       </label>
                       <input
                         type="text"
                         value={formData.certificationDate}
                         onChange={(e) => setFormData({ ...formData, certificationDate: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
+                      style={{ 
+                        color: 'var(--text-primary)',
+                        backgroundColor: 'var(--bg-card)',
+                        borderColor: 'var(--border-primary)'
+                      }}
                         placeholder="2023"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-white mb-2">
+                      <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
                         Prochain audit
                       </label>
                       <input
                         type="text"
                         value={formData.nextAudit}
                         onChange={(e) => setFormData({ ...formData, nextAudit: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
+                      style={{ 
+                        color: 'var(--text-primary)',
+                        backgroundColor: 'var(--bg-card)',
+                        borderColor: 'var(--border-primary)'
+                      }}
                         placeholder="Décembre 2024"
                       />
                     </div>
@@ -798,7 +814,7 @@ export default function PanelTemplatesPage() {
                 {formData.type === 'recommendation' && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-semibold text-white mb-2">
+                      <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
                         Priorité
                       </label>
                       <select
@@ -812,14 +828,19 @@ export default function PanelTemplatesPage() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-white mb-2">
+                      <label className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
                         Échéance
                       </label>
                       <input
                         type="text"
                         value={formData.deadline}
                         onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg transition-all duration-300"
+                      style={{ 
+                        color: 'var(--text-primary)',
+                        backgroundColor: 'var(--bg-card)',
+                        borderColor: 'var(--border-primary)'
+                      }}
                         placeholder="2 mois"
                       />
                     </div>
