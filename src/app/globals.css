@@ -16,88 +16,60 @@
   /* Le thème est maintenant isolé par utilisateur */
 }
 
-/* Variables CSS par défaut pour le thème sombre - TOUTES LES PAGES */
-:root {
-  --bg-primary-dark: #000000;
-  --bg-secondary-dark: #111111;
-  --bg-card-dark: #1a1a1a;
-  --text-primary-dark: #FFFFFF;
-  --text-secondary-dark: #CCCCCC;
-  --text-muted-dark: #888888;
-  --border-primary-dark: #333333;
-  --border-secondary-dark: #444444;
-  --theme-primary-dark: #CCFF00;
-  --theme-secondary-dark: #9933FF;
-}
-
-/* Variables CSS pour le thème clair - DASHBOARD PRINCIPAL UNIQUEMENT */
-:root {
-  --bg-primary-light: #FFFFFF;
-  --bg-secondary-light: #FFFFFF;
-  --bg-card-light: #F8F9FA;
-  --text-primary-light: #000000;
-  --text-secondary-light: #000000;
-  --text-muted-light: #000000;
-  --border-primary-light: #9933FF;
-  --border-secondary-light: #9933FF;
-  --theme-primary-light: #9933FF;
-  --theme-secondary-light: #9933FF;
-}
-
 /* Règles pour le thème clair avec isolation par utilisateur - DASHBOARD PRINCIPAL UNIQUEMENT */
 [data-theme="light"][data-user-id] .dashboard-main {
-  --bg-primary: var(--bg-primary-light);
-  --bg-secondary: var(--bg-secondary-light);
-  --bg-card: var(--bg-card-light);
-  --text-primary: var(--text-primary-light);
-  --text-secondary: var(--text-secondary-light);
-  --text-muted: var(--text-muted-light);
-  --border-primary: var(--border-primary-light);
-  --border-secondary: var(--border-secondary-light);
-  --theme-primary: var(--theme-primary-light);
-  --theme-secondary: var(--theme-secondary-light);
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #FFFFFF;
+  --bg-card: #F8F9FA;
+  --text-primary: #000000;
+  --text-secondary: #000000;
+  --text-muted: #000000;
+  --border-primary: #9933FF;
+  --border-secondary: #9933FF;
+  --theme-primary: #9933FF;
+  --theme-secondary: #9933FF;
 }
 
 /* Règles pour le thème sombre avec isolation par utilisateur */
 [data-theme="dark"][data-user-id] {
-  --bg-primary: var(--bg-primary-dark);
-  --bg-secondary: var(--bg-secondary-dark);
-  --bg-card: var(--bg-card-dark);
-  --text-primary: var(--text-primary-dark);
-  --text-secondary: var(--text-secondary-dark);
-  --text-muted: var(--text-muted-dark);
-  --border-primary: var(--border-primary-dark);
-  --border-secondary: var(--border-secondary-dark);
-  --theme-primary: var(--theme-primary-dark);
-  --theme-secondary: var(--theme-secondary-dark);
+  --bg-primary: #000000;
+  --bg-secondary: #111111;
+  --bg-card: #1a1a1a;
+  --text-primary: #FFFFFF;
+  --text-secondary: #CCCCCC;
+  --text-muted: #888888;
+  --border-primary: #333333;
+  --border-secondary: #444444;
+  --theme-primary: #CCFF00;
+  --theme-secondary: #9933FF;
 }
 
 /* Thème sombre (par défaut) - Règles de fallback pour les pages publiques */
 [data-theme="dark"]:not([data-user-id]) {
-  --bg-primary: var(--bg-primary-dark);
-  --bg-secondary: var(--bg-secondary-dark);
-  --bg-card: var(--bg-card-dark);
-  --text-primary: var(--text-primary-dark);
-  --text-secondary: var(--text-secondary-dark);
-  --text-muted: var(--text-muted-dark);
-  --border-primary: var(--border-primary-dark);
-  --border-secondary: var(--border-secondary-dark);
-  --theme-primary: var(--theme-primary-dark);
-  --theme-secondary: var(--theme-secondary-dark);
+  --bg-primary: #000000;
+  --bg-secondary: #111111;
+  --bg-card: #1a1a1a;
+  --text-primary: #FFFFFF;
+  --text-secondary: #CCCCCC;
+  --text-muted: #888888;
+  --border-primary: #333333;
+  --border-secondary: #444444;
+  --theme-primary: #CCFF00;
+  --theme-secondary: #9933FF;
 }
 
 /* Thème clair - Règles de fallback pour les pages publiques - DASHBOARD PRINCIPAL UNIQUEMENT */
 [data-theme="light"]:not([data-user-id]) .dashboard-main {
-  --bg-primary: var(--bg-primary-light);
-  --bg-secondary: var(--bg-secondary-light);
-  --bg-card: var(--bg-card-light);
-  --text-primary: var(--text-primary-light);
-  --text-secondary: var(--text-secondary-light);
-  --text-muted: var(--text-muted-light);
-  --border-primary: var(--border-primary-light);
-  --border-secondary: var(--border-secondary-light);
-  --theme-primary: var(--theme-primary-light);
-  --theme-secondary: var(--theme-secondary-light);
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #FFFFFF;
+  --bg-card: #F8F9FA;
+  --text-primary: #000000;
+  --text-secondary: #000000;
+  --text-muted: #000000;
+  --border-primary: #9933FF;
+  --border-secondary: #9933FF;
+  --theme-primary: #9933FF;
+  --theme-secondary: #9933FF;
 }
 
 /* Règles spécifiques pour le thème clair avec isolation par utilisateur - DASHBOARD PRINCIPAL UNIQUEMENT */
@@ -106,125 +78,36 @@
   color: #000000 !important;
 }
 
-/* Règles pour les textes du dashboard principal en thème clair */
-[data-theme="light"][data-user-id] .dashboard-main h1[style*="var(--theme-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main h2[style*="var(--theme-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main h3[style*="var(--theme-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main span[style*="var(--theme-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main div[style*="var(--theme-primary)"] {
-  color: #9933FF !important;
+/* Force le thème sombre sur toutes les autres pages même en mode clair */
+[data-theme="light"] .superadmin-dashboard,
+[data-theme="light"] .public-page,
+[data-theme="light"] .mentions-legales,
+[data-theme="light"] .login-page,
+[data-theme="light"] .register-page {
+  --bg-primary: #000000 !important;
+  --bg-secondary: #111111 !important;
+  --bg-card: #1a1a1a !important;
+  --text-primary: #FFFFFF !important;
+  --text-secondary: #CCCCCC !important;
+  --text-muted: #888888 !important;
+  --border-primary: #333333 !important;
+  --border-secondary: #444444 !important;
+  --theme-primary: #CCFF00 !important;
+  --theme-secondary: #9933FF !important;
 }
 
-[data-theme="light"][data-user-id] .dashboard-main h1[style*="var(--theme-secondary)"],
-[data-theme="light"][data-user-id] .dashboard-main h2[style*="var(--theme-secondary)"],
-[data-theme="light"][data-user-id] .dashboard-main h3[style*="var(--theme-secondary)"],
-[data-theme="light"][data-user-id] .dashboard-main span[style*="var(--theme-secondary)"],
-[data-theme="light"][data-user-id] .dashboard-main div[style*="var(--theme-secondary)"] {
-  color: #9933FF !important;
-}
-
-/* Règles pour tous les éléments du dashboard principal en thème clair */
-[data-theme="light"][data-user-id] .dashboard-main .font-medium[style*="var(--text-secondary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-sm[style*="var(--text-secondary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-xs[style*="var(--text-secondary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-lg[style*="var(--text-secondary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-xl[style*="var(--text-secondary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-2xl[style*="var(--text-secondary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-3xl[style*="var(--text-secondary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-4xl[style*="var(--text-secondary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-5xl[style*="var(--text-secondary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-6xl[style*="var(--text-secondary)"] {
-  color: #000000 !important;
-}
-
-[data-theme="light"][data-user-id] .dashboard-main .font-medium[style*="var(--text-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-sm[style*="var(--text-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-xs[style*="var(--text-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-lg[style*="var(--text-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-xl[style*="var(--text-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-2xl[style*="var(--text-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-3xl[style*="var(--text-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-4xl[style*="var(--text-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-5xl[style*="var(--text-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main .text-6xl[style*="var(--text-primary)"] {
-  color: #000000 !important;
-}
-
-/* Règles pour les inputs et labels du dashboard principal en thème clair */
-[data-theme="light"][data-user-id] .dashboard-main input[style*="var(--text-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main textarea[style*="var(--text-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main select[style*="var(--text-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main label[style*="var(--text-primary)"] {
-  color: #000000 !important;
-}
-
-[data-theme="light"][data-user-id] .dashboard-main input[style*="var(--bg-card)"],
-[data-theme="light"][data-user-id] .dashboard-main textarea[style*="var(--bg-card)"],
-[data-theme="light"][data-user-id] .dashboard-main select[style*="var(--bg-card)"] {
-  background-color: #F8F9FA !important;
-}
-
-[data-theme="light"][data-user-id] .dashboard-main input[style*="var(--border-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main textarea[style*="var(--border-primary)"],
-[data-theme="light"][data-user-id] .dashboard-main select[style*="var(--border-primary)"] {
-  border-color: #9933FF !important;
-}
-
-/* Règles pour maintenir le thème sombre sur les autres pages */
-/* Super Admin Dashboard - Utilise toujours les variables sombres */
-.superadmin-dashboard {
-  --bg-primary: var(--bg-primary-dark);
-  --bg-secondary: var(--bg-secondary-dark);
-  --bg-card: var(--bg-card-dark);
-  --text-primary: var(--text-primary-dark);
-  --text-secondary: var(--text-secondary-dark);
-  --text-muted: var(--text-muted-dark);
-  --border-primary: var(--border-primary-dark);
-  --border-secondary: var(--border-secondary-dark);
-  --theme-primary: var(--theme-primary-dark);
-  --theme-secondary: var(--theme-secondary-dark);
-}
-
-/* Pages publiques - Utilise toujours les variables sombres */
-.public-page {
-  --bg-primary: var(--bg-primary-dark);
-  --bg-secondary: var(--bg-secondary-dark);
-  --bg-card: var(--bg-card-dark);
-  --text-primary: var(--text-primary-dark);
-  --text-secondary: var(--text-secondary-dark);
-  --text-muted: var(--text-muted-dark);
-  --border-primary: var(--border-primary-dark);
-  --border-secondary: var(--border-secondary-dark);
-  --theme-primary: var(--theme-primary-dark);
-  --theme-secondary: var(--theme-secondary-dark);
-}
-
-/* Force le thème sombre sur les pages publiques même en mode clair */
-[data-theme="light"] .public-page {
-  --bg-primary: var(--bg-primary-dark) !important;
-  --bg-secondary: var(--bg-secondary-dark) !important;
-  --bg-card: var(--bg-card-dark) !important;
-  --text-primary: var(--text-primary-dark) !important;
-  --text-secondary: var(--text-secondary-dark) !important;
-  --text-muted: var(--text-muted-dark) !important;
-  --border-primary: var(--border-primary-dark) !important;
-  --border-secondary: var(--border-secondary-dark) !important;
-  --theme-primary: var(--theme-primary-dark) !important;
-  --theme-secondary: var(--theme-secondary-dark) !important;
-}
-
-/* Force le thème sombre sur le super admin même en mode clair */
-[data-theme="light"] .superadmin-dashboard {
-  --bg-primary: var(--bg-primary-dark) !important;
-  --bg-secondary: var(--bg-secondary-dark) !important;
-  --bg-card: var(--bg-card-dark) !important;
-  --text-primary: var(--text-primary-dark) !important;
-  --text-secondary: var(--text-secondary-dark) !important;
-  --text-muted: var(--text-muted-dark) !important;
-  --border-primary: var(--border-primary-dark) !important;
-  --border-secondary: var(--border-secondary-dark) !important;
-  --theme-primary: var(--theme-primary-dark) !important;
-  --theme-secondary: var(--theme-secondary-dark) !important;
+/* Force le thème sombre par défaut pour toutes les pages */
+:root {
+  --bg-primary: #000000;
+  --bg-secondary: #111111;
+  --bg-card: #1a1a1a;
+  --text-primary: #FFFFFF;
+  --text-secondary: #CCCCCC;
+  --text-muted: #888888;
+  --border-primary: #333333;
+  --border-secondary: #444444;
+  --theme-primary: #CCFF00;
+  --theme-secondary: #9933FF;
 }
 
 /* Règles pour les titres en thème clair avec isolation par utilisateur */

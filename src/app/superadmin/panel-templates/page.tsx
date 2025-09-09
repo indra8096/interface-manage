@@ -209,7 +209,7 @@ export default function PanelTemplatesPage() {
   };
 
   const renderCard = (template: PanelCardTemplate) => {
-    const baseCardClasses = "bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300 hover:shadow-lg hover:shadow-[var(--theme-primary)]/10";
+    const baseCardClasses = "bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover:shadow-lg hover:shadow-[#CCFF00]/10";
     
     switch (template.type) {
       case 'coverage':
@@ -222,7 +222,7 @@ export default function PanelTemplatesPage() {
                     e.stopPropagation();
                     handleEdit(template);
                   }}
-                  className="p-2 bg-[var(--theme-primary)] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                  className="p-2 bg-[#CCFF00] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
                 >
                   <FontAwesomeIcon icon={faEdit} className="w-4 h-4" />
                 </button>
@@ -237,7 +237,7 @@ export default function PanelTemplatesPage() {
                 </button>
               </div>
               
-              <h3 className="font-karla-bold text-white mb-2 group-hover:text-[var(--theme-primary)] transition-colors pr-20">
+              <h3 className="font-karla-bold text-white mb-2 group-hover:text-[#CCFF00] transition-colors pr-20">
                 {template.name}
               </h3>
               <p className="text-sm text-gray-400 mb-3 font-karla-regular">
@@ -247,11 +247,11 @@ export default function PanelTemplatesPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="text-center">
-                    <div className="text-lg font-karla-bold text-[var(--theme-primary)]">{template.total}</div>
+                    <div className="text-lg font-karla-bold text-[#CCFF00]">{template.total}</div>
                     <div className="text-xs text-gray-400">Total</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg font-karla-bold text-[var(--theme-primary)]">{template.completed}</div>
+                    <div className="text-lg font-karla-bold text-[#CCFF00]">{template.completed}</div>
                     <div className="text-xs text-gray-400">Terminé</div>
                   </div>
                 </div>
@@ -273,7 +273,7 @@ export default function PanelTemplatesPage() {
                     e.stopPropagation();
                     handleEdit(template);
                   }}
-                  className="p-2 bg-[var(--theme-primary)] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                  className="p-2 bg-[#CCFF00] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
                 >
                   <FontAwesomeIcon icon={faEdit} className="w-4 h-4" />
                 </button>
@@ -288,7 +288,7 @@ export default function PanelTemplatesPage() {
                 </button>
               </div>
               
-              <h3 className="font-karla-bold text-white mb-2 group-hover:text-[var(--theme-primary)] transition-colors pr-20">
+              <h3 className="font-karla-bold text-white mb-2 group-hover:text-[#CCFF00] transition-colors pr-20">
                 {template.name}
               </h3>
               <p className="text-sm text-gray-400 mb-3 font-karla-regular">
@@ -298,7 +298,7 @@ export default function PanelTemplatesPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="text-center">
-                    <div className="text-lg font-karla-bold text-[var(--theme-primary)]">{template.equipmentCount}</div>
+                    <div className="text-lg font-karla-bold text-[#CCFF00]">{template.equipmentCount}</div>
                     <div className="text-xs text-gray-400">Équipements</div>
                   </div>
                   <div className="text-center">
@@ -330,7 +330,7 @@ export default function PanelTemplatesPage() {
                     e.stopPropagation();
                     handleEdit(template);
                   }}
-                  className="p-2 bg-[var(--theme-primary)] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                  className="p-2 bg-[#CCFF00] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
                 >
                   <FontAwesomeIcon icon={faEdit} className="w-4 h-4" />
                 </button>
@@ -345,7 +345,7 @@ export default function PanelTemplatesPage() {
                 </button>
               </div>
               
-              <h3 className="font-karla-bold text-white mb-2 group-hover:text-[var(--theme-primary)] transition-colors pr-20">
+              <h3 className="font-karla-bold text-white mb-2 group-hover:text-[#CCFF00] transition-colors pr-20">
                 {template.name}
               </h3>
               <p className="text-sm text-gray-400 mb-3 font-karla-regular">
@@ -396,7 +396,7 @@ export default function PanelTemplatesPage() {
                     e.stopPropagation();
                     handleEdit(template);
                   }}
-                  className="p-2 bg-[var(--theme-primary)] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                  className="p-2 bg-[#CCFF00] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
                 >
                   <FontAwesomeIcon icon={faEdit} className="w-4 h-4" />
                 </button>
@@ -411,7 +411,7 @@ export default function PanelTemplatesPage() {
                 </button>
               </div>
               
-              <h3 className="font-karla-bold text-white mb-2 group-hover:text-[var(--theme-primary)] transition-colors pr-20">
+              <h3 className="font-karla-bold text-white mb-2 group-hover:text-[#CCFF00] transition-colors pr-20">
                 {template.name}
               </h3>
               <p className="text-sm text-gray-400 mb-3 font-karla-regular">
@@ -454,10 +454,10 @@ export default function PanelTemplatesPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black">
         <div className="text-center">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[var(--theme-primary)] to-[var(--theme-secondary)] flex items-center justify-center animate-pulse">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center animate-pulse">
             <div className="w-16 h-16 rounded-full bg-black"></div>
           </div>
-          <div className="text-[var(--theme-primary)] text-xl font-bold mb-2">Chargement...</div>
+          <div className="text-[#CCFF00] text-xl font-bold mb-2">Chargement...</div>
           <div className="text-gray-400 text-sm">Récupération des templates</div>
         </div>
       </div>
@@ -465,13 +465,13 @@ export default function PanelTemplatesPage() {
   }
 
   return (
-    <div className="superadmin-dashboard min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white">
       {/* Header */}
       <header className="bg-black/80 backdrop-blur-md border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <span className="text-xl font-bold text-[var(--theme-primary)]">drelto</span>
+              <span className="text-xl font-bold text-[#CCFF00]">drelto</span>
               <span className="text-sm text-gray-400">Gestionnaire de Templates Panel</span>
             </div>
             
@@ -484,7 +484,7 @@ export default function PanelTemplatesPage() {
               </button>
               <button 
                 onClick={() => setShowAddForm(!showAddForm)}
-                className="px-4 py-2 bg-[var(--theme-primary)] text-black font-semibold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                className="px-4 py-2 bg-[#CCFF00] text-black font-semibold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
               >
                 {showAddForm ? 'Annuler' : 'Nouveau Template'}
               </button>
@@ -521,16 +521,16 @@ export default function PanelTemplatesPage() {
             {/* Statistiques principales - Style futuriste */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
               <motion.div 
-                className="p-8 rounded-2xl hover:border-[var(--theme-primary)] transition-all duration-500 bg-black border border-gray-700"
+                className="p-8 rounded-2xl hover:border-[#CCFF00] transition-all duration-500 bg-black border border-gray-700"
                 whileHover={{ scale: 1.02 }}
               >
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="font-medium text-sm mb-2 text-gray-400">TEMPLATES ACTIFS</div>
-                    <div className="text-6xl font-bold text-[var(--theme-primary)]">{panelTemplates.filter(s => s.isActive).length}</div>
+                    <div className="text-6xl font-bold text-[#CCFF00]">{panelTemplates.filter(s => s.isActive).length}</div>
                   </div>
                   <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
-                    background: 'linear-gradient(135deg, var(--theme-secondary), #7c3aed)'
+                    background: 'linear-gradient(135deg, #9933FF, #7c3aed)'
                   }}>
                     <div className="w-16 h-16 rounded-full bg-black"></div>
                   </div>
@@ -538,16 +538,16 @@ export default function PanelTemplatesPage() {
               </motion.div>
 
               <motion.div 
-                className="p-8 rounded-2xl hover:border-[var(--theme-secondary)] transition-all duration-500 bg-black border border-gray-700"
+                className="p-8 rounded-2xl hover:border-[#9933FF] transition-all duration-500 bg-black border border-gray-700"
                 whileHover={{ scale: 1.02 }}
               >
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="font-medium text-sm mb-2 text-gray-400">TOTAL TEMPLATES</div>
-                    <div className="text-6xl font-bold text-[var(--theme-secondary)]">{panelTemplates.length}</div>
+                    <div className="text-6xl font-bold text-[#9933FF]">{panelTemplates.length}</div>
                   </div>
                   <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
-                    background: 'linear-gradient(135deg, var(--theme-secondary), #7c3aed)'
+                    background: 'linear-gradient(135deg, #9933FF, #7c3aed)'
                   }}>
                     <div className="w-16 h-16 rounded-full bg-black"></div>
                   </div>
@@ -558,11 +558,11 @@ export default function PanelTemplatesPage() {
             {/* Statistiques détaillées - Style futuriste */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
               <motion.div 
-                className="p-6 rounded-xl hover:border-[var(--theme-primary)] transition-all duration-300 bg-black border border-gray-700"
+                className="p-6 rounded-xl hover:border-[#CCFF00] transition-all duration-300 bg-black border border-gray-700"
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-bold mb-2 text-[var(--theme-primary)]">
+                  <div className="text-3xl font-bold mb-2 text-[#CCFF00]">
                     {panelTemplates.filter(s => s.type === 'coverage').length}
                   </div>
                   <div className="font-medium text-sm text-gray-400">COUVERTURE</div>
@@ -570,11 +570,11 @@ export default function PanelTemplatesPage() {
               </motion.div>
               
               <motion.div 
-                className="p-6 rounded-xl hover:border-[var(--theme-primary)] transition-all duration-300 bg-black border border-gray-700"
+                className="p-6 rounded-xl hover:border-[#CCFF00] transition-all duration-300 bg-black border border-gray-700"
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-bold mb-2 text-[var(--theme-primary)]">
+                  <div className="text-3xl font-bold mb-2 text-[#CCFF00]">
                     {panelTemplates.filter(s => s.type === 'infrastructure').length}
                   </div>
                   <div className="font-medium text-sm text-gray-400">INFRASTRUCTURE</div>
@@ -582,11 +582,11 @@ export default function PanelTemplatesPage() {
               </motion.div>
               
               <motion.div 
-                className="p-6 rounded-xl hover:border-[var(--theme-primary)] transition-all duration-300 bg-black border border-gray-700"
+                className="p-6 rounded-xl hover:border-[#CCFF00] transition-all duration-300 bg-black border border-gray-700"
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-bold mb-2 text-[var(--theme-primary)]">
+                  <div className="text-3xl font-bold mb-2 text-[#CCFF00]">
                     {panelTemplates.filter(s => s.type === 'compliance').length}
                   </div>
                   <div className="font-medium text-sm text-gray-400">CONFORMITÉ</div>
@@ -594,11 +594,11 @@ export default function PanelTemplatesPage() {
               </motion.div>
               
               <motion.div 
-                className="p-6 rounded-xl hover:border-[var(--theme-secondary)] transition-all duration-300 bg-black border border-gray-700"
+                className="p-6 rounded-xl hover:border-[#9933FF] transition-all duration-300 bg-black border border-gray-700"
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-bold mb-2 text-[var(--theme-secondary)]">
+                  <div className="text-3xl font-bold mb-2 text-[#9933FF]">
                     {panelTemplates.filter(s => s.type === 'recommendation').length}
                   </div>
                   <div className="font-medium text-sm text-gray-400">RECOMMANDATION</div>
@@ -653,7 +653,7 @@ export default function PanelTemplatesPage() {
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                       placeholder="Nom de la carte"
                     />
                   </div>
@@ -666,7 +666,7 @@ export default function PanelTemplatesPage() {
                       required
                       value={formData.type}
                       onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
-                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                      className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                     >
                       <option value="coverage">Couverture</option>
                       <option value="infrastructure">Infrastructure</option>
@@ -685,7 +685,7 @@ export default function PanelTemplatesPage() {
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                    className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                     rows={3}
                     placeholder="Description de la carte"
                   />
@@ -702,7 +702,7 @@ export default function PanelTemplatesPage() {
                         type="number"
                         value={formData.total}
                         onChange={(e) => setFormData({ ...formData, total: parseInt(e.target.value) })}
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                       />
                     </div>
                     <div>
@@ -713,7 +713,7 @@ export default function PanelTemplatesPage() {
                         type="number"
                         value={formData.completed}
                         onChange={(e) => setFormData({ ...formData, completed: parseInt(e.target.value) })}
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                       />
                     </div>
                   </div>
@@ -729,7 +729,7 @@ export default function PanelTemplatesPage() {
                         type="number"
                         value={formData.equipmentCount}
                         onChange={(e) => setFormData({ ...formData, equipmentCount: parseInt(e.target.value) })}
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                       />
                     </div>
                     <div>
@@ -739,7 +739,7 @@ export default function PanelTemplatesPage() {
                       <select
                         value={formData.status}
                         onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                       >
                         <option value="">Sélectionner un statut</option>
                         <option value="Sécurisé">Sécurisé</option>
@@ -760,7 +760,7 @@ export default function PanelTemplatesPage() {
                       <select
                         value={formData.status}
                         onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                       >
                         <option value="">Sélectionner un statut</option>
                         <option value="CONFORME">CONFORME</option>
@@ -776,7 +776,7 @@ export default function PanelTemplatesPage() {
                         type="text"
                         value={formData.certificationDate}
                         onChange={(e) => setFormData({ ...formData, certificationDate: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                         placeholder="2023"
                       />
                     </div>
@@ -788,7 +788,7 @@ export default function PanelTemplatesPage() {
                         type="text"
                         value={formData.nextAudit}
                         onChange={(e) => setFormData({ ...formData, nextAudit: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                         placeholder="Décembre 2024"
                       />
                     </div>
@@ -804,7 +804,7 @@ export default function PanelTemplatesPage() {
                       <select
                         value={formData.priority}
                         onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                       >
                         <option value="Faible">Faible</option>
                         <option value="Moyenne">Moyenne</option>
@@ -819,7 +819,7 @@ export default function PanelTemplatesPage() {
                         type="text"
                         value={formData.deadline}
                         onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                        className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                         placeholder="2 mois"
                       />
                     </div>
@@ -829,7 +829,7 @@ export default function PanelTemplatesPage() {
                 <div className="flex space-x-4 pt-4">
                   <button
                     type="submit"
-                    className="px-6 py-3 bg-[var(--theme-primary)] text-black font-bold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                    className="px-6 py-3 bg-[#CCFF00] text-black font-bold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
                   >
                     {editingTemplate ? 'Modifier' : 'Créer'}
                   </button>
@@ -880,7 +880,7 @@ export default function PanelTemplatesPage() {
                       : 'text-gray-400 hover:text-white hover:bg-gray-800'
                   }`}
                   style={{
-                    background: activeTab === tab.id ? 'var(--theme-secondary)' : 'transparent'
+                    background: activeTab === tab.id ? '#9933FF' : 'transparent'
                   }}
                 >
                   {tab.label}

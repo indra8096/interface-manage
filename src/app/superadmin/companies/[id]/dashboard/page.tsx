@@ -312,7 +312,7 @@ export default function CompanyDashboardPage() {
     return (
       <div className="min-h-screen bg-black text-white font-karla flex items-center justify-center">
         <div className="text-center">
-          <div className="text-2xl font-bold mb-4" style={{ color: 'var(--theme-primary)' }}>
+          <div className="text-2xl font-bold mb-4" style={{ color: '#CCFF00' }}>
             Chargement...
           </div>
         </div>
@@ -328,7 +328,7 @@ export default function CompanyDashboardPage() {
             Entreprise non trouvée
           </div>
           <Link href="/superadmin">
-            <button className="px-6 py-3 bg-[var(--theme-primary)] text-black font-bold rounded-lg hover:bg-[#B3E600] transition-all duration-300">
+            <button className="px-6 py-3 bg-[#CCFF00] text-black font-bold rounded-lg hover:bg-[#B3E600] transition-all duration-300">
               Retour au dashboard
             </button>
           </Link>
@@ -350,7 +350,7 @@ export default function CompanyDashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
                          <div className="flex items-center space-x-2">
-               <span className="text-xl font-bold" style={{ color: 'var(--theme-primary)' }}>
+               <span className="text-xl font-bold" style={{ color: '#CCFF00' }}>
                  drelto
                </span>
                <span className="text-sm text-gray-400">Super Admin</span>
@@ -365,7 +365,7 @@ export default function CompanyDashboardPage() {
                </button>
                <button 
                  onClick={() => setShowCreateUserForm(true)}
-                 className="px-4 py-2 bg-[var(--theme-primary)] text-black font-semibold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                 className="px-4 py-2 bg-[#CCFF00] text-black font-semibold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
                >
                  Nouvel Utilisateur
                </button>
@@ -388,7 +388,7 @@ export default function CompanyDashboardPage() {
       <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6" style={{ color: 'var(--theme-primary)' }}>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6" style={{ color: '#CCFF00' }}>
               {company.name}
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
@@ -398,27 +398,27 @@ export default function CompanyDashboardPage() {
 
           {/* Stats Overview */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[var(--theme-primary)] transition-all duration-300">
+            <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#CCFF00] transition-all duration-300">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
+                <div className="text-3xl font-bold mb-2" style={{ color: '#CCFF00' }}>
                   {company._count.users}
                 </div>
                 <div className="text-gray-400 font-medium">Utilisateurs Total</div>
               </div>
             </div>
             
-            <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[var(--theme-secondary)] transition-all duration-300">
+            <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#9933FF] transition-all duration-300">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-secondary)' }}>
+                <div className="text-3xl font-bold mb-2" style={{ color: '#9933FF' }}>
                   {admins.length}
                 </div>
                 <div className="text-gray-400 font-medium">Administrateurs</div>
               </div>
             </div>
             
-            <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[var(--theme-primary)] transition-all duration-300">
+            <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#CCFF00] transition-all duration-300">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2" style={{ color: 'var(--theme-primary)' }}>
+                <div className="text-3xl font-bold mb-2" style={{ color: '#CCFF00' }}>
                   {company._count.tasks}
                 </div>
                 <div className="text-gray-400 font-medium">Tâches Total</div>
@@ -435,7 +435,7 @@ export default function CompanyDashboardPage() {
             {/* Administrateurs */}
             <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold" style={{ color: 'var(--theme-primary)' }}>
+                <h2 className="text-2xl font-bold" style={{ color: '#CCFF00' }}>
                   Administrateurs ({admins.length})
                 </h2>
                 <button
@@ -466,12 +466,12 @@ export default function CompanyDashboardPage() {
                            </p>
                          </div>
                          <div className="flex items-center space-x-2">
-                           <span className="px-3 py-1 bg-[var(--theme-primary)]/20 text-[var(--theme-primary)] rounded-full text-sm font-medium">
+                           <span className="px-3 py-1 bg-[#CCFF00]/20 text-[#CCFF00] rounded-full text-sm font-medium">
                              COMPANY_ADMIN
                            </span>
                                                        <button
                               onClick={() => openEditForm(admin)}
-                              className="p-2 bg-[var(--theme-secondary)] text-white rounded-lg hover:bg-[#7B2FCC] transition-all duration-300"
+                              className="p-2 bg-[#9933FF] text-white rounded-lg hover:bg-[#7B2FCC] transition-all duration-300"
                               title="Modifier"
                             >
                               <FontAwesomeIcon icon={faEdit} className="w-4 h-4" />
@@ -501,7 +501,7 @@ export default function CompanyDashboardPage() {
 
             {/* Employés */}
             <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800">
-              <h2 className="text-2xl font-bold mb-6" style={{ color: 'var(--theme-secondary)' }}>
+              <h2 className="text-2xl font-bold mb-6" style={{ color: '#9933FF' }}>
                 Employés ({employees.length})
               </h2>
               
@@ -519,12 +519,12 @@ export default function CompanyDashboardPage() {
                            </p>
                          </div>
                          <div className="flex items-center space-x-2">
-                           <span className="px-3 py-1 bg-[var(--theme-secondary)]/20 text-[var(--theme-secondary)] rounded-full text-sm font-medium">
+                           <span className="px-3 py-1 bg-[#9933FF]/20 text-[#9933FF] rounded-full text-sm font-medium">
                              COMPANY_USER
                            </span>
                                                        <button
                               onClick={() => openEditForm(employee)}
-                              className="p-2 bg-[var(--theme-secondary)] text-white rounded-lg hover:bg-[#7B2FCC] transition-all duration-300"
+                              className="p-2 bg-[#9933FF] text-white rounded-lg hover:bg-[#7B2FCC] transition-all duration-300"
                               title="Modifier"
                             >
                               <FontAwesomeIcon icon={faEdit} className="w-4 h-4" />
@@ -576,7 +576,7 @@ export default function CompanyDashboardPage() {
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-black/90 backdrop-blur-md rounded-2xl p-8 border border-gray-800 max-w-md w-full">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold" style={{ color: 'var(--theme-primary)' }}>
+              <h2 className="text-2xl font-bold" style={{ color: '#CCFF00' }}>
                 Créer un nouvel utilisateur
               </h2>
               <button
@@ -597,7 +597,7 @@ export default function CompanyDashboardPage() {
                   required
                   value={createUserData.email}
                   onChange={(e) => setCreateUserData({ ...createUserData, email: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                   placeholder="email@exemple.com"
                 />
               </div>
@@ -611,7 +611,7 @@ export default function CompanyDashboardPage() {
                   required
                   value={createUserData.password}
                   onChange={(e) => setCreateUserData({ ...createUserData, password: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                   placeholder="Mot de passe sécurisé"
                 />
               </div>
@@ -623,7 +623,7 @@ export default function CompanyDashboardPage() {
                 <select
                   value={createUserData.role}
                   onChange={(e) => setCreateUserData({ ...createUserData, role: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                 >
                   <option value="COMPANY_USER">Employé</option>
                   <option value="COMPANY_ADMIN">Administrateur</option>
@@ -637,7 +637,7 @@ export default function CompanyDashboardPage() {
                 <select
                   value={createUserData.itRole}
                   onChange={(e) => setCreateUserData({ ...createUserData, itRole: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                 >
                   <option value="IT_INTERN">Stagiaire IT</option>
                   <option value="IT_SUPPORT">Technicien support IT</option>
@@ -657,7 +657,7 @@ export default function CompanyDashboardPage() {
                   type="text"
                   value={createUserData.name}
                   onChange={(e) => setCreateUserData({ ...createUserData, name: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                   placeholder="Nom et prénom"
                 />
               </div>
@@ -666,7 +666,7 @@ export default function CompanyDashboardPage() {
                 <button
                   type="submit"
                   disabled={creatingUser}
-                  className="flex-1 px-6 py-3 bg-[var(--theme-primary)] text-black font-bold rounded-lg hover:bg-[#B3E600] transition-all duration-300 disabled:opacity-50"
+                  className="flex-1 px-6 py-3 bg-[#CCFF00] text-black font-bold rounded-lg hover:bg-[#B3E600] transition-all duration-300 disabled:opacity-50"
                 >
                   {creatingUser ? 'Création...' : 'Créer l\'utilisateur'}
                 </button>
@@ -688,7 +688,7 @@ export default function CompanyDashboardPage() {
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-black/90 backdrop-blur-md rounded-2xl p-8 border border-gray-800 max-w-md w-full">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold" style={{ color: 'var(--theme-secondary)' }}>
+              <h2 className="text-2xl font-bold" style={{ color: '#9933FF' }}>
                 Modifier l&apos;utilisateur
               </h2>
               <button
@@ -709,7 +709,7 @@ export default function CompanyDashboardPage() {
                   required
                   value={editUserData.email}
                   onChange={(e) => setEditUserData({ ...editUserData, email: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                   placeholder="email@exemple.com"
                 />
               </div>
@@ -721,7 +721,7 @@ export default function CompanyDashboardPage() {
                 <select
                   value={editUserData.role}
                   onChange={(e) => setEditUserData({ ...editUserData, role: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                 >
                   <option value="COMPANY_USER">Employé</option>
                   <option value="COMPANY_ADMIN">Administrateur</option>
@@ -735,7 +735,7 @@ export default function CompanyDashboardPage() {
                 <select
                   value={editUserData.itRole}
                   onChange={(e) => setEditUserData({ ...editUserData, itRole: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                 >
                   <option value="IT_INTERN">Stagiaire IT</option>
                   <option value="IT_SUPPORT">Technicien support IT</option>
@@ -755,7 +755,7 @@ export default function CompanyDashboardPage() {
                   type="text"
                   value={editUserData.name}
                   onChange={(e) => setEditUserData({ ...editUserData, name: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all durée-300"
+                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all durée-300"
                   placeholder="Nom et prénom"
                 />
               </div>
@@ -764,7 +764,7 @@ export default function CompanyDashboardPage() {
                 <button
                   type="submit"
                   disabled={updatingUser}
-                  className="flex-1 px-6 py-3 bg-[var(--theme-secondary)] text-white font-bold rounded-lg hover:bg-[#7B2FCC] transition-all duration-300 disabled:opacity-50"
+                  className="flex-1 px-6 py-3 bg-[#9933FF] text-white font-bold rounded-lg hover:bg-[#7B2FCC] transition-all duration-300 disabled:opacity-50"
                 >
                   {updatingUser ? 'Modification...' : 'Modifier l\'utilisateur'}
                 </button>
@@ -832,7 +832,7 @@ export default function CompanyDashboardPage() {
       <footer className="py-8 px-4 sm:px-6 lg:px-8 border-t border-gray-800">
         <div className="max-w-7xl mx-auto text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <span className="text-lg font-bold" style={{ color: 'var(--theme-primary)' }}>
+            <span className="text-lg font-bold" style={{ color: '#CCFF00' }}>
               drelto
             </span>
           </div>

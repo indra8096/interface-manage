@@ -183,10 +183,10 @@ export default function ServiceTemplatesPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black">
         <div className="text-center">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[var(--theme-primary)] to-[var(--theme-secondary)] flex items-center justify-center animate-pulse">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center animate-pulse">
             <div className="w-16 h-16 rounded-full bg-black"></div>
           </div>
-          <div className="text-[var(--theme-primary)] text-xl font-bold mb-2">Chargement...</div>
+          <div className="text-[#CCFF00] text-xl font-bold mb-2">Chargement...</div>
           <div className="text-gray-400 text-sm">Récupération des templates</div>
         </div>
       </div>
@@ -194,13 +194,13 @@ export default function ServiceTemplatesPage() {
   }
 
   return (
-    <div className="superadmin-dashboard min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white">
       {/* Header */}
       <header className="bg-black/80 backdrop-blur-md border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <span className="text-xl font-bold text-[var(--theme-primary)]">drelto</span>
+              <span className="text-xl font-bold text-[#CCFF00]">drelto</span>
               <span className="text-sm text-gray-400">Gestionnaire de Templates</span>
             </div>
             
@@ -213,7 +213,7 @@ export default function ServiceTemplatesPage() {
               </button>
               <button 
                 onClick={() => setShowAddForm(null)} // Close all forms
-                className="px-4 py-2 bg-[var(--theme-primary)] text-black font-semibold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                className="px-4 py-2 bg-[#CCFF00] text-black font-semibold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
               >
                 {showAddForm ? 'Annuler' : 'Nouveau Template'}
               </button>
@@ -250,16 +250,16 @@ export default function ServiceTemplatesPage() {
             {/* Statistiques principales - Style futuriste */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
               <motion.div 
-                className="p-8 rounded-2xl hover:border-[var(--theme-primary)] transition-all duration-500 bg-black border border-gray-700"
+                className="p-8 rounded-2xl hover:border-[#CCFF00] transition-all duration-500 bg-black border border-gray-700"
                 whileHover={{ scale: 1.02 }}
               >
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="font-medium text-sm mb-2 text-gray-400">TEMPLATES ACTIFS</div>
-                    <div className="text-6xl font-bold text-[var(--theme-primary)]">{serviceTemplates.filter(s => s.isActive).length}</div>
+                    <div className="text-6xl font-bold text-[#CCFF00]">{serviceTemplates.filter(s => s.isActive).length}</div>
                   </div>
                   <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
-                    background: 'linear-gradient(135deg, var(--theme-secondary), #7c3aed)'
+                    background: 'linear-gradient(135deg, #9933FF, #7c3aed)'
                   }}>
                     <div className="w-16 h-16 rounded-full bg-black"></div>
                   </div>
@@ -267,16 +267,16 @@ export default function ServiceTemplatesPage() {
               </motion.div>
 
               <motion.div 
-                className="p-8 rounded-2xl hover:border-[var(--theme-secondary)] transition-all duration-500 bg-black border border-gray-700"
+                className="p-8 rounded-2xl hover:border-[#9933FF] transition-all duration-500 bg-black border border-gray-700"
                 whileHover={{ scale: 1.02 }}
               >
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="font-medium text-sm mb-2 text-gray-400">TOTAL TEMPLATES</div>
-                    <div className="text-6xl font-bold text-[var(--theme-secondary)]">{serviceTemplates.length}</div>
+                    <div className="text-6xl font-bold text-[#9933FF]">{serviceTemplates.length}</div>
                   </div>
                   <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
-                    background: 'linear-gradient(135deg, var(--theme-secondary), #7c3aed)'
+                    background: 'linear-gradient(135deg, #9933FF, #7c3aed)'
                   }}>
                     <div className="w-16 h-16 rounded-full bg-black"></div>
                   </div>
@@ -287,11 +287,11 @@ export default function ServiceTemplatesPage() {
             {/* Statistiques détaillées - Style futuriste */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
               <motion.div 
-                className="p-6 rounded-xl hover:border-[var(--theme-primary)] transition-all duration-300 bg-black border border-gray-700"
+                className="p-6 rounded-xl hover:border-[#CCFF00] transition-all duration-300 bg-black border border-gray-700"
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-bold mb-2 text-[var(--theme-primary)]">
+                  <div className="text-3xl font-bold mb-2 text-[#CCFF00]">
                     {serviceTemplates.filter(s => s.category === 'defensive').length}
                   </div>
                   <div className="font-medium text-sm text-gray-400">DÉFENSIF</div>
@@ -299,11 +299,11 @@ export default function ServiceTemplatesPage() {
               </motion.div>
               
               <motion.div 
-                className="p-6 rounded-xl hover:border-[var(--theme-primary)] transition-all duration-300 bg-black border border-gray-700"
+                className="p-6 rounded-xl hover:border-[#CCFF00] transition-all duration-300 bg-black border border-gray-700"
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-bold mb-2 text-[var(--theme-primary)]">
+                  <div className="text-3xl font-bold mb-2 text-[#CCFF00]">
                     {serviceTemplates.filter(s => s.category === 'general').length}
                   </div>
                   <div className="font-medium text-sm text-gray-400">GÉNÉRAL</div>
@@ -311,11 +311,11 @@ export default function ServiceTemplatesPage() {
               </motion.div>
               
               <motion.div 
-                className="p-6 rounded-xl hover:border-[var(--theme-secondary)] transition-all duration-300 bg-black border border-gray-700"
+                className="p-6 rounded-xl hover:border-[#9933FF] transition-all duration-300 bg-black border border-gray-700"
                 whileHover={{ y: -5 }}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-bold mb-2 text-[var(--theme-secondary)]">
+                  <div className="text-3xl font-bold mb-2 text-[#9933FF]">
                     {serviceTemplates.filter(s => s.category === 'offensive').length}
                   </div>
                   <div className="font-medium text-sm text-gray-400">OFFENSIF</div>
@@ -371,7 +371,7 @@ export default function ServiceTemplatesPage() {
                            required
                            value={formData.name}
                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                            placeholder="Nom du service"
                          />
                        </div>
@@ -384,7 +384,7 @@ export default function ServiceTemplatesPage() {
                            required
                            value={formData.category}
                            onChange={(e) => setFormData({ ...formData, category: e.target.value as 'defensive' | 'general' | 'offensive' })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          >
                            <option value="defensive">Défensif</option>
                            <option value="general">Général</option>
@@ -400,7 +400,7 @@ export default function ServiceTemplatesPage() {
                        <textarea
                          value={formData.description}
                          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                         className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                         className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          rows={3}
                          placeholder="Description du service"
                        />
@@ -417,7 +417,7 @@ export default function ServiceTemplatesPage() {
                            max="10"
                            value={formData.defaultScore}
                            onChange={(e) => setFormData({ ...formData, defaultScore: parseInt(e.target.value) })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          />
                        </div>
 
@@ -428,7 +428,7 @@ export default function ServiceTemplatesPage() {
                          <select
                            value={formData.defaultImportance}
                            onChange={(e) => setFormData({ ...formData, defaultImportance: e.target.value })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          >
                            <option value="Faible">Faible</option>
                            <option value="Moyenne">Moyenne</option>
@@ -440,7 +440,7 @@ export default function ServiceTemplatesPage() {
                      <div className="flex space-x-4 pt-4">
                        <button
                          type="submit"
-                         className="px-6 py-3 bg-[var(--theme-primary)] text-black font-bold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                         className="px-6 py-3 bg-[#CCFF00] text-black font-bold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
                        >
                          {editingTemplate ? 'Modifier' : 'Créer'}
                        </button>
@@ -505,7 +505,7 @@ export default function ServiceTemplatesPage() {
                       transition={{ duration: 0.3 }}
                       className="group cursor-pointer select-none"
                     >
-                      <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300 hover:shadow-lg hover:shadow-[var(--theme-primary)]/10">
+                      <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover:shadow-lg hover:shadow-[#CCFF00]/10">
                         <div className="relative">
                           {/* Boutons d'action */}
                           <div className="absolute top-0 right-0 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -514,7 +514,7 @@ export default function ServiceTemplatesPage() {
                                 e.stopPropagation();
                                 handleEdit(template);
                               }}
-                              className="p-2 bg-[var(--theme-primary)] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                              className="p-2 bg-[#CCFF00] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
                             >
                               <FontAwesomeIcon icon={faEdit} className="w-4 h-4" />
                             </button>
@@ -529,7 +529,7 @@ export default function ServiceTemplatesPage() {
                             </button>
                           </div>
 
-                          <h3 className="font-karla-bold text-white mb-1 group-hover:text-[var(--theme-primary)] transition-colors pr-20">
+                          <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors pr-20">
                             {template.name}
                           </h3>
                           <p className="text-sm text-gray-400 mb-3 font-karla-regular">
@@ -550,7 +550,7 @@ export default function ServiceTemplatesPage() {
                         {/* Indicateur de statut */}
                         <div className="mt-3 pt-3 border-t border-gray-700">
                           <div className="flex items-center justify-between text-xs">
-                            <span className="text-[var(--theme-primary)] font-karla-medium">
+                            <span className="text-[#CCFF00] font-karla-medium">
                               {template.isActive ? 'ACTIF' : 'INACTIF'}
                             </span>
                             <span className="text-gray-500 font-karla-medium">
@@ -612,7 +612,7 @@ export default function ServiceTemplatesPage() {
                            required
                            value={formData.name}
                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                            placeholder="Nom du service"
                          />
                        </div>
@@ -625,7 +625,7 @@ export default function ServiceTemplatesPage() {
                            required
                            value={formData.category}
                            onChange={(e) => setFormData({ ...formData, category: e.target.value as 'defensive' | 'general' | 'offensive' })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          >
                            <option value="defensive">Défensif</option>
                            <option value="general">Général</option>
@@ -641,7 +641,7 @@ export default function ServiceTemplatesPage() {
                        <textarea
                          value={formData.description}
                          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                         className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                         className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          rows={3}
                          placeholder="Description du service"
                        />
@@ -658,7 +658,7 @@ export default function ServiceTemplatesPage() {
                            max="10"
                            value={formData.defaultScore}
                            onChange={(e) => setFormData({ ...formData, defaultScore: parseInt(e.target.value) })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          />
                        </div>
 
@@ -669,7 +669,7 @@ export default function ServiceTemplatesPage() {
                          <select
                            value={formData.defaultImportance}
                            onChange={(e) => setFormData({ ...formData, defaultImportance: e.target.value })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          >
                            <option value="Faible">Faible</option>
                            <option value="Moyenne">Moyenne</option>
@@ -681,7 +681,7 @@ export default function ServiceTemplatesPage() {
                      <div className="flex space-x-4 pt-4">
                        <button
                          type="submit"
-                         className="px-6 py-3 bg-[var(--theme-primary)] text-black font-bold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                         className="px-6 py-3 bg-[#CCFF00] text-black font-bold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
                        >
                          {editingTemplate ? 'Modifier' : 'Créer'}
                        </button>
@@ -746,7 +746,7 @@ export default function ServiceTemplatesPage() {
                       transition={{ duration: 0.3 }}
                       className="group cursor-pointer select-none"
                     >
-                      <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300 hover:shadow-lg hover:shadow-[var(--theme-primary)]/10">
+                      <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover:shadow-lg hover:shadow-[#CCFF00]/10">
                         <div className="relative">
                           {/* Boutons d'action */}
                           <div className="absolute top-0 right-0 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -755,7 +755,7 @@ export default function ServiceTemplatesPage() {
                                 e.stopPropagation();
                                 handleEdit(template);
                               }}
-                              className="p-2 bg-[var(--theme-primary)] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                              className="p-2 bg-[#CCFF00] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
                             >
                               <FontAwesomeIcon icon={faEdit} className="w-4 h-4" />
                             </button>
@@ -770,7 +770,7 @@ export default function ServiceTemplatesPage() {
                             </button>
                           </div>
 
-                          <h3 className="font-karla-bold text-white mb-1 group-hover:text-[var(--theme-primary)] transition-colors pr-20">
+                          <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors pr-20">
                             {template.name}
                           </h3>
                           <p className="text-sm text-gray-400 mb-3 font-karla-regular">
@@ -791,7 +791,7 @@ export default function ServiceTemplatesPage() {
                         {/* Indicateur de statut */}
                         <div className="mt-3 pt-3 border-t border-gray-700">
                           <div className="flex items-center justify-between text-xs">
-                            <span className="text-[var(--theme-primary)] font-karla-medium">
+                            <span className="text-[#CCFF00] font-karla-medium">
                               {template.isActive ? 'ACTIF' : 'INACTIF'}
                             </span>
                             <span className="text-gray-500 font-karla-medium">
@@ -853,7 +853,7 @@ export default function ServiceTemplatesPage() {
                            required
                            value={formData.name}
                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                            placeholder="Nom du service"
                          />
                        </div>
@@ -866,7 +866,7 @@ export default function ServiceTemplatesPage() {
                            required
                            value={formData.category}
                            onChange={(e) => setFormData({ ...formData, category: e.target.value as 'defensive' | 'general' | 'offensive' })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          >
                            <option value="defensive">Défensif</option>
                            <option value="general">Général</option>
@@ -882,7 +882,7 @@ export default function ServiceTemplatesPage() {
                        <textarea
                          value={formData.description}
                          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                         className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                         className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          rows={3}
                          placeholder="Description du service"
                        />
@@ -899,7 +899,7 @@ export default function ServiceTemplatesPage() {
                            max="10"
                            value={formData.defaultScore}
                            onChange={(e) => setFormData({ ...formData, defaultScore: parseInt(e.target.value) })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          />
                        </div>
 
@@ -910,7 +910,7 @@ export default function ServiceTemplatesPage() {
                          <select
                            value={formData.defaultImportance}
                            onChange={(e) => setFormData({ ...formData, defaultImportance: e.target.value })}
-                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[var(--theme-primary)] focus:border-[var(--theme-primary)] transition-all duration-300"
+                           className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
                          >
                            <option value="Faible">Faible</option>
                            <option value="Moyenne">Moyenne</option>
@@ -922,7 +922,7 @@ export default function ServiceTemplatesPage() {
                      <div className="flex space-x-4 pt-4">
                        <button
                          type="submit"
-                         className="px-6 py-3 bg-[var(--theme-primary)] text-black font-bold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                         className="px-6 py-3 bg-[#CCFF00] text-black font-bold rounded-lg hover:bg-[#B3E600] transition-all duration-300"
                        >
                          {editingTemplate ? 'Modifier' : 'Créer'}
                        </button>
@@ -987,7 +987,7 @@ export default function ServiceTemplatesPage() {
                       transition={{ duration: 0.3 }}
                       className="group cursor-pointer select-none"
                     >
-                      <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[var(--theme-primary)] transition-all duration-300 hover:shadow-lg hover:shadow-[var(--theme-primary)]/10">
+                      <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover:shadow-lg hover:shadow-[#CCFF00]/10">
                         <div className="relative">
                           {/* Boutons d'action */}
                           <div className="absolute top-0 right-0 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -996,7 +996,7 @@ export default function ServiceTemplatesPage() {
                                 e.stopPropagation();
                                 handleEdit(template);
                               }}
-                              className="p-2 bg-[var(--theme-primary)] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
+                              className="p-2 bg-[#CCFF00] text-black rounded-lg hover:bg-[#B3E600] transition-all duration-300"
                             >
                               <FontAwesomeIcon icon={faEdit} className="w-4 h-4" />
                             </button>
@@ -1011,7 +1011,7 @@ export default function ServiceTemplatesPage() {
                             </button>
                           </div>
 
-                          <h3 className="font-karla-bold text-white mb-1 group-hover:text-[var(--theme-primary)] transition-colors pr-20">
+                          <h3 className="font-karla-bold text-white mb-1 group-hover:text-[#CCFF00] transition-colors pr-20">
                             {template.name}
                           </h3>
                           <p className="text-sm text-gray-400 mb-3 font-karla-regular">
@@ -1032,7 +1032,7 @@ export default function ServiceTemplatesPage() {
                         {/* Indicateur de statut */}
                         <div className="mt-3 pt-3 border-t border-gray-700">
                           <div className="flex items-center justify-between text-xs">
-                            <span className="text-[var(--theme-primary)] font-karla-medium">
+                            <span className="text-[#CCFF00] font-karla-medium">
                               {template.isActive ? 'ACTIF' : 'INACTIF'}
                             </span>
                             <span className="text-gray-500 font-karla-medium">
@@ -1055,7 +1055,7 @@ export default function ServiceTemplatesPage() {
           {serviceTemplates.length === 0 && (
             <div className="text-center py-16">
               <div className="bg-black/50 backdrop-blur-md rounded-xl p-12 border border-gray-800">
-                <div className="text-6xl mb-4 text-[var(--theme-primary)]">🛡️</div>
+                <div className="text-6xl mb-4 text-[#CCFF00]">🛡️</div>
                 <h3 className="text-xl font-bold text-white mb-2">Aucun template</h3>
                 <p className="text-gray-400">Créez votre premier template de service</p>
               </div>
