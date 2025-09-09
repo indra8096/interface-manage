@@ -812,11 +812,14 @@ export default function Home() {
 
             {/* Statistiques principales - Style futuriste */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-                             <motion.div 
-                 className="p-8 rounded-2xl hover:border-[#CCFF00] transition-all duration-500 border border-gray-700"
-                       style={{ background: 'var(--bg-card)' }}
-                 whileHover={{ scale: 1.02 }}
-               >
+              <motion.div 
+                className="p-8 rounded-2xl hover:border-[#CCFF00] transition-all duration-500 border border-gray-700"
+                style={{ 
+                  background: 'var(--bg-card)',
+                  backgroundColor: 'var(--bg-card)'
+                }}
+                whileHover={{ scale: 1.02 }}
+              >
                 <div className="flex items-center justify-between">
                   <div>
                                          <div className="font-karla-medium text-sm mb-2 transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>SERVICES ACTIFS</div>
@@ -832,7 +835,10 @@ export default function Home() {
 
                              <motion.div 
                  className="p-8 rounded-2xl hover:border-[#9933FF] transition-all duration-500 border border-gray-700"
-                       style={{ background: 'var(--bg-card)' }}
+                       style={{ 
+                         background: 'var(--bg-card)',
+                         backgroundColor: 'var(--bg-card)'
+                       }}
                  whileHover={{ scale: 1.02 }}
                >
                 <div className="flex items-center justify-between">
@@ -857,6 +863,7 @@ export default function Home() {
                 className="p-6 rounded-xl hover:border-[#CCFF00] transition-all duration-300"
                 style={{
                   background: 'var(--bg-card)',
+                  backgroundColor: 'var(--bg-card)',
                   border: '1px solid var(--border-primary)'
                 }}
                 whileHover={{ y: -5 }}
@@ -873,6 +880,7 @@ export default function Home() {
                 className="p-6 rounded-xl hover:border-[#CCFF00] transition-all duration-300"
                 style={{
                   background: 'var(--bg-card)',
+                  backgroundColor: 'var(--bg-card)',
                   border: '1px solid var(--border-primary)'
                 }}
                 whileHover={{ y: -5 }}

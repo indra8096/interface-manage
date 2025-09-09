@@ -20,7 +20,7 @@
 [data-theme="light"][data-user-id] {
   --bg-primary: #FFFFFF;
   --bg-secondary: #FFFFFF;
-  --bg-card: #FFFFFF;
+  --bg-card: #F8F9FA;
   --text-primary: #000000;
   --text-secondary: #000000;
   --text-muted: #000000;
@@ -62,7 +62,7 @@
 [data-theme="light"]:not([data-user-id]) {
   --bg-primary: #FFFFFF;
   --bg-secondary: #FFFFFF;
-  --bg-card: #FFFFFF;
+  --bg-card: #F8F9FA;
   --text-primary: #000000;
   --text-secondary: #000000;
   --text-muted: #000000;
