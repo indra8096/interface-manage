@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Switch } from '@/components/ui/switch';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface PanelCardProps {
   name: string;
@@ -57,6 +58,9 @@ const PanelCard: React.FC<PanelCardProps> = ({
   cardType,
   tasksAddedFromPanel = []
 }) => {
+  // État pour gérer l'affichage de la carte
+  const [isVisible, setIsVisible] = useState(true);
+  
   // Vérifier que les données de progression sont valides
   const hasValidProgressData = total !== undefined && total !== null && completed !== undefined && completed !== null;
   const percentage = hasValidProgressData ? Math.min(Math.round((completed / total) * 100), 100) : 0;
@@ -156,15 +160,20 @@ const PanelCard: React.FC<PanelCardProps> = ({
   };
 
   return (
-    <div 
-      className={`p-4 rounded-lg border transition-all duration-300 hover:border-opacity-60 group relative panel-card ${
-        userRole === 'admin' && onDelete ? 'pr-12' : ''
-      }`}
-      style={{ 
-        background: 'var(--bg-card)', 
-        borderColor: 'var(--border-secondary)' 
-      }}
-    >
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div 
+          initial={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.8, y: -20 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          className={`p-4 rounded-lg border transition-all duration-300 hover:border-opacity-60 group relative panel-card ${
+            userRole === 'admin' && onDelete ? 'pr-12' : ''
+          }`}
+          style={{ 
+            background: 'var(--bg-card)', 
+            borderColor: 'var(--border-secondary)' 
+          }}
+        >
       {/* Icône corbeille - Toujours à droite */}
       {userRole === 'admin' && onDelete && (
         <button
@@ -214,18 +223,24 @@ const PanelCard: React.FC<PanelCardProps> = ({
           {userRole === 'admin' && onAddToDashboard && (
             <Switch 
               id={`switch-panelcard-${name}-${cardType}`}
-              checked={isAddedToDashboard}
+              checked={isAddedToDashboard && isVisible}
               onCheckedChange={(checked) => {
                 if (checked) {
+                  setIsVisible(true);
                   onAddToDashboard(name, description || '', importance || 'Moyenne');
+                } else {
+                  setIsVisible(false);
+                  // Optionnel : supprimer de la dashboard si nécessaire
+                  // onAddToDashboard(name, description || '', importance || 'Moyenne');
                 }
               }}
             />
           )}
         </div>
-      </div>
-      {renderSpecificContent()}
-    </div>
+        {renderSpecificContent()}
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

@@ -611,22 +611,6 @@ export default function CategoryDetailsPanel({ isOpen, onClose, category, catego
                          )}
                        </div>
               
-              {/* Couverture globale */}
-              <div className="mb-8">
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-sm font-karla-medium" style={{ color: 'var(--text-secondary)' }}>Couverture Globale</span>
-                  <span className="text-sm font-karla-bold" style={{ color: categoryColors[category] }}>67%</span>
-                </div>
-                <div className="w-full bg-gray-800 rounded-full h-3">
-                  <div 
-                    className="h-3 rounded-full transition-all duration-700 ease-out" 
-                             style={{ 
-                      width: '67%', 
-                      background: `linear-gradient(90deg, ${categoryColors[category]}, ${categoryColors[category]}80)` 
-                    }}
-                  ></div>
-                       </div>
-                     </div>
 
               {/* Détails par service */}
               <div className="space-y-4">
