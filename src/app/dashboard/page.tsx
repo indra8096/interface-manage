@@ -742,7 +742,7 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="dashboard-main min-h-screen flex items-center justify-center transition-all duration-300" style={{ background: 'var(--bg-primary)' }}>
+      <div className="min-h-screen flex items-center justify-center transition-all duration-300" style={{ background: 'var(--bg-primary)' }}>
         <div className="text-center">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#CCFF00] to-[#9933FF] flex items-center justify-center animate-pulse">
             <div className="w-16 h-16 rounded-full bg-black"></div>
@@ -755,7 +755,7 @@ export default function Home() {
   }
 
   return (
-    <div className="dashboard-main min-h-screen transition-all duration-300" style={{ background: 'var(--bg-primary)' }}>
+    <div className="min-h-screen transition-all duration-300" style={{ background: 'var(--bg-primary)' }}>
       <Header />
       
       {/* Bouton retour pour Super Admin */}

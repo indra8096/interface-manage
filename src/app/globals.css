@@ -16,8 +16,8 @@
   /* Le thème est maintenant isolé par utilisateur */
 }
 
-/* Règles pour le thème clair avec isolation par utilisateur - DASHBOARD PRINCIPAL UNIQUEMENT */
-[data-theme="light"][data-user-id] .dashboard-main {
+/* Règles pour le thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] {
   --bg-primary: #FFFFFF;
   --bg-secondary: #FFFFFF;
   --bg-card: #F8F9FA;
@@ -30,8 +30,8 @@
   --theme-secondary: #9933FF;
 }
 
-/* Règles pour le thème sombre avec isolation par utilisateur - DASHBOARD PRINCIPAL UNIQUEMENT */
-[data-theme="dark"][data-user-id] .dashboard-main {
+/* Règles pour le thème sombre avec isolation par utilisateur */
+[data-theme="dark"][data-user-id] {
   --bg-primary: #000000;
   --bg-secondary: #111111;
   --bg-card: #1a1a1a;
@@ -58,8 +58,8 @@
   --theme-secondary: #9933FF;
 }
 
-/* Thème clair - Règles de fallback pour les pages publiques - DASHBOARD PRINCIPAL UNIQUEMENT */
-[data-theme="light"]:not([data-user-id]) .dashboard-main {
+/* Thème clair - Règles de fallback pour les pages publiques */
+[data-theme="light"]:not([data-user-id]) {
   --bg-primary: #FFFFFF;
   --bg-secondary: #FFFFFF;
   --bg-card: #F8F9FA;
@@ -72,56 +72,10 @@
   --theme-secondary: #9933FF;
 }
 
-/* Règles spécifiques pour le thème clair avec isolation par utilisateur - DASHBOARD PRINCIPAL UNIQUEMENT */
-[data-theme="light"][data-user-id] .dashboard-main .font-karla-medium.text-sm.mb-2.transition-colors.duration-300,
-[data-theme="light"][data-user-id] .dashboard-main .font-karla-medium.text-sm.transition-colors.duration-300 {
+/* Règles spécifiques pour le thème clair avec isolation par utilisateur */
+[data-theme="light"][data-user-id] .font-karla-medium.text-sm.mb-2.transition-colors.duration-300,
+[data-theme="light"][data-user-id] .font-karla-medium.text-sm.transition-colors.duration-300 {
   color: #000000 !important;
-}
-
-/* Force le thème sombre sur toutes les autres pages même en mode clair */
-[data-theme="light"] .superadmin-dashboard,
-[data-theme="light"] .public-page,
-[data-theme="light"] .mentions-legales,
-[data-theme="light"] .login-page,
-[data-theme="light"] .register-page {
-  --bg-primary: #000000 !important;
-  --bg-secondary: #111111 !important;
-  --bg-card: #1a1a1a !important;
-  --text-primary: #FFFFFF !important;
-  --text-secondary: #CCCCCC !important;
-  --text-muted: #888888 !important;
-  --border-primary: #333333 !important;
-  --border-secondary: #444444 !important;
-  --theme-primary: #CCFF00 !important;
-  --theme-secondary: #9933FF !important;
-}
-
-/* Force le thème sombre par défaut pour toutes les pages */
-:root {
-  --bg-primary: #000000;
-  --bg-secondary: #111111;
-  --bg-card: #1a1a1a;
-  --text-primary: #FFFFFF;
-  --text-secondary: #CCCCCC;
-  --text-muted: #888888;
-  --border-primary: #333333;
-  --border-secondary: #444444;
-  --theme-primary: #CCFF00;
-  --theme-secondary: #9933FF;
-}
-
-/* Règles par défaut pour le dashboard - thème sombre */
-.dashboard-main {
-  --bg-primary: #000000;
-  --bg-secondary: #111111;
-  --bg-card: #1a1a1a;
-  --text-primary: #FFFFFF;
-  --text-secondary: #CCCCCC;
-  --text-muted: #888888;
-  --border-primary: #333333;
-  --border-secondary: #444444;
-  --theme-primary: #CCFF00;
-  --theme-secondary: #9933FF;
 }
 
 /* Règles pour les titres en thème clair avec isolation par utilisateur */

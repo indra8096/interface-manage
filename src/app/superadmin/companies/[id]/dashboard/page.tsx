@@ -344,7 +344,7 @@ export default function CompanyDashboardPage() {
   const mainAdmin = admins.length > 0 ? admins.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())[0] : null;
 
   return (
-    <div className="superadmin-dashboard min-h-screen bg-black text-white font-karla">
+    <div className="min-h-screen bg-black text-white font-karla">
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
