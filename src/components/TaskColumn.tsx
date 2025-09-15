@@ -362,6 +362,144 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
           </motion.div>
         )}
         
+        {/* Formulaire d'ajout intégré - Positionné au-dessus des tâches */}
+        <AnimatePresence>
+          {showAddForm && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="mb-6"
+            >
+              <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 border border-gray-800 shadow-2xl">
+                <div className="flex justify-between items-center mb-8">
+                  <h2 className="text-2xl font-karla-bold text-white">
+                    <span className="bg-gradient-to-r from-[#CCFF00] to-[#9933FF] bg-clip-text text-transparent">
+                      NOUVEAU SERVICE
+                    </span>
+                  </h2>
+                  <button
+                    onClick={handleCancel}
+                    className="text-gray-400 hover:text-[#CCFF00] transition-colors p-2 rounded-lg hover:bg-gray-800"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-current"></div>
+                  </button>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-karla-semibold text-white mb-3">
+                      NOM DU SERVICE
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
+                      placeholder="Entrez le nom du service..."
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-karla-semibold text-white mb-3">
+                      NIVEAU DE PRIORITÉ (1-10)
+                    </label>
+                    <div className="flex items-center gap-4">
+                      <input
+                        type="range"
+                        min="1"
+                        max="10"
+                        value={formData.score}
+                        onChange={(e) => setFormData({ ...formData, score: parseInt(e.target.value) })}
+                        className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+                        style={{
+                          background: `linear-gradient(to right, ${scoreColors[formData.score as keyof typeof scoreColors]} 0%, ${scoreColors[formData.score as keyof typeof scoreColors]} ${(formData.score - 1) * 11.11}%, #374151 ${(formData.score - 1) * 11.11}%, #374151 100%)`
+                        }}
+                      />
+                      <span
+                        className="px-4 py-2 rounded-full font-karla-bold text-sm text-black min-w-[3rem] text-center"
+                        style={{
+                          backgroundColor: scoreColors[formData.score as keyof typeof scoreColors],
+                        }}
+                      >
+                        {formData.score}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-karla-semibold text-white mb-3">
+                      DESCRIPTION
+                    </label>
+                    <textarea
+                      value={formData.description}
+                      onChange={e => setFormData({ ...formData, description: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
+                      rows={3}
+                      placeholder="Description du service..."
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-karla-semibold text-white mb-3">
+                      PRIORITÉ
+                    </label>
+                    <select
+                      value={formData.importance}
+                      onChange={e => setFormData({ ...formData, importance: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
+                    >
+                      <option value="Faible">Faible</option>
+                      <option value="Moyenne">Moyenne</option>
+                      <option value="Élevée">Élevée</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-karla-semibold text-white mb-3">
+                      ÉCHÉANCE
+                    </label>
+                    <input
+                      type="date"
+                      value={formData.dueDate}
+                      onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-karla-semibold text-white mb-3">
+                      PERSONNE ASSIGNÉE
+                    </label>
+                    <EmployeeSearch
+                      value={formData.assignedTo}
+                      onChange={(value) => setFormData({ ...formData, assignedTo: value })}
+                      placeholder="Rechercher un employé..."
+                      className="w-full"
+                      style={{
+                        background: 'var(--bg-secondary)',
+                        borderColor: 'var(--border-primary)',
+                        color: 'var(--text-primary)'
+                      }}
+                    />
+                  </div>
+
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    className="w-full py-4 bg-gradient-to-r from-[#CCFF00] to-[#9933FF] text-black rounded-xl font-karla-bold hover:from-[#9933FF] hover:to-[#CCFF00] transition-all duration-300 shadow-lg"
+                  >
+                    CRÉER LE SERVICE
+                  </motion.button>
+                </form>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <AnimatePresence mode="popLayout">
           {tasks.length === 0 ? (
             <motion.div
@@ -401,142 +539,9 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
         </AnimatePresence>
       </div>
 
-      {/* Formulaire d'ajout intégré - Style identique au formulaire de modification */}
+      {/* Bouton d'ajout de service avec petite croix au centre du rond */}
       <AnimatePresence>
-        {showAddForm ? (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="mb-6"
-          >
-            <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 border border-gray-800 shadow-2xl">
-              <div className="flex justify-between items-center mb-8">
-                <h2 className="text-2xl font-karla-bold text-white">
-                  <span className="bg-gradient-to-r from-[#CCFF00] to-[#9933FF] bg-clip-text text-transparent">
-                    NOUVEAU SERVICE
-                  </span>
-                </h2>
-                <button
-                  onClick={handleCancel}
-                  className="text-gray-400 hover:text-[#CCFF00] transition-colors p-2 rounded-lg hover:bg-gray-800"
-                >
-                  <div className="w-6 h-6 rounded-full bg-current"></div>
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-karla-semibold text-white mb-3">
-                    NOM DU SERVICE
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
-                    placeholder="Entrez le nom du service..."
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-karla-semibold text-white mb-3">
-                    NIVEAU DE PRIORITÉ (1-10)
-                  </label>
-                  <div className="flex items-center gap-4">
-                    <input
-                      type="range"
-                      min="1"
-                      max="10"
-                      value={formData.score}
-                      onChange={(e) => setFormData({ ...formData, score: parseInt(e.target.value) })}
-                      className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
-                      style={{
-                        background: `linear-gradient(to right, ${scoreColors[formData.score as keyof typeof scoreColors]} 0%, ${scoreColors[formData.score as keyof typeof scoreColors]} ${(formData.score - 1) * 11.11}%, #374151 ${(formData.score - 1) * 11.11}%, #374151 100%)`
-                      }}
-                    />
-                    <span
-                      className="px-4 py-2 rounded-full font-karla-bold text-sm text-black min-w-[3rem] text-center"
-                      style={{
-                        backgroundColor: scoreColors[formData.score as keyof typeof scoreColors],
-                      }}
-                    >
-                      {formData.score}
-                    </span>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-karla-semibold text-white mb-3">
-                    DESCRIPTION
-                  </label>
-                  <textarea
-                    value={formData.description}
-                    onChange={e => setFormData({ ...formData, description: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
-                    rows={3}
-                    placeholder="Description du service..."
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-karla-semibold text-white mb-3">
-                    PRIORITÉ
-                  </label>
-                  <select
-                    value={formData.importance}
-                    onChange={e => setFormData({ ...formData, importance: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
-                  >
-                    <option value="Faible">Faible</option>
-                    <option value="Moyenne">Moyenne</option>
-                    <option value="Élevée">Élevée</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-karla-semibold text-white mb-3">
-                    ÉCHÉANCE
-                  </label>
-                  <input
-                    type="date"
-                    value={formData.dueDate}
-                    onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-karla-semibold text-white mb-3">
-                    PERSONNE ASSIGNÉE
-                  </label>
-                  <EmployeeSearch
-                    value={formData.assignedTo}
-                    onChange={(value) => setFormData({ ...formData, assignedTo: value })}
-                    placeholder="Rechercher un employé..."
-                    className="w-full"
-                    style={{
-                      background: 'var(--bg-secondary)',
-                      borderColor: 'var(--border-primary)',
-                      color: 'var(--text-primary)'
-                    }}
-                  />
-                </div>
-
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  type="submit"
-                  className="w-full py-4 bg-gradient-to-r from-[#CCFF00] to-[#9933FF] text-black rounded-xl font-karla-bold hover:from-[#9933FF] hover:to-[#CCFF00] transition-all duration-300 shadow-lg"
-                >
-                  CRÉER LE SERVICE
-                </motion.button>
-              </form>
-            </div>
-          </motion.div>
-        ) : (
+        {!showAddForm && (
           <motion.button
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}

@@ -47,7 +47,7 @@ export default function CGU() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Objet
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -56,7 +56,7 @@ export default function CGU() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Obligations de l&apos;utilisateur
               </h2>
               <p className="text-gray-300 mb-3">
@@ -75,7 +75,7 @@ export default function CGU() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Propriété intellectuelle
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -89,7 +89,7 @@ export default function CGU() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Limitation de responsabilité
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -104,7 +104,7 @@ export default function CGU() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Liens hypertextes
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -115,7 +115,7 @@ export default function CGU() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Modification des CGU
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -127,7 +127,7 @@ export default function CGU() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Durée
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -137,7 +137,7 @@ export default function CGU() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Droit applicable et juridiction compétente
               </h2>
               <p className="text-gray-300 leading-relaxed">

@@ -38,7 +38,7 @@ export default function MentionsLegales() {
 
           <div className="glass-effect rounded-2xl p-8 border border-gray-700 space-y-8" style={{ backgroundColor: 'rgba(17, 17, 17, 0.5)', borderColor: '#374151' }}>
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Qui est l&apos;éditeur du site ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -47,7 +47,7 @@ export default function MentionsLegales() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Qui est l&apos;hébergeur du site ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -56,7 +56,7 @@ export default function MentionsLegales() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Qui est le directeur de la publication ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -65,7 +65,7 @@ export default function MentionsLegales() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Quels sont les droits liés à la propriété intellectuelle ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -74,7 +74,7 @@ export default function MentionsLegales() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Le site est-il toujours disponible ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -83,7 +83,7 @@ export default function MentionsLegales() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Quand Drelto ASBL n&apos;est-elle pas responsable de l&apos;utilisation du site ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -98,7 +98,7 @@ export default function MentionsLegales() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Quel tribunal est compétent en cas de litige ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
