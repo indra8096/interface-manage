@@ -74,6 +74,7 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
   });
   const [isDragOver, setIsDragOver] = useState(false);
   const [isOverCancel, setIsOverCancel] = useState(false);
+  const [visibleTasksCount, setVisibleTasksCount] = useState(5);
 
   const percentage = Math.min(Math.round((tasks.filter(t => t.status === 'completed').length / Math.max(tasks.length, 1)) * 100), 100);
 
@@ -81,6 +82,15 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
   const completedTasks = tasks.filter(t => t.status === 'completed').length;
   const inProgressTasks = tasks.filter(t => t.status === 'warning').length;
   const pendingTasks = tasks.filter(t => t.status === 'error').length;
+
+  // Gestion de la pagination des tâches
+  const visibleTasks = tasks.slice(0, visibleTasksCount);
+  const hasMoreTasks = tasks.length > visibleTasksCount;
+  const remainingTasks = tasks.length - visibleTasksCount;
+
+  const handleLoadMore = () => {
+    setVisibleTasksCount(prev => Math.min(prev + 5, tasks.length));
+  };
 
   const scoreColors = {
     1: '#ef4444',
@@ -518,23 +528,51 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
               <p className="text-xs mt-1 transition-colors duration-300 empty-state-text">Initialisez votre premier service</p>
             </motion.div>
           ) : (
-            tasks.map((task) => (
-              <motion.div
-                key={task.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, x: -100 }}
-                transition={{ duration: 0.3 }}
-              >
-                <TaskCard
-                  {...task}
-                  category={category}
-                  onStatusChange={onStatusChange}
-                  userRole={userRole}
-                  currentUserName={currentUserName}
-                />
-              </motion.div>
-            ))
+            <>
+              {visibleTasks.map((task) => (
+                <motion.div
+                  key={task.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: -100 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <TaskCard
+                    {...task}
+                    category={category}
+                    onStatusChange={onStatusChange}
+                    userRole={userRole}
+                    currentUserName={currentUserName}
+                  />
+                </motion.div>
+              ))}
+              
+              {/* Texte "Voir plus" discret */}
+              {hasMoreTasks && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center py-4"
+                >
+                  <button
+                    onClick={handleLoadMore}
+                    className="text-sm font-karla-medium transition-all duration-300 hover:scale-105 cursor-pointer"
+                    style={{ 
+                      color: 'var(--text-muted)',
+                      textDecoration: 'underline'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = 'var(--theme-primary)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'var(--text-muted)';
+                    }}
+                  >
+                    Voir plus ({remainingTasks} tâche{remainingTasks > 1 ? 's' : ''} restante{remainingTasks > 1 ? 's' : ''})
+                  </button>
+                </motion.div>
+              )}
+            </>
           )}
         </AnimatePresence>
       </div>
