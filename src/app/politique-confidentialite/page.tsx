@@ -44,7 +44,7 @@ export default function PolitiqueConfidentialite() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
                 Quel est l&apos;objectif de cette politique de confidentialité ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -53,7 +53,7 @@ export default function PolitiqueConfidentialite() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
                 Que signifient les termes utilisés dans notre politique de confidentialité ?
               </h2>
               
@@ -80,7 +80,7 @@ export default function PolitiqueConfidentialite() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
                 Qui est le responsable de traitement ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -89,7 +89,7 @@ export default function PolitiqueConfidentialite() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
                 Quelle est l&apos;adresse postale du responsable de traitement ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -98,7 +98,7 @@ export default function PolitiqueConfidentialite() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
                 Comment utilisons-nous vos données personnelles ?
               </h2>
               
@@ -141,7 +141,7 @@ export default function PolitiqueConfidentialite() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
                 A qui sont transmises vos données personnelles ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -179,7 +179,7 @@ export default function PolitiqueConfidentialite() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
                 Quels sont vos droits concernant vos données personnelles ?
               </h2>
               <p className="text-gray-300 mb-4">Conformément au RGPD, vous avez plusieurs droits sur vos données personnelles.</p>
@@ -224,7 +224,7 @@ export default function PolitiqueConfidentialite() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
                 Comment exercer vos droits ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -239,7 +239,7 @@ export default function PolitiqueConfidentialite() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
                 Quel est notre délai de réponse ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -252,7 +252,7 @@ export default function PolitiqueConfidentialite() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
                 Comment protégeons-nous vos données personnelles ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -264,7 +264,7 @@ export default function PolitiqueConfidentialite() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
                 La politique de confidentialité peut-elle évoluer ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
@@ -273,7 +273,7 @@ export default function PolitiqueConfidentialite() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+              <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>
                 Comment nous contacter ?
               </h2>
               <p className="text-gray-300 leading-relaxed">
