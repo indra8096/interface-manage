@@ -564,14 +564,14 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
               ))}
               
               {/* Boutons de pagination */}
-              {(hasMoreTasks || isExpanded) && (
+              {(hasMoreTasks || (!hasMoreTasks && isExpanded)) && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   className="text-center py-4"
                 >
-                  {hasMoreTasks && !isExpanded ? (
-                    // Bouton "Voir plus" quand on peut encore charger plus
+                  {hasMoreTasks ? (
+                    // Bouton "Voir plus" quand il reste des tâches à charger
                     <button
                       onClick={handleLoadMore}
                       className="text-sm font-karla-medium transition-all duration-300 hover:scale-105 cursor-pointer"
@@ -588,8 +588,8 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
                     >
                       Voir plus ({remainingTasks} tâche{remainingTasks > 1 ? 's' : ''} restante{remainingTasks > 1 ? 's' : ''})
                     </button>
-                  ) : isExpanded ? (
-                    // Bouton "Fermer" quand on a étendu la liste
+                  ) : !hasMoreTasks && isExpanded ? (
+                    // Bouton "Fermer" quand toutes les tâches sont visibles ET qu'il y en a plus de 5
                     <button
                       onClick={handleCollapse}
                       className="text-sm font-karla-medium transition-all duration-300 hover:scale-105 cursor-pointer"
