@@ -109,12 +109,12 @@ export default function GlobalCardsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white p-8">
+    <div className="min-h-screen bg-black text-white p-8" style={{ backgroundColor: '#000000', color: '#ffffff' }}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-karla-bold mb-4">Gestion des Templates</h1>
-          <p className="text-gray-400">Gérez les templates qui seront répliqués dans toutes les entreprises</p>
+          <h1 className="text-4xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>Gestion des Templates</h1>
+          <p className="text-gray-400" style={{ color: '#9CA3AF' }}>Gérez les templates qui seront répliqués dans toutes les entreprises</p>
         </div>
 
         {/* Boutons de Navigation */}
@@ -124,6 +124,7 @@ export default function GlobalCardsPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="px-8 py-4 bg-purple-600 text-white rounded-xl font-karla-bold hover:bg-purple-700 transition-all duration-300 flex items-center gap-3"
+              style={{ backgroundColor: '#9333EA', color: '#ffffff' }}
             >
               <span className="text-2xl">📊</span>
               Templates Panel de Suivi
@@ -135,6 +136,7 @@ export default function GlobalCardsPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="px-8 py-4 bg-blue-600 text-white rounded-xl font-karla-bold hover:bg-blue-700 transition-all duration-300 flex items-center gap-3"
+              style={{ backgroundColor: '#2563EB', color: '#ffffff' }}
             >
               <span className="text-2xl">🛡️</span>
               Templates Services Prédéfinis
@@ -149,12 +151,13 @@ export default function GlobalCardsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="p-6 bg-gray-900 rounded-xl border border-gray-700"
+            style={{ backgroundColor: '#111827', borderColor: '#374151' }}
           >
             <div className="flex items-center gap-3 mb-6">
               <span className="text-3xl">📊</span>
               <div>
-                <h2 className="text-2xl font-karla-bold">Templates Panel de Suivi</h2>
-                <p className="text-gray-400">Cartes de suivi répliquées dans toutes les entreprises</p>
+                <h2 className="text-2xl font-karla-bold" style={{ color: '#ffffff' }}>Templates Panel de Suivi</h2>
+                <p className="text-gray-400" style={{ color: '#9CA3AF' }}>Cartes de suivi répliquées dans toutes les entreprises</p>
               </div>
             </div>
 

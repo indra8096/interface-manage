@@ -344,9 +344,9 @@ export default function CompanyDashboardPage() {
   const mainAdmin = admins.length > 0 ? admins.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())[0] : null;
 
   return (
-    <div className="min-h-screen bg-black text-white font-karla">
+    <div className="min-h-screen bg-black text-white font-karla" style={{ backgroundColor: '#000000', color: '#ffffff' }}>
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-gray-800">
+      <nav className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-gray-800" style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', borderColor: '#374151' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
                          <div className="flex items-center space-x-2">
@@ -391,19 +391,19 @@ export default function CompanyDashboardPage() {
             <h1 className="text-5xl md:text-6xl font-bold mb-6" style={{ color: '#CCFF00' }}>
               {company.name}
             </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto" style={{ color: '#D1D5DB' }}>
               Gestion des utilisateurs et administrateurs de cette entreprise
             </p>
           </div>
 
           {/* Stats Overview */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#CCFF00] transition-all duration-300">
+            <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#CCFF00] transition-all duration-300" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#374151' }}>
               <div className="text-center">
                 <div className="text-3xl font-bold mb-2" style={{ color: '#CCFF00' }}>
                   {company._count.users}
                 </div>
-                <div className="text-gray-400 font-medium">Utilisateurs Total</div>
+                <div className="text-gray-400 font-medium" style={{ color: '#9CA3AF' }}>Utilisateurs Total</div>
               </div>
             </div>
             

@@ -210,12 +210,12 @@ export default function PanelCardsManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white p-8">
+    <div className="min-h-screen bg-black text-white p-8" style={{ backgroundColor: '#000000', color: '#ffffff' }}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-karla-bold mb-4">Gestion des Cartes de Panel</h1>
-          <p className="text-gray-400">Gérez les cartes de panel pour toutes les entreprises</p>
+          <h1 className="text-4xl font-karla-bold mb-4" style={{ color: '#ffffff' }}>Gestion des Cartes de Panel</h1>
+          <p className="text-gray-400" style={{ color: '#9CA3AF' }}>Gérez les cartes de panel pour toutes les entreprises</p>
         </div>
 
         {/* Bouton Ajouter */}
@@ -225,6 +225,7 @@ export default function PanelCardsManagement() {
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowForm(true)}
             className="px-6 py-3 bg-purple-600 text-white rounded-xl font-karla-bold hover:bg-purple-700 transition-all duration-300"
+            style={{ backgroundColor: '#9333EA', color: '#ffffff' }}
           >
             + Nouvelle Carte
           </motion.button>
@@ -236,20 +237,22 @@ export default function PanelCardsManagement() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             className="mb-8 p-6 bg-gray-900 rounded-xl border border-gray-700"
+            style={{ backgroundColor: '#111827', borderColor: '#374151' }}
           >
-            <h2 className="text-2xl font-karla-bold mb-6">
+            <h2 className="text-2xl font-karla-bold mb-6" style={{ color: '#ffffff' }}>
               {editingCard ? 'Modifier la Carte' : 'Nouvelle Carte'}
             </h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-karla-medium mb-2">Nom</label>
+                  <label className="block text-sm font-karla-medium mb-2" style={{ color: '#ffffff' }}>Nom</label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
                     className="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white"
+                    style={{ backgroundColor: '#1F2937', borderColor: '#4B5563', color: '#ffffff' }}
                     required
                   />
                 </div>

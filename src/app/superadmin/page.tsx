@@ -236,9 +236,9 @@ export default function SuperAdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white font-karla">
+    <div className="min-h-screen bg-black text-white font-karla" style={{ backgroundColor: '#000000', color: '#ffffff' }}>
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-gray-800">
+      <nav className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-gray-800" style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', borderColor: '#374151' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
@@ -280,37 +280,37 @@ export default function SuperAdminDashboard() {
             <h1 className="text-5xl md:text-6xl font-bold mb-6" style={{ color: '#CCFF00' }}>
               Dashboard Global
             </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto" style={{ color: '#D1D5DB' }}>
               Gestion centralisée de toutes les entreprises utilisant la plateforme Drelto
             </p>
           </div>
 
           {/* Stats Overview */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#CCFF00] transition-all duration-300">
+            <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#CCFF00] transition-all duration-300" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#374151' }}>
               <div className="text-center">
                 <div className="text-3xl font-bold mb-2" style={{ color: '#CCFF00' }}>
                   {companies.length}
                 </div>
-                <div className="text-gray-400 font-medium">Entreprises</div>
+                <div className="text-gray-400 font-medium" style={{ color: '#9CA3AF' }}>Entreprises</div>
               </div>
             </div>
             
-            <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#9933FF] transition-all duration-300">
+            <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#9933FF] transition-all duration-300" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#374151' }}>
               <div className="text-center">
                 <div className="text-3xl font-bold mb-2" style={{ color: '#9933FF' }}>
                   {companies.reduce((total, company) => total + company._count.users, 0)}
                 </div>
-                <div className="text-gray-400 font-medium">Utilisateurs Total</div>
+                <div className="text-gray-400 font-medium" style={{ color: '#9CA3AF' }}>Utilisateurs Total</div>
               </div>
             </div>
             
-            <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#CCFF00] transition-all duration-300">
+            <div className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#CCFF00] transition-all duration-300" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#374151' }}>
               <div className="text-center">
                 <div className="text-3xl font-bold mb-2" style={{ color: '#CCFF00' }}>
                   {companies.reduce((total, company) => total + company._count.tasks, 0)}
                 </div>
-                <div className="text-gray-400 font-medium">Tâches Total</div>
+                <div className="text-gray-400 font-medium" style={{ color: '#9CA3AF' }}>Tâches Total</div>
               </div>
             </div>
           </div>
@@ -326,17 +326,17 @@ export default function SuperAdminDashboard() {
                 <h2 className="text-3xl font-bold mb-2" style={{ color: '#9933FF' }}>
                   Entreprises
                 </h2>
-                <p className="text-gray-400">Sélectionnez une entreprise pour accéder à son dashboard spécifique</p>
+                <p className="text-gray-400" style={{ color: '#9CA3AF' }}>Sélectionnez une entreprise pour accéder à son dashboard spécifique</p>
               </div>
               
               <div className="flex gap-4">
                 <Link href="/superadmin/panel-templates">
-                  <button className="px-6 py-3 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 transition-all duration-300">
+                  <button className="px-6 py-3 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 transition-all duration-300" style={{ backgroundColor: '#9333EA', color: '#ffffff' }}>
                     Templates Panel de Suivi
                   </button>
                 </Link>
                 <Link href="/superadmin/service-templates">
-                  <button className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all duration-300">
+                  <button className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all duration-300" style={{ backgroundColor: '#2563EB', color: '#ffffff' }}>
                     Templates Services Prédéfinis
                   </button>
                 </Link>
@@ -349,48 +349,50 @@ export default function SuperAdminDashboard() {
               <div
                 key={company.id}
                 className="bg-black/50 backdrop-blur-md rounded-xl p-6 border border-gray-800 hover:border-[#CCFF00] transition-all duration-300 cursor-pointer group relative"
+                style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#374151' }}
                 onClick={() => window.location.href = `/superadmin/companies/${company.id}/dashboard`}
               >
                 {/* Bouton de suppression en bas à droite */}
                 <button
                   onClick={(e) => handleDeleteClick(company, e)}
                   className="absolute bottom-4 right-4 p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300 opacity-0 group-hover:opacity-100 z-10"
+                  style={{ backgroundColor: '#DC2626', color: '#ffffff' }}
                   title="Supprimer cette société"
                 >
                   <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
                 </button>
 
                 <div className="mb-4">
-                  <h3 className="text-xl font-bold text-white group-hover:text-[#CCFF00] transition-colors">
+                  <h3 className="text-xl font-bold text-white group-hover:text-[#CCFF00] transition-colors" style={{ color: '#ffffff' }}>
                     {company.name}
                   </h3>
                 </div>
                 
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Administrateur:</span>
-                    <span className="text-white font-semibold text-sm">
+                    <span className="text-gray-400" style={{ color: '#9CA3AF' }}>Administrateur:</span>
+                    <span className="text-white font-semibold text-sm" style={{ color: '#ffffff' }}>
                       {company.admin ? company.admin.email : 'Non assigné'}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Utilisateurs:</span>
-                    <span className="text-white font-semibold">{company._count.users}</span>
+                    <span className="text-gray-400" style={{ color: '#9CA3AF' }}>Utilisateurs:</span>
+                    <span className="text-white font-semibold" style={{ color: '#ffffff' }}>{company._count.users}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Tâches:</span>
-                    <span className="text-white font-semibold">{company._count.tasks}</span>
+                    <span className="text-gray-400" style={{ color: '#9CA3AF' }}>Tâches:</span>
+                    <span className="text-white font-semibold" style={{ color: '#ffffff' }}>{company._count.tasks}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Créée le:</span>
-                    <span className="text-white text-sm">
+                    <span className="text-gray-400" style={{ color: '#9CA3AF' }}>Créée le:</span>
+                    <span className="text-white text-sm" style={{ color: '#ffffff' }}>
                       {new Date(company.createdAt).toLocaleDateString('fr-FR')}
                     </span>
                   </div>
                 </div>
                 
-                <div className="mt-4 pt-4 border-t border-gray-700">
-                  <div className="text-[#CCFF00] text-sm font-medium">
+                <div className="mt-4 pt-4 border-t border-gray-700" style={{ borderColor: '#374151' }}>
+                  <div className="text-[#CCFF00] text-sm font-medium" style={{ color: '#CCFF00' }}>
                     Cliquer pour accéder →
                   </div>
                 </div>
@@ -400,9 +402,9 @@ export default function SuperAdminDashboard() {
 
           {companies.length === 0 && (
             <div className="text-center py-16">
-              <div className="bg-black/50 backdrop-blur-md rounded-xl p-12 border border-gray-800">
-                <h3 className="text-xl font-bold text-white mb-2">Aucune entreprise</h3>
-                <p className="text-gray-400">Créez votre première entreprise pour commencer</p>
+              <div className="bg-black/50 backdrop-blur-md rounded-xl p-12 border border-gray-800" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#374151' }}>
+                <h3 className="text-xl font-bold text-white mb-2" style={{ color: '#ffffff' }}>Aucune entreprise</h3>
+                <p className="text-gray-400" style={{ color: '#9CA3AF' }}>Créez votre première entreprise pour commencer</p>
               </div>
             </div>
           )}
@@ -413,7 +415,7 @@ export default function SuperAdminDashboard() {
       {showCreateCompanyForm && (
         <section className="px-4 sm:px-6 lg:px-8 mb-16">
           <div className="max-w-4xl mx-auto">
-            <div className="bg-black/50 backdrop-blur-md rounded-xl p-8 border border-gray-800">
+            <div className="bg-black/50 backdrop-blur-md rounded-xl p-8 border border-gray-800" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: '#374151' }}>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold" style={{ color: '#9933FF' }}>
                   Créer une nouvelle société
@@ -421,6 +423,7 @@ export default function SuperAdminDashboard() {
                 <button
                   onClick={() => setShowCreateCompanyForm(false)}
                   className="text-gray-400 hover:text-white transition-colors"
+                  style={{ color: '#9CA3AF' }}
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -431,7 +434,7 @@ export default function SuperAdminDashboard() {
               <form onSubmit={handleCreateCompany} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-semibold text-white mb-2">
+                    <label className="block text-sm font-semibold text-white mb-2" style={{ color: '#ffffff' }}>
                       Nom de la société *
                     </label>
                     <input
@@ -440,6 +443,7 @@ export default function SuperAdminDashboard() {
                       value={createCompanyData.name}
                       onChange={(e) => setCreateCompanyData({ ...createCompanyData, name: e.target.value })}
                       className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-[#CCFF00] focus:border-[#CCFF00] transition-all duration-300"
+                      style={{ backgroundColor: 'rgba(17, 24, 39, 0.5)', borderColor: '#374151', color: '#ffffff' }}
                       placeholder="Nom de la société"
                     />
                   </div>
