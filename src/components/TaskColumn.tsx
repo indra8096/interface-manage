@@ -83,13 +83,29 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
   const inProgressTasks = tasks.filter(t => t.status === 'warning').length;
   const pendingTasks = tasks.filter(t => t.status === 'error').length;
 
+  // Tri des tâches par urgence (date d'échéance)
+  const sortedTasks = [...tasks].sort((a, b) => {
+    // Si une tâche n'a pas de date, elle va à la fin
+    if (!a.dueDate && !b.dueDate) return 0;
+    if (!a.dueDate) return 1;
+    if (!b.dueDate) return -1;
+    
+    // Tri par date croissante (les plus urgentes en premier)
+    return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+  });
+
   // Gestion de la pagination des tâches
-  const visibleTasks = tasks.slice(0, visibleTasksCount);
-  const hasMoreTasks = tasks.length > visibleTasksCount;
-  const remainingTasks = tasks.length - visibleTasksCount;
+  const visibleTasks = sortedTasks.slice(0, visibleTasksCount);
+  const hasMoreTasks = sortedTasks.length > visibleTasksCount;
+  const remainingTasks = sortedTasks.length - visibleTasksCount;
+  const isExpanded = visibleTasksCount > 5;
 
   const handleLoadMore = () => {
-    setVisibleTasksCount(prev => Math.min(prev + 5, tasks.length));
+    setVisibleTasksCount(prev => Math.min(prev + 5, sortedTasks.length));
+  };
+
+  const handleCollapse = () => {
+    setVisibleTasksCount(5);
   };
 
   const scoreColors = {
@@ -375,138 +391,138 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
         {/* Formulaire d'ajout intégré - Positionné au-dessus des tâches */}
         <AnimatePresence>
           {showAddForm && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="mb-6"
-            >
-              <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 border border-gray-800 shadow-2xl">
-                <div className="flex justify-between items-center mb-8">
-                  <h2 className="text-2xl font-karla-bold text-white">
-                    <span className="bg-gradient-to-r from-[#CCFF00] to-[#9933FF] bg-clip-text text-transparent">
-                      NOUVEAU SERVICE
-                    </span>
-                  </h2>
-                  <button
-                    onClick={handleCancel}
-                    className="text-gray-400 hover:text-[#CCFF00] transition-colors p-2 rounded-lg hover:bg-gray-800"
-                  >
-                    <div className="w-6 h-6 rounded-full bg-current"></div>
-                  </button>
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mb-6"
+          >
+            <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 border border-gray-800 shadow-2xl">
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-2xl font-karla-bold text-white">
+                  <span className="bg-gradient-to-r from-[#CCFF00] to-[#9933FF] bg-clip-text text-transparent">
+                    NOUVEAU SERVICE
+                  </span>
+                </h2>
+                <button
+                  onClick={handleCancel}
+                  className="text-gray-400 hover:text-[#CCFF00] transition-colors p-2 rounded-lg hover:bg-gray-800"
+                >
+                  <div className="w-6 h-6 rounded-full bg-current"></div>
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-karla-semibold text-white mb-3">
+                    NOM DU SERVICE
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
+                    placeholder="Entrez le nom du service..."
+                    required
+                  />
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-karla-semibold text-white mb-3">
-                      NOM DU SERVICE
-                    </label>
+                <div>
+                  <label className="block text-sm font-karla-semibold text-white mb-3">
+                    NIVEAU DE PRIORITÉ (1-10)
+                  </label>
+                  <div className="flex items-center gap-4">
                     <input
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
-                      placeholder="Entrez le nom du service..."
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-karla-semibold text-white mb-3">
-                      NIVEAU DE PRIORITÉ (1-10)
-                    </label>
-                    <div className="flex items-center gap-4">
-                      <input
-                        type="range"
-                        min="1"
-                        max="10"
-                        value={formData.score}
-                        onChange={(e) => setFormData({ ...formData, score: parseInt(e.target.value) })}
-                        className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
-                        style={{
-                          background: `linear-gradient(to right, ${scoreColors[formData.score as keyof typeof scoreColors]} 0%, ${scoreColors[formData.score as keyof typeof scoreColors]} ${(formData.score - 1) * 11.11}%, #374151 ${(formData.score - 1) * 11.11}%, #374151 100%)`
-                        }}
-                      />
-                      <span
-                        className="px-4 py-2 rounded-full font-karla-bold text-sm text-black min-w-[3rem] text-center"
-                        style={{
-                          backgroundColor: scoreColors[formData.score as keyof typeof scoreColors],
-                        }}
-                      >
-                        {formData.score}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-karla-semibold text-white mb-3">
-                      DESCRIPTION
-                    </label>
-                    <textarea
-                      value={formData.description}
-                      onChange={e => setFormData({ ...formData, description: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
-                      rows={3}
-                      placeholder="Description du service..."
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-karla-semibold text-white mb-3">
-                      PRIORITÉ
-                    </label>
-                    <select
-                      value={formData.importance}
-                      onChange={e => setFormData({ ...formData, importance: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
-                    >
-                      <option value="Faible">Faible</option>
-                      <option value="Moyenne">Moyenne</option>
-                      <option value="Élevée">Élevée</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-karla-semibold text-white mb-3">
-                      ÉCHÉANCE
-                    </label>
-                    <input
-                      type="date"
-                      value={formData.dueDate}
-                      onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-karla-semibold text-white mb-3">
-                      PERSONNE ASSIGNÉE
-                    </label>
-                    <EmployeeSearch
-                      value={formData.assignedTo}
-                      onChange={(value) => setFormData({ ...formData, assignedTo: value })}
-                      placeholder="Rechercher un employé..."
-                      className="w-full"
+                      type="range"
+                      min="1"
+                      max="10"
+                      value={formData.score}
+                      onChange={(e) => setFormData({ ...formData, score: parseInt(e.target.value) })}
+                      className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
                       style={{
-                        background: 'var(--bg-secondary)',
-                        borderColor: 'var(--border-primary)',
-                        color: 'var(--text-primary)'
+                        background: `linear-gradient(to right, ${scoreColors[formData.score as keyof typeof scoreColors]} 0%, ${scoreColors[formData.score as keyof typeof scoreColors]} ${(formData.score - 1) * 11.11}%, #374151 ${(formData.score - 1) * 11.11}%, #374151 100%)`
                       }}
                     />
+                    <span
+                      className="px-4 py-2 rounded-full font-karla-bold text-sm text-black min-w-[3rem] text-center"
+                      style={{
+                        backgroundColor: scoreColors[formData.score as keyof typeof scoreColors],
+                      }}
+                    >
+                      {formData.score}
+                    </span>
                   </div>
+                </div>
 
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    className="w-full py-4 bg-gradient-to-r from-[#CCFF00] to-[#9933FF] text-black rounded-xl font-karla-bold hover:from-[#9933FF] hover:to-[#CCFF00] transition-all duration-300 shadow-lg"
+                <div>
+                  <label className="block text-sm font-karla-semibold text-white mb-3">
+                    DESCRIPTION
+                  </label>
+                  <textarea
+                    value={formData.description}
+                    onChange={e => setFormData({ ...formData, description: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
+                    rows={3}
+                    placeholder="Description du service..."
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-karla-semibold text-white mb-3">
+                    PRIORITÉ
+                  </label>
+                  <select
+                    value={formData.importance}
+                    onChange={e => setFormData({ ...formData, importance: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
                   >
-                    CRÉER LE SERVICE
-                  </motion.button>
-                </form>
-              </div>
-            </motion.div>
+                    <option value="Faible">Faible</option>
+                    <option value="Moyenne">Moyenne</option>
+                    <option value="Élevée">Élevée</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-karla-semibold text-white mb-3">
+                    ÉCHÉANCE
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.dueDate}
+                    onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white focus:border-[#CCFF00] focus:ring-2 focus:ring-[#CCFF00]/20 outline-none transition-all font-karla-regular"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-karla-semibold text-white mb-3">
+                    PERSONNE ASSIGNÉE
+                  </label>
+                  <EmployeeSearch
+                    value={formData.assignedTo}
+                    onChange={(value) => setFormData({ ...formData, assignedTo: value })}
+                    placeholder="Rechercher un employé..."
+                    className="w-full"
+                    style={{
+                      background: 'var(--bg-secondary)',
+                      borderColor: 'var(--border-primary)',
+                      color: 'var(--text-primary)'
+                    }}
+                  />
+                </div>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  className="w-full py-4 bg-gradient-to-r from-[#CCFF00] to-[#9933FF] text-black rounded-xl font-karla-bold hover:from-[#9933FF] hover:to-[#CCFF00] transition-all duration-300 shadow-lg"
+                >
+                  CRÉER LE SERVICE
+                </motion.button>
+              </form>
+            </div>
+          </motion.div>
           )}
         </AnimatePresence>
 
@@ -547,29 +563,50 @@ export default function TaskColumn({ category, tasks, onAddTask, onStatusChange,
                 </motion.div>
               ))}
               
-              {/* Texte "Voir plus" discret */}
-              {hasMoreTasks && (
+              {/* Boutons de pagination */}
+              {(hasMoreTasks || isExpanded) && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   className="text-center py-4"
                 >
-                  <button
-                    onClick={handleLoadMore}
-                    className="text-sm font-karla-medium transition-all duration-300 hover:scale-105 cursor-pointer"
-                    style={{ 
-                      color: 'var(--text-muted)',
-                      textDecoration: 'underline'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = 'var(--theme-primary)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'var(--text-muted)';
-                    }}
-                  >
-                    Voir plus ({remainingTasks} tâche{remainingTasks > 1 ? 's' : ''} restante{remainingTasks > 1 ? 's' : ''})
-                  </button>
+                  {hasMoreTasks && !isExpanded ? (
+                    // Bouton "Voir plus" quand on peut encore charger plus
+                    <button
+                      onClick={handleLoadMore}
+                      className="text-sm font-karla-medium transition-all duration-300 hover:scale-105 cursor-pointer"
+                      style={{ 
+                        color: 'var(--text-muted)',
+                        textDecoration: 'underline'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = 'var(--theme-primary)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = 'var(--text-muted)';
+                      }}
+                    >
+                      Voir plus ({remainingTasks} tâche{remainingTasks > 1 ? 's' : ''} restante{remainingTasks > 1 ? 's' : ''})
+                    </button>
+                  ) : isExpanded ? (
+                    // Bouton "Fermer" quand on a étendu la liste
+                    <button
+                      onClick={handleCollapse}
+                      className="text-sm font-karla-medium transition-all duration-300 hover:scale-105 cursor-pointer"
+                      style={{ 
+                        color: 'var(--text-muted)',
+                        textDecoration: 'underline'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = 'var(--theme-primary)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = 'var(--text-muted)';
+                      }}
+                    >
+                      Fermer ({sortedTasks.length - 5} tâche{sortedTasks.length - 5 > 1 ? 's' : ''} masquée{sortedTasks.length - 5 > 1 ? 's' : ''})
+                    </button>
+                  ) : null}
                 </motion.div>
               )}
             </>
