@@ -4,9 +4,9 @@ import Link from 'next/link';
 
 export default function MentionsLegales() {
   return (
-    <div className="bg-black text-white font-karla min-h-screen">
+    <div className="bg-black text-white font-karla min-h-screen" style={{ backgroundColor: '#000000', color: '#ffffff' }}>
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 glass-effect border-b border-gray-800">
+      <nav className="fixed top-0 w-full z-50 glass-effect border-b border-gray-800" style={{ backgroundColor: 'rgba(17, 17, 17, 0.5)', borderColor: '#374151' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
@@ -36,7 +36,7 @@ export default function MentionsLegales() {
             </p>
           </div>
 
-          <div className="glass-effect rounded-2xl p-8 border border-gray-700 space-y-8">
+          <div className="glass-effect rounded-2xl p-8 border border-gray-700 space-y-8" style={{ backgroundColor: 'rgba(17, 17, 17, 0.5)', borderColor: '#374151' }}>
             <div>
               <h2 className="text-2xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
                 Qui est l&apos;éditeur du site ?
@@ -119,7 +119,7 @@ export default function MentionsLegales() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 sm:px-6 lg:px-8 bg-gray-900/50 border-t border-gray-800">
+      <footer className="py-8 px-4 sm:px-6 lg:px-8 bg-gray-900/50 border-t border-gray-800" style={{ backgroundColor: 'rgba(17, 24, 39, 0.5)', borderColor: '#374151' }}>
         <div className="max-w-7xl mx-auto text-center">
           <div className="flex justify-center space-x-6 mb-4">
             <a href="/mentions-legales" className="text-gray-400 hover:text-[#CCFF00] transition-colors">Mentions Légales</a>
