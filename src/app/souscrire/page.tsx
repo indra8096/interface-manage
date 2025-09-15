@@ -64,7 +64,7 @@ export default function Souscrire() {
     setFormData(prev => ({
       ...prev,
       plan: plan.id,
-      userCount: plan.userLimit
+      userCount: typeof plan.userLimit === 'number' ? plan.userLimit : 999
     }));
     setShowModal(true);
   };
