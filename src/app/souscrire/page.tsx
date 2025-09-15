@@ -20,30 +20,36 @@ export default function Souscrire() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
   const plans = [
     {
       id: 'starter',
       name: 'Starter',
-      price: { monthly: 29, yearly: 290 },
+      price: { monthly: 15, yearly: 150 },
       description: 'Parfait pour les petites équipes',
-      features: ['Jusqu\'à 10 utilisateurs', 'Dashboard de base', 'Support email', 'Services prédéfinis']
+      userLimit: 5,
+      support: 'Support email'
     },
     {
       id: 'professional',
       name: 'Professional',
-      price: { monthly: 79, yearly: 790 },
+      price: { monthly: 35, yearly: 350 },
       description: 'Idéal pour les équipes moyennes',
-      features: ['Jusqu\'à 50 utilisateurs', 'Dashboard avancé', 'Support prioritaire', 'Services personnalisés', 'Rapports détaillés']
+      userLimit: 25,
+      support: 'Support prioritaire + Chat'
     },
     {
       id: 'enterprise',
       name: 'Enterprise',
-      price: { monthly: 199, yearly: 1990 },
+      price: { monthly: 75, yearly: 750 },
       description: 'Pour les grandes organisations',
-      features: ['Utilisateurs illimités', 'Dashboard complet', 'Support 24/7', 'Intégrations API', 'Formation personnalisée']
+      userLimit: 100,
+      support: 'Support 24/7 + Téléphone'
     }
   ];
+
+  const [selectedPlan, setSelectedPlan] = useState(plans[0]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -51,6 +57,16 @@ export default function Souscrire() {
       ...prev,
       [name]: value
     }));
+  };
+
+  const handlePlanSelect = (plan: typeof plans[0]) => {
+    setSelectedPlan(plan);
+    setFormData(prev => ({
+      ...prev,
+      plan: plan.id,
+      userCount: plan.userLimit
+    }));
+    setShowModal(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,7 +85,10 @@ export default function Souscrire() {
     }
   };
 
-  const selectedPlan = plans.find(plan => plan.id === formData.plan);
+  const closeModal = () => {
+    setShowModal(false);
+    setSubmitMessage('');
+  };
 
   return (
     <div className="bg-black text-white font-karla min-h-screen">
@@ -133,13 +152,8 @@ export default function Souscrire() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.1 }}
-                className={`glass-effect rounded-2xl p-8 border transition-all duration-300 hover-scale ${
-                  formData.plan === plan.id 
-                    ? 'border-[#CCFF00] shadow-lg shadow-[#CCFF00]/20' 
-                    : 'border-gray-700 hover:border-[#CCFF00]'
-                }`}
-                onClick={() => setFormData(prev => ({ ...prev, plan: plan.id }))}
-                style={{ cursor: 'pointer' }}
+                className="glass-effect rounded-2xl p-8 border border-gray-700 hover:border-[#CCFF00] transition-all duration-300 hover-scale cursor-pointer"
+                onClick={() => handlePlanSelect(plan)}
               >
                 <div className="text-center mb-6">
                   <h3 className="text-2xl font-karla-bold mb-2" style={{ color: '#CCFF00' }}>
@@ -157,13 +171,31 @@ export default function Souscrire() {
                 </div>
                 
                 <ul className="space-y-3 mb-6">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-center text-sm text-gray-300">
-                      <span className="w-2 h-2 rounded-full mr-3" style={{ background: '#CCFF00' }}></span>
-                      {feature}
-                    </li>
-                  ))}
+                  <li className="flex items-center text-sm text-gray-300">
+                    <span className="w-2 h-2 rounded-full mr-3" style={{ background: '#CCFF00' }}></span>
+                    Jusqu'à {plan.userLimit} utilisateurs
+                  </li>
+                  <li className="flex items-center text-sm text-gray-300">
+                    <span className="w-2 h-2 rounded-full mr-3" style={{ background: '#CCFF00' }}></span>
+                    Dashboard complet
+                  </li>
+                  <li className="flex items-center text-sm text-gray-300">
+                    <span className="w-2 h-2 rounded-full mr-3" style={{ background: '#CCFF00' }}></span>
+                    Services prédéfinis
+                  </li>
+                  <li className="flex items-center text-sm text-gray-300">
+                    <span className="w-2 h-2 rounded-full mr-3" style={{ background: '#CCFF00' }}></span>
+                    {plan.support}
+                  </li>
                 </ul>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full py-3 bg-gradient-to-r from-[#CCFF00] to-[#9933FF] text-black rounded-xl font-karla-bold hover:from-[#9933FF] hover:to-[#CCFF00] transition-all duration-300"
+                >
+                  CHOISIR CE PLAN
+                </motion.button>
               </motion.div>
             ))}
           </div>
@@ -196,22 +228,27 @@ export default function Souscrire() {
         </div>
       </section>
 
-      {/* Form Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-900/30">
-        <div className="max-w-4xl mx-auto">
+      {/* Modal de souscription */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="glass-effect rounded-2xl p-8 border border-gray-800"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="glass-effect rounded-2xl p-8 border border-gray-800 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
           >
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
-                Informations de l'entreprise
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-3xl font-karla-bold" style={{ color: '#CCFF00' }}>
+                Souscription - {selectedPlan.name}
               </h2>
-              <p className="text-gray-300">
-                Remplissez les informations de votre entreprise pour finaliser votre souscription
-              </p>
+              <button
+                onClick={closeModal}
+                className="text-gray-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-800"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
 
             {submitMessage ? (
@@ -231,6 +268,31 @@ export default function Souscrire() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Récapitulatif du plan */}
+                <div className="bg-gray-800 rounded-xl p-6 mb-6">
+                  <h3 className="text-xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+                    Récapitulatif de votre commande
+                  </h3>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-lg font-karla-medium text-white">
+                      Plan {selectedPlan.name} - {formData.billingCycle === 'monthly' ? 'Mensuel' : 'Annuel'}
+                    </span>
+                    <span className="text-xl font-karla-bold" style={{ color: '#CCFF00' }}>
+                      {formData.billingCycle === 'monthly' ? selectedPlan.price.monthly : selectedPlan.price.yearly}€
+                      /{formData.billingCycle === 'monthly' ? 'mois' : 'an'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm text-gray-400">
+                    <span>Utilisateurs inclus</span>
+                    <span>Jusqu'à {selectedPlan.userLimit} utilisateurs</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm text-gray-400">
+                    <span>Support</span>
+                    <span>{selectedPlan.support}</span>
+                  </div>
+                </div>
+
+                {/* Formulaire */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-karla-semibold text-white mb-3">
@@ -362,27 +424,6 @@ export default function Souscrire() {
                   </div>
                 </div>
 
-                <div className="border-t border-gray-700 pt-6">
-                  <h3 className="text-xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
-                    Récapitulatif de votre commande
-                  </h3>
-                  <div className="bg-gray-800 rounded-xl p-6">
-                    <div className="flex justify-between items-center mb-4">
-                      <span className="text-lg font-karla-medium text-white">
-                        Plan {selectedPlan?.name} - {formData.billingCycle === 'monthly' ? 'Mensuel' : 'Annuel'}
-                      </span>
-                      <span className="text-xl font-karla-bold" style={{ color: '#CCFF00' }}>
-                        {formData.billingCycle === 'monthly' ? selectedPlan?.price.monthly : selectedPlan?.price.yearly}€
-                        /{formData.billingCycle === 'monthly' ? 'mois' : 'an'}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center text-sm text-gray-400">
-                      <span>Utilisateurs inclus</span>
-                      <span>{selectedPlan?.features[0]}</span>
-                    </div>
-                  </div>
-                </div>
-
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -396,7 +437,7 @@ export default function Souscrire() {
             )}
           </motion.div>
         </div>
-      </section>
+      )}
 
       {/* Footer */}
       <footer className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-900/50 border-t border-gray-800">
