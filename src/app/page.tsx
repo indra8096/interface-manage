@@ -29,7 +29,10 @@ export default function Home() {
               <button onClick={() => scrollToSection('purple-team')} className="text-sm font-karla-medium transition-colors text-gray-300 hover:text-white">Purple Team</button>
             </div>
 
-            <div className="animate-fade-in">
+            <div className="animate-fade-in flex items-center space-x-4">
+              <a href="/souscrire" className="px-6 py-2 border-2 font-karla-bold rounded-lg hover-scale transition-all duration-300" style={{ borderColor: '#9933FF', color: '#9933FF' }}>
+                SOUSCRIRE
+              </a>
               <a href="/login" className="px-6 py-2 text-black font-karla-bold rounded-lg hover-scale transition-all duration-300" style={{ background: '#CCFF00' }}>
                 CONNEXION
               </a>
