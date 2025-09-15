@@ -36,7 +36,7 @@ export default function Souscrire() {
       name: 'Professional',
       price: { monthly: 35, yearly: 350 },
       description: 'Idéal pour les équipes moyennes',
-      userLimit: 25,
+      userLimit: 50,
       support: 'Support prioritaire + Chat'
     },
     {
@@ -44,7 +44,7 @@ export default function Souscrire() {
       name: 'Enterprise',
       price: { monthly: 75, yearly: 750 },
       description: 'Pour les grandes organisations',
-      userLimit: 100,
+      userLimit: 'illimité',
       support: 'Support 24/7 + Téléphone'
     }
   ];
@@ -173,7 +173,7 @@ export default function Souscrire() {
                 <ul className="space-y-3 mb-6">
                   <li className="flex items-center text-sm text-gray-300">
                     <span className="w-2 h-2 rounded-full mr-3" style={{ background: '#CCFF00' }}></span>
-                    Jusqu'à {plan.userLimit} utilisateurs
+                    {plan.userLimit === 'illimité' ? 'Utilisateurs illimités' : `Jusqu'à ${plan.userLimit} utilisateurs`}
                   </li>
                   <li className="flex items-center text-sm text-gray-300">
                     <span className="w-2 h-2 rounded-full mr-3" style={{ background: '#CCFF00' }}></span>
@@ -230,12 +230,12 @@ export default function Souscrire() {
 
       {/* Modal de souscription */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="glass-effect rounded-2xl p-8 border border-gray-800 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            className="bg-gray-900 rounded-2xl p-8 border border-gray-700 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
           >
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-3xl font-karla-bold" style={{ color: '#CCFF00' }}>
@@ -284,7 +284,7 @@ export default function Souscrire() {
                   </div>
                   <div className="flex justify-between items-center text-sm text-gray-400">
                     <span>Utilisateurs inclus</span>
-                    <span>Jusqu'à {selectedPlan.userLimit} utilisateurs</span>
+                    <span>{selectedPlan.userLimit === 'illimité' ? 'Utilisateurs illimités' : `Jusqu'à ${selectedPlan.userLimit} utilisateurs`}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm text-gray-400">
                     <span>Support</span>
