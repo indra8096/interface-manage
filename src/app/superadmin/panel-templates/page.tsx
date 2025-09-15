@@ -465,14 +465,14 @@ export default function PanelTemplatesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white" style={{ backgroundColor: '#000000', color: '#ffffff' }}>
+    <div className="min-h-screen bg-black text-white">
       {/* Header */}
-      <header className="bg-black/80 backdrop-blur-md border-b border-gray-800" style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', borderColor: '#374151' }}>
+      <header className="bg-black/80 backdrop-blur-md border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
               <span className="text-xl font-bold text-[#CCFF00]">drelto</span>
-              <span className="text-sm text-gray-400" style={{ color: '#9CA3AF' }}>Gestionnaire de Templates Panel</span>
+              <span className="text-sm text-gray-400">Gestionnaire de Templates Panel</span>
             </div>
             
             <div className="flex space-x-4">
@@ -509,10 +509,10 @@ export default function PanelTemplatesPage() {
           <div className="mb-16">
             <div className="flex items-center justify-between mb-12">
               <div>
-                <h1 className="text-5xl font-bold mb-4 text-white" style={{ color: '#ffffff' }}>
+                <h1 className="text-5xl font-bold mb-4 text-white">
                   Gestion des Templates Panel de Suivi
                 </h1>
-                <p className="text-lg text-gray-400" style={{ color: '#9CA3AF' }}>
+                <p className="text-lg text-gray-400">
                   Interface de contrôle des templates de cartes de suivi
                 </p>
               </div>
@@ -522,13 +522,12 @@ export default function PanelTemplatesPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
               <motion.div 
                 className="p-8 rounded-2xl hover:border-[#CCFF00] transition-all duration-500 bg-black border border-gray-700"
-                style={{ backgroundColor: '#000000', borderColor: '#374151' }}
                 whileHover={{ scale: 1.02 }}
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-sm mb-2 text-gray-400" style={{ color: '#9CA3AF' }}>TEMPLATES ACTIFS</div>
-                    <div className="text-6xl font-bold text-[#CCFF00]" style={{ color: '#CCFF00' }}>{panelTemplates.filter(s => s.isActive).length}</div>
+                    <div className="font-medium text-sm mb-2 text-gray-400">TEMPLATES ACTIFS</div>
+                    <div className="text-6xl font-bold text-[#CCFF00]">{panelTemplates.filter(s => s.isActive).length}</div>
                   </div>
                   <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
                     background: 'linear-gradient(135deg, #9933FF, #7c3aed)'
@@ -544,8 +543,8 @@ export default function PanelTemplatesPage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-sm mb-2 text-gray-400" style={{ color: '#9CA3AF' }}>TOTAL TEMPLATES</div>
-                    <div className="text-6xl font-bold text-[#9933FF]" style={{ color: '#9933FF' }}>{panelTemplates.length}</div>
+                    <div className="font-medium text-sm mb-2 text-gray-400">TOTAL TEMPLATES</div>
+                    <div className="text-6xl font-bold text-[#9933FF]">{panelTemplates.length}</div>
                   </div>
                   <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
                     background: 'linear-gradient(135deg, #9933FF, #7c3aed)'
