@@ -26,11 +26,21 @@ model User {
 model Company {
   id                 Int                 @id @default(autoincrement())
   name               String
+  email              String?
+  contactName        String?
+  phone              String?
+  address            String?
+  city               String?
+  postalCode         String?
+  country            String?
+  stripeCustomerId   String?
+  paypalCustomerId   String?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   panelCardInstances PanelCardInstance[]
   tasks              Task[]
   users              User[]
+  subscription       Subscription?
 }
 
 model Task {
@@ -98,8 +108,25 @@ model ServiceTemplate {
   updatedAt         DateTime @updatedAt
 }
 
+model Subscription {
+  id                    String    @id @default(cuid())
+  companyId             Int       @unique
+  company               Company   @relation(fields: [companyId], references: [id])
+  plan                  String    // starter, professional, enterprise
+  status                String    // active, canceled, past_due, incomplete, etc.
+  stripeSubscriptionId  String?   @unique
+  paypalSubscriptionId  String?   @unique
+  currentPeriodStart    DateTime
+  currentPeriodEnd      DateTime
+  cancelAtPeriodEnd     Boolean   @default(false)
+  trialEnd              DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
 enum Role {
   SUPER_ADMIN
+  MANAGEMENT_ADMIN
   COMPANY_ADMIN
   COMPANY_USER
 }

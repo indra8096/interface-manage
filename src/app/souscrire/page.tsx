@@ -15,7 +15,8 @@ export default function Souscrire() {
     country: '',
     plan: 'starter',
     userCount: 5,
-    billingCycle: 'monthly'
+    billingCycle: 'monthly',
+    paymentMethod: 'stripe' // Nouveau champ pour la méthode de paiement
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -74,11 +75,68 @@ export default function Souscrire() {
     setIsSubmitting(true);
     
     try {
-      // Simulation d'envoi de données
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      setSubmitMessage('Votre demande de souscription a été envoyée avec succès ! Vous recevrez vos identifiants de connexion par email dans les 24h.');
+      if (formData.paymentMethod === 'stripe') {
+        // Créer la souscription Stripe via l'API
+        const response = await fetch('/api/subscriptions/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            companyData: formData,
+            plan: selectedPlan.id,
+            billingCycle: formData.billingCycle,
+            paymentMethod: 'stripe',
+          }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          // Rediriger vers Stripe Checkout
+          const { loadStripe } = await import('@stripe/stripe-js');
+          const stripe = await loadStripe(
+            process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+          );
+
+          if (stripe) {
+            const { error } = await stripe.redirectToCheckout({
+              sessionId: result.sessionId,
+            });
+
+            if (error) {
+              setSubmitMessage('Erreur lors de la redirection vers le paiement Stripe.');
+            }
+          }
+        } else {
+          setSubmitMessage(result.error || 'Une erreur est survenue avec Stripe.');
+        }
+      } else if (formData.paymentMethod === 'paypal') {
+        // Créer la souscription PayPal via l'API
+        const response = await fetch('/api/subscriptions/create-paypal', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            companyData: formData,
+            plan: selectedPlan.id,
+            billingCycle: formData.billingCycle,
+            paymentMethod: 'paypal',
+          }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          // Rediriger vers PayPal
+          window.location.href = result.approvalUrl;
+        } else {
+          setSubmitMessage(result.error || 'Une erreur est survenue avec PayPal.');
+        }
+      }
     } catch (error) {
+      console.error('Erreur:', error);
       setSubmitMessage('Une erreur est survenue. Veuillez réessayer.');
     } finally {
       setIsSubmitting(false);
@@ -424,6 +482,83 @@ export default function Souscrire() {
                   </div>
                 </div>
 
+                {/* Sélection de méthode de paiement */}
+                <div className="bg-gray-800 rounded-xl p-6">
+                  <h3 className="text-xl font-karla-bold mb-4" style={{ color: '#CCFF00' }}>
+                    Méthode de paiement
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all duration-300 ${
+                      formData.paymentMethod === 'stripe' 
+                        ? 'border-[#CCFF00] bg-[#CCFF00]/10' 
+                        : 'border-gray-700 hover:border-gray-600'
+                    }`}>
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="stripe"
+                        checked={formData.paymentMethod === 'stripe'}
+                        onChange={handleInputChange}
+                        className="sr-only"
+                      />
+                      <div className="flex items-center space-x-3">
+                        <div className="w-6 h-6 rounded-full border-2 flex items-center justify-center"
+                             style={{ 
+                               borderColor: formData.paymentMethod === 'stripe' ? '#CCFF00' : '#6B7280',
+                               backgroundColor: formData.paymentMethod === 'stripe' ? '#CCFF00' : 'transparent'
+                             }}>
+                          {formData.paymentMethod === 'stripe' && (
+                            <div className="w-2 h-2 rounded-full bg-black"></div>
+                          )}
+                        </div>
+                        <div>
+                          <div className="font-karla-semibold text-white">Carte bancaire</div>
+                          <div className="text-sm text-gray-400">Visa, Mastercard, American Express</div>
+                        </div>
+                      </div>
+                    </label>
+
+                    <label className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all duration-300 ${
+                      formData.paymentMethod === 'paypal' 
+                        ? 'border-[#CCFF00] bg-[#CCFF00]/10' 
+                        : 'border-gray-700 hover:border-gray-600'
+                    }`}>
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="paypal"
+                        checked={formData.paymentMethod === 'paypal'}
+                        onChange={handleInputChange}
+                        className="sr-only"
+                      />
+                      <div className="flex items-center space-x-3">
+                        <div className="w-6 h-6 rounded-full border-2 flex items-center justify-center"
+                             style={{ 
+                               borderColor: formData.paymentMethod === 'paypal' ? '#CCFF00' : '#6B7280',
+                               backgroundColor: formData.paymentMethod === 'paypal' ? '#CCFF00' : 'transparent'
+                             }}>
+                          {formData.paymentMethod === 'paypal' && (
+                            <div className="w-2 h-2 rounded-full bg-black"></div>
+                          )}
+                        </div>
+                        <div>
+                          <div className="font-karla-semibold text-white">PayPal</div>
+                          <div className="text-sm text-gray-400">Paiement sécurisé via PayPal</div>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                  
+                  <div className="mt-4 p-4 bg-gray-900 rounded-lg">
+                    <div className="flex items-center space-x-2 text-sm text-gray-400">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                      <span>Paiement 100% sécurisé et chiffré</span>
+                    </div>
+                  </div>
+                </div>
+
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -431,7 +566,7 @@ export default function Souscrire() {
                   disabled={isSubmitting}
                   className="w-full py-4 bg-gradient-to-r from-[#CCFF00] to-[#9933FF] text-black rounded-xl font-karla-bold hover:from-[#9933FF] hover:to-[#CCFF00] transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'TRAITEMENT EN COURS...' : 'SOUSCRIRE MAINTENANT'}
+                  {isSubmitting ? 'TRAITEMENT EN COURS...' : `SOUSCRIRE AVEC ${formData.paymentMethod.toUpperCase()}`}
                 </motion.button>
               </form>
             )}

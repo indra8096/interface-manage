@@ -42,6 +42,9 @@ export default function LoginPage() {
         if (data.role === 'SUPER_ADMIN') {
           console.log('🚀 Redirection vers /superadmin');
           router.push('/superadmin');
+        } else if (data.role === 'MANAGEMENT_ADMIN') {
+          console.log('🚀 Redirection vers /dashboard/billing');
+          router.push('/dashboard/billing');
         } else if (data.role === 'COMPANY_ADMIN' || data.role === 'COMPANY_USER') {
           console.log('🚀 Redirection vers /dashboard');
           router.push('/dashboard');
